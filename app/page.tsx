@@ -35,20 +35,20 @@ export default function Home() {
     { number: "300%", label: "Average ROI", subtext: "Within 6 Months" },
     { number: "80%", label: "Cost Reduction", subtext: "On Operations" },
     { number: "24/7", label: "Always Available", subtext: "Never Miss a Lead" },
-    { number: "100%", label: "Idaho Owned", subtext: "Local Support" }
+    { number: "100%", label: "Idaho Owned", subtext: "Expert Support" }
   ];
 
   const projects = [
     {
       title: "Agricultural Analytics",
-      client: "Idaho Potato Commission",
+      client: "Regional Agricultural Co-op",
       description: "AI-powered crop yield predictions with 92% accuracy",
       result: "Saved $2.3M in waste reduction",
       icon: <BarChart3 className="w-6 h-6" />
     },
     {
       title: "Customer Service Bot",
-      client: "Boise Medical Group",
+      client: "Regional Medical Group",
       description: "24/7 appointment scheduling and patient triage",
       result: "Reduced wait times by 85%",
       icon: <MessageSquare className="w-6 h-6" />
@@ -71,7 +71,7 @@ export default function Home() {
 
   const processSteps = [
     {
-      title: "Idaho Discovery Session",
+      title: "Discovery Session",
       description: "We meet in person or virtually to understand your unique business challenges. No cookie-cutter solutions.",
       icon: <Lightbulb className="w-8 h-8" />
     },
@@ -94,7 +94,7 @@ export default function Home() {
 
   const testimonials = [
     {
-      quote: "Idaho AI transformed our entire operation. We're saving 20 hours a week on data entry alone, and our error rate dropped to zero. Best investment we've made.",
+      quote: "Teton Group transformed our entire operation. We're saving 20 hours a week on data entry alone, and our error rate dropped to zero. Best investment we've made.",
       author: "Sarah Mitchell",
       company: "Boise Valley Dental",
       location: "Boise, ID",
@@ -124,7 +124,7 @@ export default function Home() {
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-3">
               <Mountain className="w-8 h-8 text-blue-700" />
-              <span className="font-bold text-xl">Idaho AI</span>
+              <span className="font-bold text-xl">Teton Group</span>
             </div>
             
             <div className="hidden md:flex items-center space-x-8">
@@ -164,7 +164,7 @@ export default function Home() {
                 <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </a>
               <a href="#projects" className="bg-white text-gray-900 px-8 py-4 rounded-full text-lg font-bold hover:bg-gray-100 transition border-2 border-gray-300">
-                See Idaho Success Stories
+                See Success Stories
               </a>
             </div>
 
@@ -252,7 +252,7 @@ export default function Home() {
         <div className="container mx-auto px-4 sm:px-6">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-black mb-4 text-gray-900">
-              The Idaho AI <span className="text-blue-700">Process</span>
+              The Teton Group <span className="text-blue-700">Process</span>
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
               From idea to implementation in weeks, not months. Our proven process delivers results fast.
@@ -391,7 +391,7 @@ export default function Home() {
             <div className="relative">
               <div className="absolute inset-0 bg-gradient-to-r from-blue-700 to-blue-800 rounded-2xl transform rotate-3"></div>
               <div className="relative bg-white p-8 rounded-2xl shadow-2xl">
-                <h3 className="text-2xl font-bold mb-6 text-gray-900">Our Idaho AI Expertise</h3>
+                <h3 className="text-2xl font-bold mb-6 text-gray-900">Our Teton Group Expertise</h3>
                 <div className="space-y-4">
                   <div className="flex items-center space-x-3">
                     <Bot className="w-5 h-5 text-blue-700" />
@@ -451,7 +451,7 @@ export default function Home() {
         <div className="container mx-auto px-4 sm:px-6 relative z-10">
           <div className="max-w-4xl mx-auto text-center">
             <h2 className="text-4xl md:text-6xl font-black mb-6">
-              Ready to Transform Your Idaho Business with AI?
+              Ready to Transform Your Business with AI?
             </h2>
             <p className="text-xl md:text-2xl mb-12 text-blue-100">
               Get a free AI strategy session. We'll show you exactly how AI can 
@@ -531,7 +531,7 @@ export default function Home() {
               </form>
 
               <p className="mt-6 text-sm text-blue-100">
-                No spam, no obligations. Just honest advice from fellow Idahoans.
+                No spam, no obligations. Just honest advice from our team.
               </p>
             </div>
 
@@ -565,10 +565,10 @@ export default function Home() {
             <div>
               <div className="flex items-center space-x-3 mb-4">
                 <Mountain className="w-8 h-8 text-blue-400" />
-                <span className="font-bold text-xl">Idaho AI</span>
+                <span className="font-bold text-xl">Teton Group</span>
               </div>
               <p className="text-gray-400">
-                Custom AI solutions built by Idahoans, for businesses.
+                Custom AI solutions for forward-thinking businesses.
               </p>
             </div>
             
@@ -605,7 +605,7 @@ export default function Home() {
           </div>
           
           <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
-            <p>© 2024 Idaho AI. All rights reserved. Professional AI solutions for businesses nationwide.</p>
+            <p>© 2024 Teton Group. All rights reserved. Professional AI solutions for businesses nationwide.</p>
           </div>
         </div>
       </footer>
