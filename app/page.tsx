@@ -154,7 +154,7 @@ export default function Home() {
             </h1>
             
             <p className="text-xl md:text-2xl text-gray-600 mb-8 max-w-3xl mx-auto leading-relaxed">
-              From Boise to Coeur d'Alene, we help Idaho businesses slash costs, 
+              From Boise to Coeur d'Alene, we help businesses slash costs, 
               boost efficiency, and outpace the competition with custom AI.
             </p>
 
@@ -214,7 +214,7 @@ export default function Home() {
               AI Projects That Actually <span className="text-blue-700">Deliver ROI</span>
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Real results from real Idaho businesses. No fluff, just proven AI solutions.
+              Real results from real businesses. No fluff, just proven AI solutions.
             </p>
           </div>
 
@@ -337,7 +337,7 @@ export default function Home() {
                 <p>
                   We're not another Silicon Valley tech company trying to sell you 
                   one-size-fits-all software. We're your neighbors, building custom AI 
-                  that understands Idaho business.
+                  that understands business.
                 </p>
                 
                 <div className="grid gap-4">
@@ -345,7 +345,7 @@ export default function Home() {
                     <CheckCircle className="w-6 h-6 text-green-600 flex-shrink-0 mt-1" />
                     <div>
                       <strong className="text-gray-900">Local Understanding:</strong> We know the unique 
-                      challenges of Idaho businesses, from agriculture to tourism.
+                      challenges of businesses, from agriculture to tourism.
                     </div>
                   </div>
                   
@@ -568,7 +568,7 @@ export default function Home() {
                 <span className="font-bold text-xl">Idaho AI</span>
               </div>
               <p className="text-gray-400">
-                Custom AI solutions built by Idahoans, for Idaho businesses.
+                Custom AI solutions built by Idahoans, for businesses.
               </p>
             </div>
             
@@ -605,7 +605,7 @@ export default function Home() {
           </div>
           
           <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
-            <p>© 2024 Idaho AI. All rights reserved. Proudly serving Idaho from Boise.</p>
+            <p>© 2024 Idaho AI. All rights reserved. Professional AI solutions for businesses nationwide.</p>
           </div>
         </div>
       </footer>

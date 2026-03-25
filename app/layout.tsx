@@ -5,15 +5,15 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Idaho AI - Custom AI Solutions for Idaho Businesses",
-  description: "Local AI automation services in Idaho. We build custom AI solutions to decrease costs and increase efficiency for your business.",
-  keywords: "Idaho AI, AI automation, custom AI, Idaho business, AI solutions, business automation",
+  title: "Teton Group - Custom AI Solutions for Your Business",
+  description: "Expert AI automation services. We build custom AI solutions to decrease costs and increase efficiency for your business.",
+  keywords: "Teton Group, AI automation, custom AI, business AI, AI solutions, business automation",
   openGraph: {
-    title: "Idaho AI - Custom AI Solutions for Idaho Businesses",
-    description: "Local AI automation services in Idaho. Transform your business with custom AI.",
+    title: "Teton Group - Custom AI Solutions for Your Business",
+    description: "Transform your business with custom AI solutions from Teton Group.",
     type: "website",
     locale: "en_US",
-    siteName: "Idaho AI",
+    siteName: "Teton Group",
   },
 };
 
