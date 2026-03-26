@@ -131,6 +131,7 @@ export default function Home() {
               <a href="#projects" className="text-gray-700 hover:text-blue-700 transition font-medium">Projects</a>
               <a href="#process" className="text-gray-700 hover:text-blue-700 transition font-medium">Process</a>
               <a href="#about" className="text-gray-700 hover:text-blue-700 transition font-medium">About</a>
+              <a href="/blog" className="text-gray-700 hover:text-blue-700 transition font-medium">Blog</a>
               <a href="#contact" className="bg-blue-700 text-white px-6 py-2 rounded-full hover:bg-blue-800 transition font-semibold">
                 Start Your AI Project
               </a>
