@@ -35,7 +35,7 @@ export default function Home() {
     { number: "300%", label: "Average ROI", subtext: "Within 6 Months" },
     { number: "80%", label: "Cost Reduction", subtext: "On Operations" },
     { number: "24/7", label: "Always Available", subtext: "Never Miss a Lead" },
-    { number: "100%", label: "Idaho Owned", subtext: "Expert Support" }
+    { number: "100%", label: "US Based", subtext: "Expert Support" }
   ];
 
   const projects = [
@@ -145,17 +145,17 @@ export default function Home() {
         <div className="container mx-auto px-4 sm:px-6 relative z-10">
           <div className="max-w-5xl mx-auto text-center">
             <div className="inline-flex items-center space-x-2 bg-blue-100 text-blue-800 px-4 py-2 rounded-full mb-6 text-sm font-medium">
-              <MapPin className="w-4 h-4" />
-              <span>Proudly Serving Idaho Businesses Since 2019</span>
+              <Sparkles className="w-4 h-4" />
+              <span>Trusted by Businesses Nationwide • Based in Idaho</span>
             </div>
             
             <h1 className="text-5xl md:text-7xl font-black mb-6 text-gray-900 leading-tight">
               We Deploy AI Solutions<br />
-              <span className="text-blue-700">Idaho CEOs Brag About</span>
+              <span className="text-blue-700">CEOs Brag About</span>
             </h1>
             
             <p className="text-xl md:text-2xl text-gray-600 mb-8 max-w-3xl mx-auto leading-relaxed">
-              From Boise to Coeur d'Alene, we help businesses slash costs, 
+              From coast to coast, we help businesses slash costs, 
               boost efficiency, and outpace the competition with custom AI.
             </p>
 
@@ -189,7 +189,7 @@ export default function Home() {
           <div className="flex flex-wrap justify-center items-center gap-8 text-gray-600">
             <div className="flex items-center space-x-2">
               <Award className="w-5 h-5 text-blue-700" />
-              <span className="font-semibold">50+ Idaho Businesses Transformed</span>
+              <span className="font-semibold">50+ Businesses Transformed</span>
             </div>
             <div className="flex items-center space-x-2">
               <Shield className="w-5 h-5 text-blue-700" />
@@ -287,7 +287,7 @@ export default function Home() {
         <div className="container mx-auto px-4 sm:px-6">
           <div className="max-w-4xl mx-auto text-center">
             <h2 className="text-4xl md:text-5xl font-black mb-12">
-              Idaho Businesses Love Their AI
+              Businesses Love Their AI
             </h2>
             
             <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 md:p-12">
@@ -330,23 +330,23 @@ export default function Home() {
           <div className="grid lg:grid-cols-2 gap-12 items-center max-w-6xl mx-auto">
             <div>
               <h2 className="text-4xl md:text-5xl font-black mb-6 text-gray-900">
-                Why Idaho Businesses <br />
-                <span className="text-blue-700">Choose Local AI</span>
+                Why Businesses <br />
+                <span className="text-blue-700">Choose Teton Group</span>
               </h2>
               
               <div className="space-y-6 text-lg text-gray-600">
                 <p>
                   We're not another Silicon Valley tech company trying to sell you 
-                  one-size-fits-all software. We're your neighbors, building custom AI 
-                  that understands business.
+                  one-size-fits-all software. We're based in Idaho, building custom AI 
+                  that understands YOUR business.
                 </p>
                 
                 <div className="grid gap-4">
                   <div className="flex items-start space-x-3">
                     <CheckCircle className="w-6 h-6 text-green-600 flex-shrink-0 mt-1" />
                     <div>
-                      <strong className="text-gray-900">Local Understanding:</strong> We know the unique 
-                      challenges of businesses, from agriculture to tourism.
+                      <strong className="text-gray-900">Deep Industry Understanding:</strong> We know the unique 
+                      challenges of your industry, from agriculture to retail.
                     </div>
                   </div>
                   
@@ -354,7 +354,7 @@ export default function Home() {
                     <CheckCircle className="w-6 h-6 text-green-600 flex-shrink-0 mt-1" />
                     <div>
                       <strong className="text-gray-900">Face-to-Face Support:</strong> Real people, real 
-                      meetings. We're here in Idaho when you need us.
+                      meetings. Available nationwide via video or in-person.
                     </div>
                   </div>
                   
@@ -424,11 +424,11 @@ export default function Home() {
                   <div className="flex items-center justify-between">
                     <div>
                       <div className="text-3xl font-black text-gray-900">5+ Years</div>
-                      <div className="text-gray-600">Building AI in Idaho</div>
+                      <div className="text-gray-600">Building Enterprise AI</div>
                     </div>
                     <div className="text-right">
                       <div className="text-3xl font-black text-gray-900">50+</div>
-                      <div className="text-gray-600">Idaho Businesses Served</div>
+                      <div className="text-gray-600">Businesses Served</div>
                     </div>
                   </div>
                 </div>
