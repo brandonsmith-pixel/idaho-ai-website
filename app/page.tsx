@@ -131,6 +131,7 @@ export default function Home() {
               <a href="#projects" className="text-gray-700 hover:text-blue-700 transition font-medium">Projects</a>
               <a href="#process" className="text-gray-700 hover:text-blue-700 transition font-medium">Process</a>
               <a href="#about" className="text-gray-700 hover:text-blue-700 transition font-medium">About</a>
+              <a href="/ai-receptionist" className="text-gray-700 hover:text-blue-700 transition font-medium">AI Receptionist</a>
               <a href="/blog" className="text-gray-700 hover:text-blue-700 transition font-medium">Blog</a>
               <a href="#contact" className="bg-blue-700 text-white px-6 py-2 rounded-full hover:bg-blue-800 transition font-semibold">
                 Start Your AI Project
@@ -244,6 +245,77 @@ export default function Home() {
               Start Your AI Success Story
               <ChevronRight className="ml-1 w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </a>
+          </div>
+        </div>
+      </section>
+
+      {/* AI Receptionist Promo */}
+      <section className="py-20 bg-gradient-to-br from-purple-600 to-blue-600 text-white">
+        <div className="container mx-auto px-4 sm:px-6">
+          <div className="max-w-5xl mx-auto">
+            <div className="grid lg:grid-cols-2 gap-12 items-center">
+              <div>
+                <div className="inline-flex items-center gap-2 bg-yellow-400 text-gray-900 px-4 py-2 rounded-full mb-6 text-sm font-bold">
+                  🎁 LIMITED TIME OFFER
+                </div>
+                <h2 className="text-4xl md:text-5xl font-black mb-4">
+                  Never Miss a Call Again
+                </h2>
+                <p className="text-xl mb-6 opacity-90">
+                  Get your AI Receptionist FREE for 6 months when you book an AI Strategy Call
+                </p>
+                <div className="space-y-3 mb-8">
+                  {[
+                    'Answers calls 24/7 automatically',
+                    'Books appointments while you sleep',
+                    'Handles common questions instantly',
+                    'Setup in under 5 minutes',
+                  ].map((feature, i) => (
+                    <div key={i} className="flex items-center gap-3">
+                      <CheckCircle className="h-5 w-5 flex-shrink-0" />
+                      <span>{feature}</span>
+                    </div>
+                  ))}
+                </div>
+                <div className="flex flex-col sm:flex-row gap-4">
+                  <a href="/ai-receptionist" className="bg-white text-blue-700 px-8 py-4 rounded-xl font-bold hover:shadow-2xl transition inline-flex items-center justify-center">
+                    Get 6 Months Free →
+                  </a>
+                  <a href="/ai-receptionist#pricing" className="bg-white/10 backdrop-blur-sm border-2 border-white text-white px-8 py-4 rounded-xl font-bold hover:bg-white/20 transition inline-flex items-center justify-center">
+                    See Pricing
+                  </a>
+                </div>
+              </div>
+              
+              <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8">
+                <div className="text-center mb-6">
+                  <div className="text-6xl font-black mb-2">$1,782</div>
+                  <div className="text-2xl opacity-90">Value • Yours FREE</div>
+                </div>
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between pb-4 border-b border-white/20">
+                    <span>6 Months AI Receptionist</span>
+                    <span className="font-bold">$1,782</span>
+                  </div>
+                  <div className="flex items-center justify-between pb-4 border-b border-white/20">
+                    <span>AI Strategy Session</span>
+                    <span className="font-bold">$500</span>
+                  </div>
+                  <div className="flex items-center justify-between pb-4 border-b border-white/20">
+                    <span>Custom Implementation Plan</span>
+                    <span className="font-bold">$300</span>
+                  </div>
+                  <div className="flex items-center justify-between text-2xl font-black pt-4">
+                    <span>Total Value</span>
+                    <span>$2,582</span>
+                  </div>
+                  <div className="text-center pt-4">
+                    <div className="text-yellow-400 font-black text-3xl mb-2">Your Price: $0</div>
+                    <p className="text-sm opacity-75">Just book a free consultation</p>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
