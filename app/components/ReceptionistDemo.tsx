@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import { Phone, Building2, CheckCircle, ArrowRight, Sparkles } from 'lucide-react';
-import { supabase } from '@/lib/supabase';
 
 const INDUSTRIES = [
   { key: 'restaurant', label: 'Restaurant', icon: '🍽️' },
@@ -18,44 +17,78 @@ const VOICES = [
   { id: 'sophia', name: 'Sophia', personality: 'Calm & Reassuring' },
 ];
 
+// Google Sheets Web App URL - YOU NEED TO SET THIS UP
+const GOOGLE_SHEETS_URL = process.env.NEXT_PUBLIC_GOOGLE_SHEETS_URL || '';
+
 export default function ReceptionistDemo() {
   const [step, setStep] = useState(1);
   const [businessName, setBusinessName] = useState('');
   const [industry, setIndustry] = useState('');
   const [phone, setPhone] = useState('');
+  const [email, setEmail] = useState('');
   const [voice, setVoice] = useState('jennifer');
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [error, setError] = useState('');
 
   const handleSubmit = async () => {
     if (!businessName || !phone || !industry) return;
     
     setLoading(true);
+    setError('');
+    
     try {
-      const { error } = await supabase.from('form_submissions').insert({
-        form_id: null,
-        tenant_id: null,
-        data_json: {
-          type: 'ai_receptionist_demo',
-          business_name: businessName,
-          phone,
-          industry,
-          voice,
-          source: 'tetongroup_homepage',
-        },
-        source_url: typeof window !== 'undefined' ? window.location.href : '',
-      });
-      
-      if (error) {
-        console.error('Supabase error:', error);
-        // Still show success to user even if save fails
+      const timestamp = new Date().toISOString();
+      const data = {
+        timestamp,
+        businessName,
+        phone,
+        email,
+        industry,
+        voice,
+        source: 'tetongroup_homepage',
+        url: typeof window !== 'undefined' ? window.location.href : '',
+      };
+
+      // Try Google Sheets first
+      if (GOOGLE_SHEETS_URL) {
+        const response = await fetch(GOOGLE_SHEETS_URL, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data),
+        });
+        console.log('Sent to Google Sheets');
       }
-      
+
+      // Also send to your email via contact form API
+      await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: businessName,
+          email: email || 'no-email@provided.com',
+          phone,
+          message: `AI Receptionist Demo Submission
+          
+Business: ${businessName}
+Industry: ${industry}
+Voice Preference: ${VOICES.find(v => v.id === voice)?.name}
+Phone: ${phone}
+Email: ${email || 'Not provided'}
+Source: Homepage Interactive Demo
+Timestamp: ${timestamp}`,
+        }),
+      });
+
       setSuccess(true);
-    } catch (error) {
-      console.error('Submission error:', error);
-      // Still show success to user
-      setSuccess(true);
+    } catch (err) {
+      console.error('Submission error:', err);
+      setError('Something went wrong. Please try again or call us directly.');
     } finally {
       setLoading(false);
     }
@@ -77,6 +110,7 @@ export default function ReceptionistDemo() {
             setStep(1);
             setBusinessName('');
             setPhone('');
+            setEmail('');
             setIndustry('');
           }}
           className="text-blue-700 font-semibold hover:text-blue-800"
@@ -103,6 +137,12 @@ export default function ReceptionistDemo() {
         </div>
       </div>
 
+      {error && (
+        <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
+          {error}
+        </div>
+      )}
+
       {/* Step 1: Business Info */}
       {step === 1 && (
         <div className="space-y-4">
@@ -113,7 +153,7 @@ export default function ReceptionistDemo() {
           
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Business Name
+              Business Name *
             </label>
             <input
               type="text"
@@ -121,12 +161,13 @@ export default function ReceptionistDemo() {
               onChange={(e) => setBusinessName(e.target.value)}
               placeholder="e.g., Joe's Pizza"
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+              required
             />
           </div>
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Phone Number
+              Phone Number *
             </label>
             <input
               type="tel"
@@ -134,17 +175,32 @@ export default function ReceptionistDemo() {
               onChange={(e) => setPhone(e.target.value)}
               placeholder="+1 (555) 123-4567"
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+              required
             />
           </div>
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Industry
+              Email (optional)
+            </label>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="you@company.com"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Industry *
             </label>
             <div className="grid grid-cols-3 md:grid-cols-5 gap-2">
               {INDUSTRIES.map((ind) => (
                 <button
                   key={ind.key}
+                  type="button"
                   onClick={() => setIndustry(ind.key)}
                   className={`p-3 rounded-lg border-2 transition text-center ${
                     industry === ind.key
@@ -160,6 +216,7 @@ export default function ReceptionistDemo() {
           </div>
 
           <button
+            type="button"
             onClick={() => setStep(2)}
             disabled={!businessName || !phone || !industry}
             className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 rounded-lg font-semibold hover:shadow-lg transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
@@ -181,6 +238,7 @@ export default function ReceptionistDemo() {
             {VOICES.map((v) => (
               <button
                 key={v.id}
+                type="button"
                 onClick={() => setVoice(v.id)}
                 className={`w-full p-4 rounded-lg border-2 transition text-left ${
                   voice === v.id
@@ -196,12 +254,14 @@ export default function ReceptionistDemo() {
 
           <div className="flex gap-3">
             <button
+              type="button"
               onClick={() => setStep(1)}
               className="flex-1 px-4 py-3 border border-gray-300 rounded-lg font-semibold hover:bg-gray-50 transition"
             >
               Back
             </button>
             <button
+              type="button"
               onClick={() => setStep(3)}
               className="flex-1 bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 rounded-lg font-semibold hover:shadow-lg transition flex items-center justify-center gap-2"
             >
@@ -228,6 +288,12 @@ export default function ReceptionistDemo() {
               <span className="text-gray-600">Phone:</span>
               <span className="font-semibold">{phone}</span>
             </div>
+            {email && (
+              <div className="flex justify-between">
+                <span className="text-gray-600">Email:</span>
+                <span className="font-semibold">{email}</span>
+              </div>
+            )}
             <div className="flex justify-between">
               <span className="text-gray-600">Industry:</span>
               <span className="font-semibold capitalize">{industry}</span>
@@ -247,12 +313,14 @@ export default function ReceptionistDemo() {
 
           <div className="flex gap-3">
             <button
+              type="button"
               onClick={() => setStep(2)}
               className="flex-1 px-4 py-3 border border-gray-300 rounded-lg font-semibold hover:bg-gray-50 transition"
             >
               Back
             </button>
             <button
+              type="button"
               onClick={handleSubmit}
               disabled={loading}
               className="flex-1 bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 rounded-lg font-semibold hover:shadow-lg transition disabled:opacity-50 flex items-center justify-center gap-2"
@@ -260,7 +328,7 @@ export default function ReceptionistDemo() {
               {loading ? (
                 <>
                   <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                  Setting Up...
+                  Submitting...
                 </>
               ) : (
                 <>
