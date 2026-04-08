@@ -1,31 +1,95 @@
 "use client";
 
 import { useState } from 'react';
-import { Phone, CheckCircle, Loader2, ArrowRight, Sparkles, Building2 } from 'lucide-react';
+import { Phone, CheckCircle, Loader2, ArrowRight, Sparkles, Building2, Globe, Clock, MessageSquare, Upload, Plus, X, FileText } from 'lucide-react';
 import Link from 'next/link';
+import Image from 'next/image';
 
 const INDUSTRIES = [
-  { key: 'restaurant', label: 'Restaurant', icon: '🍽️' },
-  { key: 'medical', label: 'Medical', icon: '🏥' },
-  { key: 'retail', label: 'Retail', icon: '🛍️' },
-  { key: 'salon', label: 'Salon', icon: '💇' },
-  { key: 'other', label: 'Other', icon: '🏢' },
+  { 
+    key: 'restaurant', 
+    label: 'Restaurant / Cafe',
+    image: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=400&h=300&fit=crop',
+  },
+  { 
+    key: 'medical', 
+    label: 'Medical / Dental',
+    image: 'https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=400&h=300&fit=crop',
+  },
+  { 
+    key: 'retail', 
+    label: 'Retail Store',
+    image: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=400&h=300&fit=crop',
+  },
+  { 
+    key: 'salon', 
+    label: 'Salon / Spa',
+    image: 'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=400&h=300&fit=crop',
+  },
+  { 
+    key: 'professional', 
+    label: 'Professional Services',
+    image: 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=400&h=300&fit=crop',
+  },
+  { 
+    key: 'other', 
+    label: 'Other Business',
+    image: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=400&h=300&fit=crop',
+  },
 ];
 
+interface FAQ {
+  question: string;
+  answer: string;
+}
+
 export default function AIReceptionistDemo() {
+  const [step, setStep] = useState(1);
   const [businessName, setBusinessName] = useState('');
   const [phone, setPhone] = useState('');
   const [testPhone, setTestPhone] = useState('');
-  const [industry, setIndustry] = useState('restaurant');
+  const [industry, setIndustry] = useState('');
+  const [website, setWebsite] = useState('');
+  const [hours, setHours] = useState('');
+  const [faqs, setFaqs] = useState<FAQ[]>([{ question: '', answer: '' }]);
+  const [additionalInfo, setAdditionalInfo] = useState('');
+  const [files, setFiles] = useState<File[]>([]);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
 
+  const addFAQ = () => {
+    setFaqs([...faqs, { question: '', answer: '' }]);
+  };
+
+  const removeFAQ = (index: number) => {
+    setFaqs(faqs.filter((_, i) => i !== index));
+  };
+
+  const updateFAQ = (index: number, field: 'question' | 'answer', value: string) => {
+    const updated = [...faqs];
+    updated[index][field] = value;
+    setFaqs(updated);
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      setFiles(Array.from(e.target.files));
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!businessName || !phone || !testPhone) return;
+    if (!businessName || !phone || !testPhone || !industry) return;
 
     setLoading(true);
     try {
+      const faqText = faqs
+        .filter(f => f.question && f.answer)
+        .map((f, i) => `Q${i + 1}: ${f.question}\nA${i + 1}: ${f.answer}`)
+        .join('\n\n');
+
+      const fileList = files.map(f => f.name).join(', ');
+
       await fetch('/api/contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -33,14 +97,27 @@ export default function AIReceptionistDemo() {
           name: businessName,
           email: 'demo@tetongroup.ai',
           phone: testPhone,
-          message: `🎯 AI RECEPTIONIST DEMO REQUEST
+          message: `🎯 AI RECEPTIONIST DEMO REQUEST - PRIORITY
 
-Business: ${businessName}
-Business Phone: ${phone}
-Industry: ${industry}
-Call This Number: ${testPhone}
+BUSINESS INFO:
+- Name: ${businessName}
+- Phone: ${phone}
+- Industry: ${industry}
+- Website: ${website || 'Not provided'}
+- Hours: ${hours || 'Not provided'}
 
-URGENT: Call ${testPhone} within 60 seconds to demo the AI receptionist for ${businessName}.
+KNOWLEDGE BASE:
+${faqText || 'No FAQs provided'}
+
+ADDITIONAL CONTEXT:
+${additionalInfo || 'None'}
+
+FILES TO REVIEW:
+${fileList || 'None uploaded'}
+
+DEMO CALL:
+Call ${testPhone} within 60 seconds to demonstrate the AI receptionist.
+Use all the information above to train the AI for the demo.
 `,
         }),
       });
@@ -71,11 +148,11 @@ URGENT: Call ${testPhone} within 60 seconds to demo the AI receptionist for ${bu
             </div>
             <div className="flex items-start gap-3">
               <span className="text-2xl">2️⃣</span>
-              <p>Ask questions like "What are your hours?" or "Can I book an appointment?"</p>
+              <p>Ask questions based on the info you provided</p>
             </div>
             <div className="flex items-start gap-3">
               <span className="text-2xl">3️⃣</span>
-              <p>Experience YOUR AI receptionist in action!</p>
+              <p>Experience YOUR AI receptionist trained on YOUR business!</p>
             </div>
           </div>
           <div className="mt-8 pt-8 border-t">
@@ -89,153 +166,307 @@ URGENT: Call ${testPhone} within 60 seconds to demo the AI receptionist for ${bu
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-600 to-purple-600">
-      {/* Simple Nav */}
-      <nav className="py-4 px-6 bg-white/10 backdrop-blur-sm">
-        <Link href="/" className="text-white hover:text-blue-100 font-semibold">
-          ← Back to Teton Group
-        </Link>
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
+      {/* Nav */}
+      <nav className="bg-white border-b shadow-sm">
+        <div className="container mx-auto px-4 py-4">
+          <Link href="/" className="text-gray-700 hover:text-blue-600 font-semibold flex items-center gap-2">
+            <ArrowRight className="w-4 h-4 rotate-180" />
+            Back to Teton Group
+          </Link>
+        </div>
       </nav>
 
-      {/* Hero Demo Form */}
-      <div className="container mx-auto px-4 py-12 md:py-20">
-        <div className="max-w-4xl mx-auto">
+      {/* Hero */}
+      <div className="container mx-auto px-4 py-12">
+        <div className="max-w-6xl mx-auto">
           
           {/* Header */}
-          <div className="text-center text-white mb-12">
-            <div className="inline-flex items-center gap-2 bg-yellow-400 text-gray-900 px-6 py-3 rounded-full mb-6 font-bold animate-pulse">
+          <div className="text-center mb-12">
+            <div className="inline-flex items-center gap-2 bg-yellow-400 text-gray-900 px-6 py-3 rounded-full mb-6 font-bold shadow-lg">
               <Sparkles className="w-5 h-5" />
-              TEST IT FREE • WE'LL CALL YOU IN 60 SECONDS
+              INSTANT DEMO • WE'LL CALL YOU IN 60 SECONDS
               <Sparkles className="w-5 h-5" />
             </div>
-            <h1 className="text-5xl md:text-7xl font-black mb-6">
-              Try Your AI Receptionist
+            <h1 className="text-5xl md:text-6xl font-black mb-6 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+              {step === 1 ? 'Choose Your Industry' : step === 2 ? 'Tell Us About Your Business' : 'Add Your Knowledge Base'}
             </h1>
-            <p className="text-2xl md:text-3xl opacity-90">
-              We'll call you right now with an AI trained on YOUR business
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              {step === 1 ? 'We\'ll customize the demo for your type of business' : 
+               step === 2 ? 'Basic info so your AI knows who it represents' :
+               'Train your AI with your business knowledge'}
             </p>
           </div>
 
-          {/* Demo Form */}
-          <div className="bg-white rounded-3xl shadow-2xl p-8 md:p-12">
-            <form onSubmit={handleSubmit} className="space-y-6">
-              
-              {/* Business Name */}
-              <div>
-                <label className="block text-lg font-bold mb-3">
-                  <Building2 className="inline w-5 h-5 mr-2" />
-                  Your Business Name
-                </label>
-                <input
-                  type="text"
-                  required
-                  value={businessName}
-                  onChange={(e) => setBusinessName(e.target.value)}
-                  placeholder="e.g., Mountain View Dental"
-                  className="w-full px-6 py-4 text-xl border-2 border-gray-300 rounded-xl focus:ring-4 focus:ring-blue-500 focus:border-blue-500 outline-none"
-                />
+          <form onSubmit={handleSubmit}>
+            {/* Step 1: Industry Selection */}
+            {step === 1 && (
+              <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+                {INDUSTRIES.map((ind) => (
+                  <button
+                    key={ind.key}
+                    type="button"
+                    onClick={() => {
+                      setIndustry(ind.key);
+                      setStep(2);
+                    }}
+                    className={`group relative overflow-hidden rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 ${
+                      industry === ind.key ? 'ring-4 ring-blue-500' : ''
+                    }`}
+                  >
+                    <div className="relative h-48">
+                      <Image
+                        src={ind.image}
+                        alt={ind.label}
+                        fill
+                        className="object-cover group-hover:scale-110 transition-transform duration-300"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
+                      <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
+                        <h3 className="text-xl font-bold">{ind.label}</h3>
+                      </div>
+                    </div>
+                  </button>
+                ))}
               </div>
+            )}
 
-              {/* Business Phone */}
-              <div>
-                <label className="block text-lg font-bold mb-3">
-                  <Phone className="inline w-5 h-5 mr-2" />
-                  Your Business Phone
-                </label>
-                <input
-                  type="tel"
-                  required
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                  placeholder="+1 (555) 123-4567"
-                  className="w-full px-6 py-4 text-xl border-2 border-gray-300 rounded-xl focus:ring-4 focus:ring-blue-500 focus:border-blue-500 outline-none"
-                />
-              </div>
+            {/* Step 2: Business Info */}
+            {step === 2 && (
+              <div className="max-w-3xl mx-auto bg-white rounded-3xl shadow-xl p-8 space-y-6">
+                
+                <div>
+                  <label className="block text-lg font-bold mb-3 flex items-center gap-2">
+                    <Building2 className="w-5 h-5 text-blue-600" />
+                    Business Name *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={businessName}
+                    onChange={(e) => setBusinessName(e.target.value)}
+                    placeholder="e.g., Mountain View Dental"
+                    className="w-full px-5 py-4 text-lg border-2 border-gray-300 rounded-xl focus:ring-4 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                  />
+                </div>
 
-              {/* Industry */}
-              <div>
-                <label className="block text-lg font-bold mb-3">Industry</label>
-                <div className="grid grid-cols-3 md:grid-cols-5 gap-3">
-                  {INDUSTRIES.map((ind) => (
-                    <button
-                      key={ind.key}
-                      type="button"
-                      onClick={() => setIndustry(ind.key)}
-                      className={`p-4 rounded-xl border-2 transition text-center ${
-                        industry === ind.key
-                          ? 'border-blue-600 bg-blue-50 shadow-lg scale-105'
-                          : 'border-gray-300 hover:border-blue-400'
-                      }`}
-                    >
-                      <div className="text-4xl mb-2">{ind.icon}</div>
-                      <div className="text-sm font-semibold">{ind.label}</div>
-                    </button>
-                  ))}
+                <div>
+                  <label className="block text-lg font-bold mb-3 flex items-center gap-2">
+                    <Phone className="w-5 h-5 text-blue-600" />
+                    Business Phone *
+                  </label>
+                  <input
+                    type="tel"
+                    required
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    placeholder="+1 (555) 123-4567"
+                    className="w-full px-5 py-4 text-lg border-2 border-gray-300 rounded-xl focus:ring-4 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-lg font-bold mb-3 flex items-center gap-2">
+                    <Globe className="w-5 h-5 text-blue-600" />
+                    Website (optional)
+                  </label>
+                  <input
+                    type="url"
+                    value={website}
+                    onChange={(e) => setWebsite(e.target.value)}
+                    placeholder="https://yourbusiness.com"
+                    className="w-full px-5 py-4 text-lg border-2 border-gray-300 rounded-xl focus:ring-4 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                  />
+                  <p className="text-sm text-gray-500 mt-2">We'll scan your website to learn about your business</p>
+                </div>
+
+                <div>
+                  <label className="block text-lg font-bold mb-3 flex items-center gap-2">
+                    <Clock className="w-5 h-5 text-blue-600" />
+                    Business Hours (optional)
+                  </label>
+                  <input
+                    type="text"
+                    value={hours}
+                    onChange={(e) => setHours(e.target.value)}
+                    placeholder="e.g., Monday-Friday 9 AM - 5 PM"
+                    className="w-full px-5 py-4 text-lg border-2 border-gray-300 rounded-xl focus:ring-4 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                  />
+                </div>
+
+                <div className="flex gap-4 pt-4">
+                  <button
+                    type="button"
+                    onClick={() => setStep(1)}
+                    className="flex-1 px-6 py-4 bg-gray-200 text-gray-800 rounded-xl font-bold hover:bg-gray-300 transition"
+                  >
+                    Back
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setStep(3)}
+                    disabled={!businessName || !phone}
+                    className="flex-1 px-6 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl font-bold hover:shadow-lg transition disabled:opacity-50 flex items-center justify-center gap-2"
+                  >
+                    Continue
+                    <ArrowRight className="w-5 h-5" />
+                  </button>
                 </div>
               </div>
+            )}
 
-              {/* Test Phone Number */}
-              <div className="bg-gradient-to-br from-purple-50 to-blue-50 rounded-2xl p-6 border-2 border-purple-300">
-                <label className="block text-lg font-bold mb-3 text-purple-900">
-                  📞 Where Should We Call You?
-                </label>
-                <input
-                  type="tel"
-                  required
-                  value={testPhone}
-                  onChange={(e) => setTestPhone(e.target.value)}
-                  placeholder="+1 (555) 987-6543"
-                  className="w-full px-6 py-4 text-xl border-2 border-purple-300 rounded-xl focus:ring-4 focus:ring-purple-500 focus:border-purple-500 outline-none"
-                />
-                <p className="text-sm text-purple-700 mt-3">
-                  We'll call this number in 60 seconds to demo your AI receptionist live
-                </p>
+            {/* Step 3: Knowledge Base */}
+            {step === 3 && (
+              <div className="max-w-4xl mx-auto space-y-6">
+                
+                {/* FAQs */}
+                <div className="bg-white rounded-3xl shadow-xl p-8">
+                  <div className="flex items-center justify-between mb-6">
+                    <div className="flex items-center gap-3">
+                      <MessageSquare className="w-6 h-6 text-blue-600" />
+                      <h2 className="text-2xl font-bold">Common Questions & Answers</h2>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={addFAQ}
+                      className="px-4 py-2 bg-blue-100 text-blue-700 rounded-lg font-semibold hover:bg-blue-200 transition flex items-center gap-2"
+                    >
+                      <Plus className="w-4 h-4" />
+                      Add Question
+                    </button>
+                  </div>
+
+                  <div className="space-y-4">
+                    {faqs.map((faq, i) => (
+                      <div key={i} className="p-4 bg-gray-50 rounded-xl space-y-3">
+                        <div className="flex items-start gap-3">
+                          <input
+                            type="text"
+                            value={faq.question}
+                            onChange={(e) => updateFAQ(i, 'question', e.target.value)}
+                            placeholder="e.g., What are your hours?"
+                            className="flex-1 px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                          />
+                          {faqs.length > 1 && (
+                            <button
+                              type="button"
+                              onClick={() => removeFAQ(i)}
+                              className="p-3 text-red-500 hover:bg-red-50 rounded-lg transition"
+                            >
+                              <X className="w-5 h-5" />
+                            </button>
+                          )}
+                        </div>
+                        <textarea
+                          value={faq.answer}
+                          onChange={(e) => updateFAQ(i, 'answer', e.target.value)}
+                          placeholder="Your answer..."
+                          rows={2}
+                          className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none resize-none"
+                        />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* File Upload */}
+                <div className="bg-white rounded-3xl shadow-xl p-8">
+                  <div className="flex items-center gap-3 mb-6">
+                    <FileText className="w-6 h-6 text-blue-600" />
+                    <h2 className="text-2xl font-bold">Upload Documents (optional)</h2>
+                  </div>
+                  <div className="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center">
+                    <Upload className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                    <label className="cursor-pointer">
+                      <span className="text-blue-600 font-semibold hover:text-blue-700">
+                        Click to upload
+                      </span>
+                      {' or drag and drop'}
+                      <input
+                        type="file"
+                        multiple
+                        onChange={handleFileChange}
+                        className="hidden"
+                        accept=".pdf,.doc,.docx,.txt"
+                      />
+                    </label>
+                    <p className="text-sm text-gray-500 mt-2">PDFs, Word docs, or text files</p>
+                    {files.length > 0 && (
+                      <div className="mt-4 space-y-2">
+                        {files.map((file, i) => (
+                          <div key={i} className="flex items-center justify-center gap-2 text-sm text-gray-700">
+                            <FileText className="w-4 h-4" />
+                            {file.name}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Additional Info */}
+                <div className="bg-white rounded-3xl shadow-xl p-8">
+                  <h2 className="text-2xl font-bold mb-4">Additional Information (optional)</h2>
+                  <textarea
+                    value={additionalInfo}
+                    onChange={(e) => setAdditionalInfo(e.target.value)}
+                    placeholder="Any other important details about your business, services, policies, etc..."
+                    rows={4}
+                    className="w-full px-5 py-4 text-lg border-2 border-gray-300 rounded-xl focus:ring-4 focus:ring-blue-500 outline-none resize-none"
+                  />
+                </div>
+
+                {/* Test Phone & Submit */}
+                <div className="bg-gradient-to-br from-purple-600 to-blue-600 text-white rounded-3xl shadow-2xl p-8">
+                  <h2 className="text-3xl font-black mb-4 text-center">Ready for Your Demo Call?</h2>
+                  <p className="text-center text-lg mb-6 opacity-90">
+                    We'll call you in 60 seconds with an AI trained on everything you just provided
+                  </p>
+                  
+                  <div className="max-w-md mx-auto mb-6">
+                    <label className="block text-lg font-bold mb-3">
+                      📞 Call me at:
+                    </label>
+                    <input
+                      type="tel"
+                      required
+                      value={testPhone}
+                      onChange={(e) => setTestPhone(e.target.value)}
+                      placeholder="+1 (555) 987-6543"
+                      className="w-full px-5 py-4 text-xl text-gray-900 border-2 border-white/30 rounded-xl focus:ring-4 focus:ring-white outline-none"
+                    />
+                  </div>
+
+                  <div className="flex gap-4">
+                    <button
+                      type="button"
+                      onClick={() => setStep(2)}
+                      className="flex-1 px-6 py-4 bg-white/20 backdrop-blur-sm text-white rounded-xl font-bold hover:bg-white/30 transition"
+                    >
+                      Back
+                    </button>
+                    <button
+                      type="submit"
+                      disabled={loading || !testPhone}
+                      className="flex-2 px-8 py-4 bg-white text-purple-700 rounded-xl text-xl font-black hover:shadow-2xl transition disabled:opacity-50 flex items-center justify-center gap-3"
+                    >
+                      {loading ? (
+                        <>
+                          <Loader2 className="w-6 h-6 animate-spin" />
+                          Scheduling...
+                        </>
+                      ) : (
+                        <>
+                          <Phone className="w-6 h-6" />
+                          CALL ME NOW
+                        </>
+                      )}
+                    </button>
+                  </div>
+                </div>
               </div>
-
-              {/* Submit Button */}
-              <button
-                type="submit"
-                disabled={loading || !businessName || !phone || !testPhone}
-                className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-6 rounded-2xl text-2xl font-black hover:shadow-2xl transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3"
-              >
-                {loading ? (
-                  <>
-                    <Loader2 className="w-8 h-8 animate-spin" />
-                    Scheduling Your Demo Call...
-                  </>
-                ) : (
-                  <>
-                    <Phone className="w-8 h-8" />
-                    CALL ME NOW
-                    <ArrowRight className="w-8 h-8" />
-                  </>
-                )}
-              </button>
-
-              <p className="text-center text-sm text-gray-500">
-                No credit card • No commitment • Just a free demo call
-              </p>
-            </form>
-          </div>
-
-          {/* Benefits */}
-          <div className="grid md:grid-cols-3 gap-6 mt-12 text-white text-center">
-            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6">
-              <div className="text-4xl mb-3">⚡</div>
-              <h3 className="font-bold text-lg mb-2">Instant Demo</h3>
-              <p className="text-sm opacity-90">Call in 60 seconds</p>
-            </div>
-            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6">
-              <div className="text-4xl mb-3">🎁</div>
-              <h3 className="font-bold text-lg mb-2">6 Months FREE</h3>
-              <p className="text-sm opacity-90">$1,782 value</p>
-            </div>
-            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6">
-              <div className="text-4xl mb-3">🤖</div>
-              <h3 className="font-bold text-lg mb-2">Your Business</h3>
-              <p className="text-sm opacity-90">Trained on your info</p>
-            </div>
-          </div>
+            )}
+          </form>
         </div>
       </div>
     </div>
