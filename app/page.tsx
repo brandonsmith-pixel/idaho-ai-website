@@ -162,13 +162,21 @@ export default function Home() {
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
+              <a href="/ai-receptionist" className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-10 py-5 rounded-full text-xl font-black hover:shadow-2xl transition inline-flex items-center justify-center group animate-pulse">
+                <Phone className="mr-3 w-6 h-6" />
+                Try AI Receptionist FREE
+                <Sparkles className="ml-3 w-6 h-6" />
+              </a>
               <a href="#contact" className="bg-blue-700 text-white px-8 py-4 rounded-full text-lg font-bold hover:bg-blue-800 transition inline-flex items-center justify-center group">
                 Get Your Free AI Strategy
                 <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </a>
-              <a href="#projects" className="bg-white text-gray-900 px-8 py-4 rounded-full text-lg font-bold hover:bg-gray-100 transition border-2 border-gray-300">
-                See Success Stories
-              </a>
+            </div>
+            
+            <div className="inline-block bg-yellow-100 border-2 border-yellow-400 rounded-xl px-6 py-3 mb-8">
+              <p className="text-sm font-bold text-yellow-900">
+                🎁 Test your AI receptionist in 60 seconds • Get 6 months FREE
+              </p>
             </div>
 
             {/* Trust Indicators */}
