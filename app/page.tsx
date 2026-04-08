@@ -19,6 +19,7 @@ import {
   MapPin,
   MessageSquare,
   Mountain,
+  Phone,
   Rocket,
   Shield,
   Sparkles,
