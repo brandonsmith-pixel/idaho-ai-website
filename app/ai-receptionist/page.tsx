@@ -136,9 +136,9 @@ Use all the information above to train the AI for the demo.
           <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
             <CheckCircle className="w-10 h-10 text-green-600" />
           </div>
-          <h1 className="text-4xl font-black mb-4">📞 We'll Call You in 60 Seconds!</h1>
+          <h1 className="text-4xl font-black mb-4">📞 Your Demo is Ready!</h1>
           <p className="text-xl text-gray-600 mb-8">
-            Get ready to answer at <strong className="text-blue-600">{testPhone}</strong>
+            We'll call <strong className="text-blue-600">{testPhone}</strong> shortly to demonstrate your custom AI receptionist
           </p>
           <div className="bg-blue-50 rounded-2xl p-6 text-left space-y-3">
             <h3 className="font-bold text-lg mb-3">When we call:</h3>
@@ -152,7 +152,7 @@ Use all the information above to train the AI for the demo.
             </div>
             <div className="flex items-start gap-3">
               <span className="text-2xl">3️⃣</span>
-              <p>Experience YOUR AI receptionist trained on YOUR business!</p>
+              <p>Experience exactly what YOUR customers will hear when they call</p>
             </div>
           </div>
           <div className="mt-8 pt-8 border-t">
@@ -183,18 +183,18 @@ Use all the information above to train the AI for the demo.
           
           {/* Header */}
           <div className="text-center mb-12">
-            <div className="inline-flex items-center gap-2 bg-yellow-400 text-gray-900 px-6 py-3 rounded-full mb-6 font-bold shadow-lg">
+            <div className="inline-flex items-center gap-2 bg-blue-600 text-white px-6 py-3 rounded-full mb-6 font-bold shadow-lg">
               <Sparkles className="w-5 h-5" />
-              INSTANT DEMO • WE'LL CALL YOU IN 60 SECONDS
+              TRAIN YOUR AI • GET A REAL DEMO CALL
               <Sparkles className="w-5 h-5" />
             </div>
             <h1 className="text-5xl md:text-6xl font-black mb-6 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
               {step === 1 ? 'Choose Your Industry' : step === 2 ? 'Tell Us About Your Business' : 'Add Your Knowledge Base'}
             </h1>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              {step === 1 ? 'We\'ll customize the demo for your type of business' : 
-               step === 2 ? 'Basic info so your AI knows who it represents' :
-               'Train your AI with your business knowledge'}
+              {step === 1 ? 'Choose your industry to customize your AI receptionist' : 
+               step === 2 ? 'Tell your AI about your business - take your time, accuracy matters' :
+               'Add knowledge so your AI can answer real customer questions'}
             </p>
           </div>
 
@@ -418,9 +418,9 @@ Use all the information above to train the AI for the demo.
 
                 {/* Test Phone & Submit */}
                 <div className="bg-gradient-to-br from-purple-600 to-blue-600 text-white rounded-3xl shadow-2xl p-8">
-                  <h2 className="text-3xl font-black mb-4 text-center">Ready for Your Demo Call?</h2>
+                  <h2 className="text-3xl font-black mb-4 text-center">See What Your Customers Will Experience</h2>
                   <p className="text-center text-lg mb-6 opacity-90">
-                    We'll call you in 60 seconds with an AI trained on everything you just provided
+                    Press "Call Me Now" and we'll demonstrate how your AI receptionist will answer calls using the information you just provided
                   </p>
                   
                   <div className="max-w-md mx-auto mb-6">
