@@ -27,6 +27,16 @@ export async function POST(request: Request) {
       throw new Error('Vapi credentials not configured');
     }
 
+    // Ensure phone number has +1 prefix
+    const formattedTestPhone = testPhone?.startsWith('+') ? testPhone : `+1${testPhone.replace(/[^\d]/g, '')}`;
+    
+    console.log('Vapi demo request:', {
+      businessName,
+      testPhone: formattedTestPhone,
+      voiceProvider,
+      voiceId,
+    });
+
     // Build comprehensive system prompt with all business info
     const systemPrompt = `You are the AI receptionist for ${businessName}.
 
@@ -62,7 +72,7 @@ This is a DEMO CALL to show how the AI receptionist works. Be natural and conver
       body: JSON.stringify({
         phoneNumberId: phoneNumberId,
         customer: {
-          number: testPhone,
+          number: formattedTestPhone,
         },
         assistant: {
           name: `Demo: ${businessName}`,
