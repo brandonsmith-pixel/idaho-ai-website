@@ -5,6 +5,7 @@ import { Phone, CheckCircle, Loader2, ArrowRight, Sparkles, Building2, Globe, Cl
 import Link from 'next/link';
 import Image from 'next/image';
 import VoiceSelector from '../components/VoiceSelector';
+import { Voice } from '../types/voice';
 
 const INDUSTRIES = [
   { 
@@ -42,16 +43,6 @@ const INDUSTRIES = [
 interface FAQ {
   question: string;
   answer: string;
-}
-
-interface Voice {
-  id: string;
-  name: string;
-  provider: 'openai' | '11labs';
-  gender: string;
-  description: string;
-  previewUrl?: string;
-  voiceId: string;
 }
 
 export default function AIReceptionistDemo() {
