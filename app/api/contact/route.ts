@@ -1,5 +1,4 @@
 import { NextResponse } from 'next/server';
-import { google } from 'googleapis';
 
 export async function POST(request: Request) {
   try {
@@ -14,47 +13,33 @@ export async function POST(request: Request) {
       timestamp: new Date().toISOString()
     });
 
-    // Try to write to Google Sheets
-    try {
-      const sheetsClient = await getGoogleSheetsClient();
-      const sheetId = process.env.GOOGLE_SHEET_ID;
+    // Parse the message to extract structured data
+    const data = parseContactMessage(message, name, phone, email);
 
-      if (!sheetId) {
-        console.error('GOOGLE_SHEET_ID not configured');
-      } else {
-        // Parse the message to extract structured data
-        const data = parseContactMessage(message, name, phone, email);
-        
-        // Append row to sheet
-        await sheetsClient.spreadsheets.values.append({
-          spreadsheetId: sheetId,
-          range: 'Sheet1!A:N',
-          valueInputOption: 'RAW',
-          requestBody: {
-            values: [[
-              new Date().toISOString(),
-              data.businessName,
-              data.businessPhone,
-              data.testPhone,
-              data.industry,
-              data.website,
-              data.address,
-              data.hours,
-              data.services,
-              data.pricing,
-              data.bookingProcess,
-              data.faqs,
-              data.additionalInfo,
-              data.files,
-            ]],
+    // Try to save to Google Sheets via Apps Script web app
+    const sheetWebAppUrl = process.env.GOOGLE_SHEET_WEB_APP_URL;
+    
+    if (sheetWebAppUrl) {
+      try {
+        const response = await fetch(sheetWebAppUrl, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
           },
+          body: JSON.stringify(data),
         });
 
-        console.log('✅ Successfully saved to Google Sheets');
+        if (response.ok) {
+          console.log('✅ Successfully saved to Google Sheets');
+        } else {
+          console.error('Google Sheets error:', await response.text());
+        }
+      } catch (sheetError) {
+        console.error('Failed to save to Google Sheets:', sheetError);
+        // Don't fail the request if sheets fails
       }
-    } catch (sheetError) {
-      console.error('Google Sheets error (continuing anyway):', sheetError);
-      // Don't fail the request if sheets fails
+    } else {
+      console.warn('⚠️ GOOGLE_SHEET_WEB_APP_URL not configured - skipping sheet save');
     }
 
     // Return success response
@@ -70,26 +55,6 @@ export async function POST(request: Request) {
       { status: 500 }
     );
   }
-}
-
-// Initialize Google Sheets client
-async function getGoogleSheetsClient() {
-  const email = process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL;
-  const key = process.env.GOOGLE_PRIVATE_KEY?.replace(/\\n/g, '\n');
-
-  if (!email || !key) {
-    throw new Error('Google credentials not configured');
-  }
-
-  const auth = new google.auth.GoogleAuth({
-    credentials: {
-      client_email: email,
-      private_key: key,
-    },
-    scopes: ['https://www.googleapis.com/auth/spreadsheets'],
-  });
-
-  return google.sheets({ version: 'v4', auth });
 }
 
 // Parse the contact message into structured data
