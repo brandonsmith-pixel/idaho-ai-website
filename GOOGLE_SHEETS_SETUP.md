@@ -1,171 +1,135 @@
-# Google Sheets Lead Capture Setup
+# Google Sheets Integration Setup
 
-## Quick Setup (5 minutes)
+## Step 1: Create Google Service Account
 
-### Step 1: Create Your Google Sheet
+1. Go to: https://console.cloud.google.com/
+2. Create a new project (or select existing): **"Teton Group AI Receptionist"**
+3. Enable Google Sheets API:
+   - Click "Enable APIs and Services"
+   - Search for "Google Sheets API"
+   - Click "Enable"
 
-1. Go to https://sheets.google.com
-2. Create a new spreadsheet called "AI Receptionist Leads"
-3. In the first row, add these headers:
-   - A1: `Timestamp`
-   - B1: `Business Name`
-   - C1: `Phone`
-   - D1: `Email`
-   - E1: `Industry`
-   - F1: `Voice Preference`
-   - G1: `Source`
-   - H1: `URL`
+4. Create Service Account:
+   - Go to "Credentials" in left menu
+   - Click "Create Credentials" → "Service Account"
+   - Name: `teton-sheets-writer`
+   - Role: "Editor"
+   - Click "Done"
 
-### Step 2: Create Google Apps Script
+5. Create Key:
+   - Click on the service account you just created
+   - Go to "Keys" tab
+   - Click "Add Key" → "Create new key"
+   - Choose "JSON"
+   - Download the file (will be named something like `teton-group-xxxxx.json`)
 
-1. In your sheet, go to **Extensions → Apps Script**
-2. Delete any existing code
-3. Paste this code:
+## Step 2: Create Google Sheet
 
-```javascript
-function doPost(e) {
-  try {
-    const sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
-    const data = JSON.parse(e.postData.contents);
-    
-    sheet.appendRow([
-      data.timestamp || new Date().toISOString(),
-      data.businessName || '',
-      data.phone || '',
-      data.email || '',
-      data.industry || '',
-      data.voice || '',
-      data.source || '',
-      data.url || ''
-    ]);
-    
-    return ContentService.createTextOutput(JSON.stringify({success: true}))
-      .setMimeType(ContentService.MimeType.JSON);
-  } catch(error) {
-    return ContentService.createTextOutput(JSON.stringify({success: false, error: error.toString()}))
-      .setMimeType(ContentService.MimeType.JSON);
-  }
-}
+1. Go to: https://sheets.google.com
+2. Create new spreadsheet
+3. Name it: **"AI Receptionist Demo Requests"**
+4. Add headers in Row 1:
+   ```
+   A1: Timestamp
+   B1: Business Name
+   C1: Business Phone
+   D1: Test Phone
+   E1: Industry
+   F1: Website
+   G1: Address
+   H1: Hours
+   I1: Services
+   J1: Pricing
+   K1: Booking Process
+   L1: FAQs
+   M1: Additional Info
+   N1: Files Uploaded
+   ```
+
+5. **IMPORTANT:** Share the sheet with your service account:
+   - Click "Share" button
+   - Paste the email from your service account JSON file (looks like `teton-sheets-writer@project-name.iam.gserviceaccount.com`)
+   - Give "Editor" access
+   - Click "Send"
+
+6. Copy the Sheet ID from the URL:
+   ```
+   https://docs.google.com/spreadsheets/d/SHEET_ID_HERE/edit
+                                              ^^^^^^^^^^^
+   ```
+
+## Step 3: Add Environment Variables to Vercel
+
+1. Go to your Vercel dashboard: https://vercel.com/brandonsmith-pixel/tetongroup
+2. Go to Settings → Environment Variables
+3. Add these variables:
+
+**GOOGLE_SHEET_ID**
+```
+[paste your sheet ID here]
 ```
 
-4. Click **Save** (disk icon)
-5. Click **Deploy → New deployment**
-6. Click the gear icon → Select **Web app**
-7. Settings:
-   - Description: "Lead Capture"
-   - Execute as: **Me**
-   - Who has access: **Anyone**
-8. Click **Deploy**
-9. **Copy the Web app URL** (looks like: `https://script.google.com/macros/s/ABC.../exec`)
-10. Click **Done**
-
-### Step 3: Add URL to Vercel
-
-1. Go to your Vercel project: https://vercel.com
-2. Go to **Settings → Environment Variables**
-3. Add new variable:
-   - Name: `NEXT_PUBLIC_GOOGLE_SHEETS_URL`
-   - Value: (paste the Web app URL you copied)
-4. Click **Save**
-5. Go to **Deployments** → click **Redeploy** on latest
-
----
-
-## Alternative: Email-Only Fallback (Already Working!)
-
-The form now also sends to your existing `/api/contact` endpoint, so you'll receive leads via email even without Google Sheets setup.
-
-Just make sure your contact API is configured with your email address.
-
----
-
-## Testing
-
-1. After deploying, go to tetongroup.ai
-2. Fill out the demo form
-3. Check your Google Sheet - new row should appear instantly
-4. Check your email - you should also receive an email notification
-
----
-
-## Troubleshooting
-
-### "Submission failed" error
-- Make sure the Apps Script is deployed as **Anyone** can access
-- Check that the Web app URL is correct in Vercel env vars
-- Redeploy after adding env vars
-
-### Not seeing leads in sheet
-- Check the Apps Script execution log (Extensions → Apps Script → Executions)
-- Make sure headers match exactly (Timestamp, Business Name, etc.)
-- Try the form again
-
-### Still not working?
-The email fallback should still work via `/api/contact`. Check your email for submissions.
-
----
-
-## View Your Leads
-
-Go to: https://sheets.google.com and open "AI Receptionist Leads"
-
-You'll see every submission in real-time with:
-- Timestamp
-- Business name
-- Phone number
-- Email
-- Industry
-- Voice preference
-- Source (tetongroup_homepage)
-- Full URL
-
----
-
-## Next: Set Up Email Notifications from Google Sheets
-
-Want to get an email every time someone submits? Add this to your Apps Script:
-
-```javascript
-function doPost(e) {
-  try {
-    const sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
-    const data = JSON.parse(e.postData.contents);
-    
-    // Add to sheet
-    sheet.appendRow([
-      data.timestamp || new Date().toISOString(),
-      data.businessName || '',
-      data.phone || '',
-      data.email || '',
-      data.industry || '',
-      data.voice || '',
-      data.source || '',
-      data.url || ''
-    ]);
-    
-    // Send email notification
-    MailApp.sendEmail({
-      to: 'your@email.com',  // CHANGE THIS
-      subject: '🚨 New AI Receptionist Lead!',
-      body: `New demo submission:
-      
-Business: ${data.businessName}
-Phone: ${data.phone}
-Email: ${data.email || 'Not provided'}
-Industry: ${data.industry}
-Voice: ${data.voice}
-
-View all leads: https://sheets.google.com/your-sheet-url
-      `
-    });
-    
-    return ContentService.createTextOutput(JSON.stringify({success: true}))
-      .setMimeType(ContentService.MimeType.JSON);
-  } catch(error) {
-    return ContentService.createTextOutput(JSON.stringify({success: false, error: error.toString()}))
-      .setMimeType(ContentService.MimeType.JSON);
-  }
-}
+**GOOGLE_SERVICE_ACCOUNT_EMAIL**
+```
+[paste the client_email from the JSON file]
 ```
 
-Replace `your@email.com` with your actual email, then save and redeploy.
+**GOOGLE_PRIVATE_KEY**
+```
+[paste the entire private_key from JSON, including -----BEGIN PRIVATE KEY----- and -----END PRIVATE KEY-----]
+```
+
+**Note:** Make sure to preserve the line breaks in the private key!
+
+## Step 4: Test Locally (Optional)
+
+Create `.env.local` with the same variables:
+```bash
+GOOGLE_SHEET_ID="your-sheet-id"
+GOOGLE_SERVICE_ACCOUNT_EMAIL="teton-sheets-writer@project.iam.gserviceaccount.com"
+GOOGLE_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----
+MIIEvQIBADANBgkqh...
+-----END PRIVATE KEY-----"
+```
+
+Then run:
+```bash
+npm run dev
+```
+
+Test the form at: http://localhost:3000/ai-receptionist
+
+## Step 5: Deploy to Vercel
+
+```bash
+git push origin main
+```
+
+Vercel will automatically deploy with the new environment variables.
+
+## What Gets Stored:
+
+Every form submission creates a new row in the Google Sheet:
+- Timestamp (automatic)
+- All business info
+- FAQs (formatted as Q1: ... / A1: ...)
+- File names (comma-separated)
+- Full context for making demo calls
+
+## Troubleshooting:
+
+**"Permission denied" error:**
+- Make sure you shared the sheet with the service account email
+- Check that the service account has Editor access
+
+**"Invalid credentials" error:**
+- Verify the private key was pasted correctly (with line breaks)
+- Check that the service account email matches
+
+**"Sheet not found" error:**
+- Double-check the GOOGLE_SHEET_ID environment variable
+- Make sure the sheet exists and isn't deleted
+
+---
+
+Ready to implement! Follow the steps above, then I'll deploy the code.
