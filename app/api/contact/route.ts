@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server';
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { name, email, phone, message } = body;
+    const { name, email, phone, message, voiceProvider, voiceId, voiceName } = body;
 
     // Log for debugging
     console.log('New contact form submission:', {
@@ -49,7 +49,11 @@ export async function POST(request: Request) {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify({
+          ...data,
+          voiceProvider: voiceProvider || 'openai',
+          voiceId: voiceId || 'nova',
+        }),
       });
 
       if (vapiResponse.ok) {

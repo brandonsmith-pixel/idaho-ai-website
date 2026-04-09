@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Phone, CheckCircle, Loader2, ArrowRight, Sparkles, Building2, Globe, Clock, MessageSquare, Upload, Plus, X, FileText } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
+import VoiceSelector from '../components/VoiceSelector';
 
 const INDUSTRIES = [
   { 
@@ -43,11 +44,22 @@ interface FAQ {
   answer: string;
 }
 
+interface Voice {
+  id: string;
+  name: string;
+  provider: 'openai' | '11labs';
+  gender: string;
+  description: string;
+  previewUrl?: string;
+  voiceId: string;
+}
+
 export default function AIReceptionistDemo() {
   const [step, setStep] = useState(1);
   const [businessName, setBusinessName] = useState('');
   const [phone, setPhone] = useState('');
   const [testPhone, setTestPhone] = useState('');
+  const [selectedVoice, setSelectedVoice] = useState<Voice | null>(null);
   const [industry, setIndustry] = useState('');
   const [website, setWebsite] = useState('');
   const [hours, setHours] = useState('');
@@ -101,6 +113,9 @@ export default function AIReceptionistDemo() {
           name: businessName,
           email: 'demo@tetongroup.ai',
           phone: testPhone,
+          voiceProvider: selectedVoice?.provider || 'openai',
+          voiceId: selectedVoice?.voiceId || 'nova',
+          voiceName: selectedVoice?.name || 'Nova',
           message: `🎯 AI RECEPTIONIST DEMO REQUEST - PRIORITY
 
 BUSINESS INFO:
@@ -110,6 +125,11 @@ BUSINESS INFO:
 - Website: ${website || 'Not provided'}
 - Address: ${address || 'Not provided'}
 - Hours: ${hours || 'Not provided'}
+
+VOICE SELECTION:
+- Voice: ${selectedVoice?.name || 'Nova'}
+- Provider: ${selectedVoice?.provider || 'openai'}
+- Description: ${selectedVoice?.description || 'Professional AI voice'}
 
 SERVICES & OFFERINGS:
 ${services || 'Not provided'}
@@ -130,7 +150,7 @@ FILES TO REVIEW:
 ${fileList || 'None uploaded'}
 
 DEMO CALL:
-Call ${testPhone} within 60 seconds to demonstrate the AI receptionist.
+Call ${testPhone} to demonstrate the AI receptionist with the ${selectedVoice?.name || 'Nova'} voice.
 Use all the information above to train the AI for the demo.
 `,
         }),
@@ -203,12 +223,16 @@ Use all the information above to train the AI for the demo.
               <Sparkles className="w-5 h-5" />
             </div>
             <h1 className="text-5xl md:text-6xl font-black mb-6 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-              {step === 1 ? 'Choose Your Industry' : step === 2 ? 'Tell Us About Your Business' : 'Add Your Knowledge Base'}
+              {step === 1 ? 'Choose Your Industry' : 
+               step === 2 ? 'Tell Us About Your Business' : 
+               step === 3 ? 'Add Your Knowledge Base' :
+               'Choose Your AI Voice'}
             </h1>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
               {step === 1 ? 'Choose your industry to customize your AI receptionist' : 
                step === 2 ? 'Tell your AI about your business - take your time, accuracy matters' :
-               'Add knowledge so your AI can answer real customer questions'}
+               step === 3 ? 'Add knowledge so your AI can answer real customer questions' :
+               'Preview and select the perfect voice for your AI receptionist'}
             </p>
           </div>
 
@@ -499,11 +523,66 @@ Use all the information above to train the AI for the demo.
                   />
                 </div>
 
-                {/* Test Phone & Submit */}
+                {/* Navigation */}
+                <div className="flex gap-4">
+                  <button
+                    type="button"
+                    onClick={() => setStep(2)}
+                    className="flex-1 px-6 py-4 bg-gray-200 text-gray-800 rounded-xl font-bold hover:bg-gray-300 transition"
+                  >
+                    Back
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setStep(4)}
+                    className="flex-2 px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl font-bold hover:shadow-lg transition flex items-center justify-center gap-2"
+                  >
+                    Continue to Voice Selection
+                    <ArrowRight className="w-5 h-5" />
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* Step 4: Voice Selection */}
+            {step === 4 && (
+              <div className="max-w-4xl mx-auto space-y-6">
+                <div className="bg-white rounded-3xl shadow-xl p-8">
+                  <VoiceSelector 
+                    selectedVoice={selectedVoice}
+                    onSelectVoice={setSelectedVoice}
+                  />
+                </div>
+
+                {/* Navigation */}
+                <div className="flex gap-4">
+                  <button
+                    type="button"
+                    onClick={() => setStep(3)}
+                    className="flex-1 px-6 py-4 bg-gray-200 text-gray-800 rounded-xl font-bold hover:bg-gray-300 transition"
+                  >
+                    Back
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setStep(5)}
+                    disabled={!selectedVoice}
+                    className="flex-2 px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl font-bold hover:shadow-lg transition flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    Continue to Demo Call
+                    <ArrowRight className="w-5 h-5" />
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* Step 5: Final - Test Phone & Submit */}
+            {step === 5 && (
+              <div className="max-w-3xl mx-auto">
                 <div className="bg-gradient-to-br from-purple-600 to-blue-600 text-white rounded-3xl shadow-2xl p-8">
-                  <h2 className="text-3xl font-black mb-4 text-center">See What Your Customers Will Experience</h2>
+                  <h2 className="text-3xl font-black mb-4 text-center">Ready for Your Demo Call?</h2>
                   <p className="text-center text-lg mb-6 opacity-90">
-                    Press "Call Me Now" and we'll demonstrate how your AI receptionist will answer calls using the information you just provided
+                    We'll call you with an AI receptionist using the <strong>{selectedVoice?.name}</strong> voice
                   </p>
                   
                   <div className="max-w-md mx-auto mb-6">
@@ -523,7 +602,7 @@ Use all the information above to train the AI for the demo.
                   <div className="flex gap-4">
                     <button
                       type="button"
-                      onClick={() => setStep(2)}
+                      onClick={() => setStep(4)}
                       className="flex-1 px-6 py-4 bg-white/20 backdrop-blur-sm text-white rounded-xl font-bold hover:bg-white/30 transition"
                     >
                       Back

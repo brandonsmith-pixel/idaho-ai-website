@@ -16,6 +16,8 @@ export async function POST(request: Request) {
       bookingProcess,
       faqs,
       additionalInfo,
+      voiceProvider,
+      voiceId,
     } = body;
 
     const vapiKey = process.env.VAPI_PRIVATE_KEY;
@@ -66,8 +68,8 @@ This is a DEMO CALL to show how the AI receptionist works. Be natural and conver
           systemPrompt,
         },
         voice: {
-          provider: 'openai',
-          voiceId: 'nova', // Professional, friendly female voice
+          provider: voiceProvider || 'openai',
+          voiceId: voiceId || 'nova',
         },
         firstMessage,
         endCallFunctionEnabled: false,
