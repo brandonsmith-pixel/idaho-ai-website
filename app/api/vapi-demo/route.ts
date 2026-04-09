@@ -66,8 +66,8 @@ This is a DEMO CALL to show how the AI receptionist works. Be natural and conver
           systemPrompt,
         },
         voice: {
-          provider: '11labs',
-          voiceId: 'jennifer', // Professional female voice
+          provider: 'openai',
+          voiceId: 'nova', // Professional, friendly female voice
         },
         firstMessage,
         endCallFunctionEnabled: false,
