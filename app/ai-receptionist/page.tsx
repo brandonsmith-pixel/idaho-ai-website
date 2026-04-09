@@ -97,13 +97,17 @@ export default function AIReceptionistDemo() {
 
       const fileList = files.map(f => f.name).join(', ');
 
+      // Format phone numbers with +1 prefix
+      const formattedBusinessPhone = `+1${phone.replace(/[^\d]/g, '')}`;
+      const formattedTestPhone = `+1${testPhone.replace(/[^\d]/g, '')}`;
+
       await fetch('/api/contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           name: businessName,
           email: 'demo@tetongroup.ai',
-          phone: testPhone,
+          phone: formattedTestPhone,
           voiceProvider: selectedVoice?.provider || 'openai',
           voiceId: selectedVoice?.voiceId || 'nova',
           voiceName: selectedVoice?.name || 'Nova',
@@ -111,7 +115,7 @@ export default function AIReceptionistDemo() {
 
 BUSINESS INFO:
 - Name: ${businessName}
-- Phone: ${phone}
+- Phone: ${formattedBusinessPhone}
 - Industry: ${industry}
 - Website: ${website || 'Not provided'}
 - Address: ${address || 'Not provided'}
@@ -141,7 +145,7 @@ FILES TO REVIEW:
 ${fileList || 'None uploaded'}
 
 DEMO CALL:
-Call ${testPhone} to demonstrate the AI receptionist with the ${selectedVoice?.name || 'Nova'} voice.
+Call ${formattedTestPhone} to demonstrate the AI receptionist with the ${selectedVoice?.name || 'Nova'} voice.
 Use all the information above to train the AI for the demo.
 `,
         }),
@@ -163,7 +167,7 @@ Use all the information above to train the AI for the demo.
           </div>
           <h1 className="text-4xl font-black mb-4">📞 Your Demo is Ready!</h1>
           <p className="text-xl text-gray-600 mb-8">
-            We'll call <strong className="text-blue-600">{testPhone}</strong> shortly to demonstrate your custom AI receptionist
+            We'll call <strong className="text-blue-600">+1 {testPhone}</strong> shortly to demonstrate your custom AI receptionist
           </p>
           <div className="bg-blue-50 rounded-2xl p-6 text-left space-y-3">
             <h3 className="font-bold text-lg mb-3">When we call:</h3>
@@ -284,14 +288,18 @@ Use all the information above to train the AI for the demo.
                     <Phone className="w-5 h-5 text-blue-600" />
                     Business Phone *
                   </label>
-                  <input
-                    type="tel"
-                    required
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
-                    placeholder="+1 (555) 123-4567"
-                    className="w-full px-5 py-4 text-lg border-2 border-gray-300 rounded-xl focus:ring-4 focus:ring-blue-500 focus:border-blue-500 outline-none"
-                  />
+                  <div className="relative">
+                    <span className="absolute left-5 top-1/2 -translate-y-1/2 text-lg text-gray-500">+1</span>
+                    <input
+                      type="tel"
+                      required
+                      value={phone}
+                      onChange={(e) => setPhone(e.target.value.replace(/[^\d]/g, ''))}
+                      placeholder="(555) 123-4567"
+                      className="w-full pl-12 pr-5 py-4 text-lg border-2 border-gray-300 rounded-xl focus:ring-4 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                    />
+                  </div>
+                  <p className="text-sm text-gray-500 mt-2">US phone number (we'll add +1 automatically)</p>
                 </div>
 
                 <div>
@@ -580,14 +588,18 @@ Use all the information above to train the AI for the demo.
                     <label className="block text-lg font-bold mb-3">
                       📞 Call me at:
                     </label>
-                    <input
-                      type="tel"
-                      required
-                      value={testPhone}
-                      onChange={(e) => setTestPhone(e.target.value)}
-                      placeholder="+1 (555) 987-6543"
-                      className="w-full px-5 py-4 text-xl text-gray-900 border-2 border-white/30 rounded-xl focus:ring-4 focus:ring-white outline-none"
-                    />
+                    <div className="relative">
+                      <span className="absolute left-5 top-1/2 -translate-y-1/2 text-xl text-gray-500">+1</span>
+                      <input
+                        type="tel"
+                        required
+                        value={testPhone}
+                        onChange={(e) => setTestPhone(e.target.value.replace(/[^\d]/g, ''))}
+                        placeholder="(555) 987-6543"
+                        className="w-full pl-12 pr-5 py-4 text-xl text-gray-900 border-2 border-white/30 rounded-xl focus:ring-4 focus:ring-white outline-none"
+                      />
+                    </div>
+                    <p className="text-sm opacity-75 mt-2">US number only - we'll add +1 automatically</p>
                   </div>
 
                   <div className="flex gap-4">
