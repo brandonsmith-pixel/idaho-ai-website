@@ -61,6 +61,7 @@ export default function AIReceptionistDemo() {
   const [faqs, setFaqs] = useState<FAQ[]>([{ question: '', answer: '' }]);
   const [additionalInfo, setAdditionalInfo] = useState('');
   const [files, setFiles] = useState<File[]>([]);
+  const [voiceCloneFile, setVoiceCloneFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
 
@@ -82,6 +83,21 @@ export default function AIReceptionistDemo() {
     if (e.target.files) {
       setFiles(Array.from(e.target.files));
     }
+  };
+
+  const handleVoiceClone = (audioFile: File) => {
+    setVoiceCloneFile(audioFile);
+    // Create a custom voice object for the cloned voice
+    const clonedVoice: Voice = {
+      id: 'custom-clone',
+      name: 'Your Voice (Cloned)',
+      provider: '11labs',
+      voiceId: 'cloned',
+      gender: 'Custom',
+      description: `Cloned from ${audioFile.name}`,
+      previewUrl: URL.createObjectURL(audioFile),
+    };
+    setSelectedVoice(clonedVoice);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -108,9 +124,10 @@ export default function AIReceptionistDemo() {
           name: businessName,
           email: 'demo@tetongroup.ai',
           phone: formattedTestPhone,
-          voiceProvider: selectedVoice?.provider || 'openai',
-          voiceId: selectedVoice?.voiceId || 'nova',
-          voiceName: selectedVoice?.name || 'Nova',
+          voiceProvider: selectedVoice?.provider || '11labs',
+          voiceId: selectedVoice?.voiceId || 'EXAVITQu4vr4xnSDxMaL',
+          voiceName: selectedVoice?.name || 'Sarah',
+          voiceCloned: voiceCloneFile ? true : false,
           message: `🎯 AI RECEPTIONIST DEMO REQUEST - PRIORITY
 
 BUSINESS INFO:
@@ -122,9 +139,10 @@ BUSINESS INFO:
 - Hours: ${hours || 'Not provided'}
 
 VOICE SELECTION:
-- Voice: ${selectedVoice?.name || 'Nova'}
-- Provider: ${selectedVoice?.provider || 'openai'}
+- Voice: ${selectedVoice?.name || 'Sarah'}
+- Provider: ${selectedVoice?.provider || '11labs'}
 - Description: ${selectedVoice?.description || 'Professional AI voice'}
+- Voice Cloning: ${voiceCloneFile ? `YES - Uploaded: ${voiceCloneFile.name}` : 'NO - Using preset voice'}
 
 SERVICES & OFFERINGS:
 ${services || 'Not provided'}
@@ -550,6 +568,7 @@ Use all the information above to train the AI for the demo.
                   <VoiceSelector 
                     selectedVoice={selectedVoice}
                     onSelectVoice={setSelectedVoice}
+                    onVoiceClone={handleVoiceClone}
                   />
                 </div>
 
