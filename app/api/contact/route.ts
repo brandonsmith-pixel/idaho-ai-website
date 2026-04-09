@@ -42,6 +42,27 @@ export async function POST(request: Request) {
       console.warn('⚠️ GOOGLE_SHEET_WEB_APP_URL not configured - skipping sheet save');
     }
 
+    // Trigger Vapi demo call
+    try {
+      const vapiResponse = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL || 'https://tetongroup.ai'}/api/vapi-demo`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+
+      if (vapiResponse.ok) {
+        const vapiResult = await vapiResponse.json();
+        console.log('✅ Vapi demo call initiated:', vapiResult.callId);
+      } else {
+        console.error('Failed to initiate Vapi call:', await vapiResponse.text());
+      }
+    } catch (vapiError) {
+      console.error('Vapi call error:', vapiError);
+      // Don't fail the request if Vapi fails
+    }
+
     // Return success response
     return NextResponse.json({
       success: true,
