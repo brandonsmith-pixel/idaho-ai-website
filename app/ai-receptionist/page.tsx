@@ -51,6 +51,10 @@ export default function AIReceptionistDemo() {
   const [industry, setIndustry] = useState('');
   const [website, setWebsite] = useState('');
   const [hours, setHours] = useState('');
+  const [address, setAddress] = useState('');
+  const [services, setServices] = useState('');
+  const [pricing, setPricing] = useState('');
+  const [bookingProcess, setBookingProcess] = useState('');
   const [faqs, setFaqs] = useState<FAQ[]>([{ question: '', answer: '' }]);
   const [additionalInfo, setAdditionalInfo] = useState('');
   const [files, setFiles] = useState<File[]>([]);
@@ -104,7 +108,17 @@ BUSINESS INFO:
 - Phone: ${phone}
 - Industry: ${industry}
 - Website: ${website || 'Not provided'}
+- Address: ${address || 'Not provided'}
 - Hours: ${hours || 'Not provided'}
+
+SERVICES & OFFERINGS:
+${services || 'Not provided'}
+
+PRICING INFO:
+${pricing || 'Not provided'}
+
+BOOKING/APPOINTMENT PROCESS:
+${bookingProcess || 'Not provided'}
 
 KNOWLEDGE BASE:
 ${faqText || 'No FAQs provided'}
@@ -280,18 +294,75 @@ Use all the information above to train the AI for the demo.
                   <p className="text-sm text-gray-500 mt-2">We'll scan your website to learn about your business</p>
                 </div>
 
+                <div className="grid md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-lg font-bold mb-3 flex items-center gap-2">
+                      <Clock className="w-5 h-5 text-blue-600" />
+                      Business Hours
+                    </label>
+                    <input
+                      type="text"
+                      value={hours}
+                      onChange={(e) => setHours(e.target.value)}
+                      placeholder="Mon-Fri 9 AM - 5 PM"
+                      className="w-full px-5 py-4 text-lg border-2 border-gray-300 rounded-xl focus:ring-4 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-lg font-bold mb-3">
+                      📍 Physical Address
+                    </label>
+                    <input
+                      type="text"
+                      value={address}
+                      onChange={(e) => setAddress(e.target.value)}
+                      placeholder="123 Main St, City, State"
+                      className="w-full px-5 py-4 text-lg border-2 border-gray-300 rounded-xl focus:ring-4 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                    />
+                  </div>
+                </div>
+
                 <div>
-                  <label className="block text-lg font-bold mb-3 flex items-center gap-2">
-                    <Clock className="w-5 h-5 text-blue-600" />
-                    Business Hours (optional)
+                  <label className="block text-lg font-bold mb-3">
+                    🛠️ Services You Offer
                   </label>
-                  <input
-                    type="text"
-                    value={hours}
-                    onChange={(e) => setHours(e.target.value)}
-                    placeholder="e.g., Monday-Friday 9 AM - 5 PM"
-                    className="w-full px-5 py-4 text-lg border-2 border-gray-300 rounded-xl focus:ring-4 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                  <textarea
+                    value={services}
+                    onChange={(e) => setServices(e.target.value)}
+                    placeholder="List your main services or products. Example: Haircuts, coloring, styling, treatments"
+                    rows={3}
+                    className="w-full px-5 py-4 text-lg border-2 border-gray-300 rounded-xl focus:ring-4 focus:ring-blue-500 focus:border-blue-500 outline-none resize-none"
                   />
+                  <p className="text-sm text-gray-500 mt-2">Help your AI explain what you offer when customers ask</p>
+                </div>
+
+                <div>
+                  <label className="block text-lg font-bold mb-3">
+                    💰 Pricing Information (optional)
+                  </label>
+                  <textarea
+                    value={pricing}
+                    onChange={(e) => setPricing(e.target.value)}
+                    placeholder="Example: Haircuts start at $45, Color services $120+, Consultations are free"
+                    rows={2}
+                    className="w-full px-5 py-4 text-lg border-2 border-gray-300 rounded-xl focus:ring-4 focus:ring-blue-500 focus:border-blue-500 outline-none resize-none"
+                  />
+                  <p className="text-sm text-gray-500 mt-2">Customers often ask about pricing - train your AI to handle this</p>
+                </div>
+
+                <div>
+                  <label className="block text-lg font-bold mb-3">
+                    📅 How to Book/Schedule (optional)
+                  </label>
+                  <textarea
+                    value={bookingProcess}
+                    onChange={(e) => setBookingProcess(e.target.value)}
+                    placeholder="Example: Call to schedule, or book online at [website]/book. We require 24hr notice for cancellations."
+                    rows={2}
+                    className="w-full px-5 py-4 text-lg border-2 border-gray-300 rounded-xl focus:ring-4 focus:ring-blue-500 focus:border-blue-500 outline-none resize-none"
+                  />
+                  <p className="text-sm text-gray-500 mt-2">Teach your AI how to help customers schedule appointments</p>
                 </div>
 
                 <div className="flex gap-4 pt-4">
@@ -324,7 +395,12 @@ Use all the information above to train the AI for the demo.
                   <div className="flex items-center justify-between mb-6">
                     <div className="flex items-center gap-3">
                       <MessageSquare className="w-6 h-6 text-blue-600" />
-                      <h2 className="text-2xl font-bold">Common Questions & Answers</h2>
+                      <div>
+                        <h2 className="text-2xl font-bold">Common Questions & Answers</h2>
+                        <p className="text-sm text-gray-500 mt-1">
+                          Add real questions customers ask - the more specific, the better the demo
+                        </p>
+                      </div>
                     </div>
                     <button
                       type="button"
@@ -334,6 +410,13 @@ Use all the information above to train the AI for the demo.
                       <Plus className="w-4 h-4" />
                       Add Question
                     </button>
+                  </div>
+
+                  <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-6">
+                    <p className="text-sm text-blue-800">
+                      <strong>💡 Pro tip:</strong> Think about what customers actually ask you. "Do you accept insurance?" 
+                      "Can I bring my kids?" "Do you offer payment plans?" The more realistic, the better your demo!
+                    </p>
                   </div>
 
                   <div className="space-y-4">
