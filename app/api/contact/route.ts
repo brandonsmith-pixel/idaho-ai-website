@@ -51,8 +51,9 @@ export async function POST(request: Request) {
         },
         body: JSON.stringify({
           ...data,
-          voiceProvider: voiceProvider || 'openai',
-          voiceId: voiceId || 'nova',
+          testPhone: phone, // Use the phone parameter directly (already formatted with +1)
+          voiceProvider: voiceProvider || '11labs',
+          voiceId: voiceId || 'EXAVITQu4vr4xnSDxMaL',
         }),
       });
 
