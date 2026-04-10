@@ -830,7 +830,7 @@ Use all the information above to train the AI for the demo.
                   <div className="bg-white/10 border-2 border-white/30 rounded-xl p-4 mb-6">
                     <p className="text-center font-semibold mb-2">🎁 <strong>FREE 5-Minute Demo Call</strong></p>
                     <p className="text-sm text-center opacity-90">
-                      Try your AI receptionist risk-free! Demo calls are limited to 3 minutes (max 5 min) 
+                      Try your AI receptionist risk-free! Demo calls are limited to 5 minutes 
                       so you can experience the system at no cost. Subscribe to get unlimited calling.
                     </p>
                   </div>

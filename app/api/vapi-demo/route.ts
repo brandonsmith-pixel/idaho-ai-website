@@ -73,7 +73,7 @@ You are demonstrating what ${businessName}'s AI receptionist will sound like to 
 
 This is a DEMO CALL to show how the AI receptionist works. Be natural and conversational.`;
 
-    const firstMessage = `Hi! Thanks for trying out the AI receptionist demo for ${businessName}. This is a free 3 to 5 minute demo to show you how the AI works. I'm ready to answer questions about the business - go ahead and ask me anything you'd like to know!`;
+    const firstMessage = `Hi! Thanks for trying out the AI receptionist demo for ${businessName}. This is a free 5-minute demo to show you how the AI works. I'm ready to answer questions about the business - go ahead and ask me anything you'd like to know!`;
 
     // Make the Vapi call
     const callPayload = {
