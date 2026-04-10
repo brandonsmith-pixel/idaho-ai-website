@@ -6,8 +6,16 @@ export async function POST(request: Request) {
     
     console.log('Received vapi-demo request:', JSON.stringify(body, null, 2));
 
-    const vapiKey = process.env.VAPI_PRIVATE_KEY;
-    const phoneNumberId = process.env.VAPI_PHONE_NUMBER_ID;
+    const vapiKey = process.env.VAPI_PRIVATE_KEY?.trim();
+    const phoneNumberId = process.env.VAPI_PHONE_NUMBER_ID?.trim();
+
+    console.log('Environment check:', {
+      hasVapiKey: !!vapiKey,
+      vapiKeyLength: vapiKey?.length,
+      hasPhoneNumberId: !!phoneNumberId,
+      phoneNumberIdValue: phoneNumberId,
+      phoneNumberIdLength: phoneNumberId?.length,
+    });
 
     if (!vapiKey || !phoneNumberId) {
       console.error('Missing credentials:', { vapiKey: !!vapiKey, phoneNumberId: !!phoneNumberId });
