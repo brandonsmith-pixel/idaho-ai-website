@@ -455,11 +455,11 @@ Use all the information above to train the AI for the demo.
                   </p>
                   <p className="flex items-start gap-2">
                     <span className="font-semibold min-w-[140px]">Example:</span>
-                    <span>A 3.5 minute call = 4 minutes × $0.10 = <strong>$0.40</strong></span>
+                    <span>A 5 minute call ≈ <strong>$0.60</strong> (simple) to <strong>$0.75</strong> (complex)</span>
                   </p>
                   <p className="flex items-start gap-2">
                     <span className="font-semibold min-w-[140px]">Who pays:</span>
-                    <span><strong>These per-call costs are passed through to you</strong> at cost (no markup)</span>
+                    <span><strong>These costs are passed through to you at cost</strong> (no markup, no surprises)</span>
                   </p>
                   <p className="flex items-start gap-2">
                     <span className="font-semibold min-w-[140px]">Billing:</span>
