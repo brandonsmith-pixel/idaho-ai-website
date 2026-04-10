@@ -26,6 +26,16 @@ function SuccessContent() {
           if (data.metadata) {
             sessionStorage.setItem('demo_data', JSON.stringify(data.metadata));
           }
+
+          // Fire Google Ads conversion event
+          if (typeof window !== 'undefined' && (window as any).gtag) {
+            (window as any).gtag('event', 'conversion', {
+              'send_to': 'AW-17943114805/Conversion',
+              'value': data.plan === 'self-serve' ? 99 : 500,
+              'currency': 'USD',
+              'transaction_id': sessionId
+            });
+          }
         } catch (error) {
           console.error('Failed to fetch plan:', error);
         }
