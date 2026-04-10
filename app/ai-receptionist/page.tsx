@@ -432,6 +432,15 @@ Use all the information above to train the AI for the demo.
             </div>
 
             <div className="mt-12 text-center space-y-6">
+              
+              {/* Money-Back Guarantee */}
+              <div className="max-w-2xl mx-auto bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-300 rounded-xl p-6">
+                <p className="text-2xl font-black text-green-700 mb-2">💯 7-Day Money-Back Guarantee</p>
+                <p className="text-gray-700">
+                  Try it risk-free! If you're not completely satisfied within 7 days, we'll refund every penny. No questions asked.
+                </p>
+              </div>
+
               <p className="text-gray-600 text-lg">
                 🎁 <strong>Both plans include:</strong> 6 months FREE ($297-$1,782 value) when you book an AI Strategy Call
               </p>

@@ -70,12 +70,19 @@ function SuccessContent() {
               </div>
             </div>
 
+            <div className="bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-300 rounded-xl p-6 mb-6">
+              <p className="text-xl font-black text-green-700 mb-2">💯 7-Day Money-Back Guarantee</p>
+              <p className="text-gray-700 text-sm">
+                Not happy? Get a full refund within 7 days. No questions asked. We're confident you'll love it!
+              </p>
+            </div>
+
             <div className="space-y-4">
               <Link 
-                href="/"
+                href="/portal"
                 className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl font-bold hover:shadow-lg transition"
               >
-                Back to Home
+                Go to Your Dashboard
                 <ArrowRight className="w-5 h-5" />
               </Link>
 
