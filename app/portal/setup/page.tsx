@@ -7,7 +7,7 @@ import { Voice } from '@/app/types/voice';
 
 export default function SetupWizard() {
   const [step, setStep] = useState(1);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   
   // Step 1: Phone number
   const [phoneNumber, setPhoneNumber] = useState('');
@@ -26,6 +26,36 @@ export default function SetupWizard() {
   const [testCallStatus, setTestCallStatus] = useState<'idle' | 'calling' | 'completed'>('idle');
   
   const totalSteps = 5;
+
+  // Load demo form data from session storage (passed from success page)
+  useEffect(() => {
+    const demoData = sessionStorage.getItem('demo_data');
+    if (demoData) {
+      try {
+        const data = JSON.parse(demoData);
+        setBusinessName(data.businessName || '');
+        setBusinessDescription(data.services || data.additionalInfo || '');
+        setBusinessHours(data.hours || '24/7');
+        setForwardNumber(data.phone || '');
+        
+        // Pre-select voice if they chose one in demo
+        if (data.voiceId && data.voiceName) {
+          setSelectedVoice({
+            id: data.voiceId,
+            name: data.voiceName,
+            provider: data.voiceProvider || '11labs',
+            voiceId: data.voiceId,
+            gender: 'Female', // Default, will be overridden
+            description: data.voiceName,
+            previewUrl: '',
+          });
+        }
+      } catch (error) {
+        console.error('Failed to load demo data:', error);
+      }
+    }
+    setLoading(false);
+  }, []);
 
   // Step 1: Provision phone number
   const provisionPhoneNumber = async () => {

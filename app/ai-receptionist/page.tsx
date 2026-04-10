@@ -93,13 +93,35 @@ export default function AIReceptionistDemo() {
         ? 'price_1TKhlTLCkw1qIwMp5LHR6uDG'
         : 'price_1TKhlTLCkw1qIwMpIUHImoHB';
 
+      const faqText = faqs
+        .filter(f => f.question && f.answer)
+        .map((f, i) => `Q${i + 1}: ${f.question}\nA${i + 1}: ${f.answer}`)
+        .join('\n\n');
+
       const response = await fetch('/api/stripe-checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           priceId,
           customerEmail: '', // Can collect email in a modal first
-          customerName: '',
+          customerName: businessName,
+          // Pass all demo form data via metadata
+          metadata: {
+            businessName,
+            industry,
+            website,
+            phone,
+            address,
+            hours,
+            services,
+            pricing,
+            bookingProcess,
+            faqs: faqText,
+            additionalInfo,
+            voiceId: selectedVoice?.voiceId,
+            voiceName: selectedVoice?.name,
+            voiceProvider: selectedVoice?.provider,
+          },
         }),
       });
 

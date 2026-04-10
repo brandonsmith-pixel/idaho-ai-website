@@ -45,6 +45,7 @@ export async function GET(request: Request) {
       plan,
       customerEmail: session.customer_email,
       customerId: session.customer,
+      metadata: session.metadata || {},
     });
 
   } catch (error: any) {

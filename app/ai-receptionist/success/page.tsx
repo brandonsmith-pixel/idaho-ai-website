@@ -21,6 +21,11 @@ function SuccessContent() {
           const response = await fetch(`/api/stripe-session?session_id=${sessionId}`);
           const data = await response.json();
           setPlan(data.plan);
+          
+          // Store demo form data in session storage for setup wizard
+          if (data.metadata) {
+            sessionStorage.setItem('demo_data', JSON.stringify(data.metadata));
+          }
         } catch (error) {
           console.error('Failed to fetch plan:', error);
         }

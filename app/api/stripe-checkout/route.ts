@@ -8,7 +8,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { priceId, customerEmail, customerName } = body;
+    const { priceId, customerEmail, customerName, metadata } = body;
 
     if (!priceId) {
       return NextResponse.json(
@@ -17,7 +17,7 @@ export async function POST(request: Request) {
       );
     }
 
-    // Create Checkout Session
+    // Create Checkout Session with demo form data in metadata
     const session = await stripe.checkout.sessions.create({
       mode: 'subscription',
       payment_method_types: ['card'],
@@ -30,6 +30,8 @@ export async function POST(request: Request) {
       customer_email: customerEmail,
       metadata: {
         customerName: customerName || '',
+        // Store demo form data (Stripe allows up to 50 keys, 500 chars each)
+        ...metadata,
       },
       success_url: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://tetongroup.ai'}/ai-receptionist/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://tetongroup.ai'}/ai-receptionist?canceled=true`,
