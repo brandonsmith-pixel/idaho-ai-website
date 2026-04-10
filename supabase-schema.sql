@@ -206,3 +206,9 @@ CREATE TABLE IF NOT EXISTS receptionist_settings (
 CREATE INDEX IF NOT EXISTS idx_receptionist_settings_customer ON receptionist_settings(customer_id);
 
 COMMENT ON TABLE receptionist_settings IS 'Customer-editable AI receptionist configuration';
+
+-- Add setup tracking columns to customers table
+ALTER TABLE customers ADD COLUMN IF NOT EXISTS phone_number TEXT;
+ALTER TABLE customers ADD COLUMN IF NOT EXISTS vapi_phone_id TEXT;
+ALTER TABLE customers ADD COLUMN IF NOT EXISTS setup_completed BOOLEAN DEFAULT false;
+ALTER TABLE customers ADD COLUMN IF NOT EXISTS onboarding_call_scheduled TIMESTAMPTZ;
