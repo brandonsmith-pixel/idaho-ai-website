@@ -51,6 +51,23 @@ export async function POST(request: Request) {
 
     console.log('Formatted phone:', formattedPhone);
 
+    // Scrape website content if provided
+    let websiteContent = '';
+    if (website) {
+      try {
+        console.log('Scraping website:', website);
+        const response = await fetch('https://r.jina.ai/' + website);
+        if (response.ok) {
+          websiteContent = await response.text();
+          console.log('Website scraped successfully, length:', websiteContent.length);
+        } else {
+          console.error('Failed to scrape website:', response.status);
+        }
+      } catch (error) {
+        console.error('Error scraping website:', error);
+      }
+    }
+
     // Build system prompt
     const systemPrompt = `You are the AI receptionist for ${businessName}.
 
@@ -61,6 +78,8 @@ ${businessPhone ? `- Phone: ${businessPhone}` : ''}
 ${website ? `- Website: ${website}` : ''}
 ${address ? `- Address: ${address}` : ''}
 ${hours ? `- Hours: ${hours}` : ''}
+
+${websiteContent ? `WEBSITE CONTENT:\n${websiteContent}\n` : ''}
 
 ${services ? `SERVICES WE OFFER:\n${services}\n` : ''}
 ${pricing ? `PRICING:\n${pricing}\n` : ''}
