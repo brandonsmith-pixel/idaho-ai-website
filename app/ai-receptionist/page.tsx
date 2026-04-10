@@ -451,7 +451,7 @@ Use all the information above to train the AI for the demo.
                 <div className="text-left space-y-2 text-gray-700">
                   <p className="flex items-start gap-2">
                     <span className="font-semibold min-w-[140px]">Cost per call:</span>
-                    <span>$0.05-0.10 per minute (rounds up to nearest minute)</span>
+                    <span>Approximately $0.10-0.15 per minute (varies by call complexity)</span>
                   </p>
                   <p className="flex items-start gap-2">
                     <span className="font-semibold min-w-[140px]">Example:</span>

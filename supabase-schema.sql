@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS calls (
   status TEXT NOT NULL,
   duration_seconds INT DEFAULT 0,
   duration_minutes DECIMAL(10, 2) GENERATED ALWAYS AS (CEIL(duration_seconds::decimal / 60)) STORED,
-  cost DECIMAL(10, 4) GENERATED ALWAYS AS (CEIL(duration_seconds::decimal / 60) * 0.10) STORED,
+  cost DECIMAL(10, 4) DEFAULT 0,  -- Store actual Vapi cost (not calculated)
   started_at TIMESTAMPTZ,
   ended_at TIMESTAMPTZ,
   recording_url TEXT,

@@ -22,12 +22,13 @@ export async function POST(request: Request) {
       started_at: call.startedAt ? new Date(call.startedAt).toISOString() : null,
       ended_at: call.endedAt ? new Date(call.endedAt).toISOString() : null,
       duration_seconds: 0,
+      cost: call.cost || 0,  // Store Vapi's actual cost (pass-through)
       recording_url: null,
       transcript: null,
       metadata: {
         assistant_id: call.assistantId,
         org_id: call.orgId,
-        cost: call.cost || 0,
+        cost_breakdown: call.costBreakdown || null,  // Detailed cost info
         raw_webhook: body,
       },
     };
