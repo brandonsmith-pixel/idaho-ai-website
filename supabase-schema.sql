@@ -182,3 +182,27 @@ COMMENT ON TABLE visitors IS 'Track unique visitors with session data';
 COMMENT ON TABLE pageviews IS 'Every page view with time on page';
 COMMENT ON TABLE events IS 'Custom events (clicks, form interactions, etc)';
 COMMENT ON TABLE form_submissions IS 'Incomplete and complete form submissions';
+
+-- Receptionist settings table
+CREATE TABLE IF NOT EXISTS receptionist_settings (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  customer_id UUID UNIQUE REFERENCES customers(id) ON DELETE CASCADE,
+  greeting TEXT DEFAULT 'Hi! Thanks for calling. How can I help you today?',
+  tone TEXT DEFAULT 'Friendly and professional',
+  business_hours TEXT DEFAULT '24/7',
+  services TEXT,
+  pricing TEXT,
+  voice_id TEXT DEFAULT 'EXAVITQu4vr4xnSDxMaL',
+  voice_name TEXT DEFAULT 'Sarah',
+  call_forwarding_enabled BOOLEAN DEFAULT false,
+  forward_to_number TEXT,
+  calendar_connected BOOLEAN DEFAULT false,
+  calendar_provider TEXT,
+  calendar_credentials JSONB,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_receptionist_settings_customer ON receptionist_settings(customer_id);
+
+COMMENT ON TABLE receptionist_settings IS 'Customer-editable AI receptionist configuration';
