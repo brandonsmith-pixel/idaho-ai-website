@@ -58,25 +58,59 @@ export default function AIReceptionistDemo() {
   const [services, setServices] = useState('');
   const [pricing, setPricing] = useState('');
   const [bookingProcess, setBookingProcess] = useState('');
-  const [faqs, setFaqs] = useState<FAQ[]>([{ question: '', answer: '' }]);
+  const [faqs, setFAQs] = useState<FAQ[]>([{ question: '', answer: '' }]);
   const [additionalInfo, setAdditionalInfo] = useState('');
   const [files, setFiles] = useState<File[]>([]);
   const [voiceCloneFile, setVoiceCloneFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [checkoutLoading, setCheckoutLoading] = useState<string | null>(null);
+
+  const handleCheckout = async (plan: 'self-serve' | 'full-service') => {
+    setCheckoutLoading(plan);
+    
+    try {
+      const priceId = plan === 'self-serve' 
+        ? 'price_1TKhlTLCkw1qIwMp5LHR6uDG'
+        : 'price_1TKhlTLCkw1qIwMpIUHImoHB';
+
+      const response = await fetch('/api/stripe-checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          priceId,
+          customerEmail: '', // Can collect email in a modal first
+          customerName: '',
+        }),
+      });
+
+      const data = await response.json();
+
+      if (data.url) {
+        // Redirect to Stripe Checkout
+        window.location.href = data.url;
+      } else {
+        throw new Error(data.error || 'Failed to create checkout');
+      }
+    } catch (error) {
+      console.error('Checkout error:', error);
+      alert('Failed to start checkout. Please try again.');
+      setCheckoutLoading(null);
+    }
+  };
 
   const addFAQ = () => {
-    setFaqs([...faqs, { question: '', answer: '' }]);
+    setFAQs([...faqs, { question: '', answer: '' }]);
   };
 
   const removeFAQ = (index: number) => {
-    setFaqs(faqs.filter((_, i) => i !== index));
+    setFAQs(faqs.filter((_, i) => i !== index));
   };
 
   const updateFAQ = (index: number, field: 'question' | 'answer', value: string) => {
     const updated = [...faqs];
     updated[index][field] = value;
-    setFaqs(updated);
+    setFAQs(updated);
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -276,8 +310,29 @@ Use all the information above to train the AI for the demo.
                   Perfect for businesses who want flexibility and enjoy learning new tools
                 </p>
 
-                <button className="w-full py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl font-bold text-lg hover:shadow-lg transition">
-                  Try Demo Below →
+                <button
+                  onClick={() => handleCheckout('self-serve')}
+                  disabled={checkoutLoading === 'self-serve'}
+                  className="w-full py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl font-bold text-lg hover:shadow-lg transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                >
+                  {checkoutLoading === 'self-serve' ? (
+                    <>
+                      <Loader2 className="w-5 h-5 animate-spin" />
+                      Loading...
+                    </>
+                  ) : (
+                    <>
+                      Get Started - $99/mo
+                      <ArrowRight className="w-5 h-5" />
+                    </>
+                  )}
+                </button>
+                
+                <button
+                  onClick={() => window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' })}
+                  className="w-full py-3 bg-white border-2 border-blue-600 text-blue-600 rounded-xl font-bold hover:bg-blue-50 transition"
+                >
+                  Try Demo First ↓
                 </button>
               </div>
 
@@ -326,8 +381,29 @@ Use all the information above to train the AI for the demo.
                   Perfect for busy business owners who want a done-for-you solution
                 </p>
 
-                <button className="w-full py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-xl font-bold text-lg hover:shadow-lg transition">
-                  Try Demo Below →
+                <button
+                  onClick={() => handleCheckout('full-service')}
+                  disabled={checkoutLoading === 'full-service'}
+                  className="w-full py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-xl font-bold text-lg hover:shadow-lg transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                >
+                  {checkoutLoading === 'full-service' ? (
+                    <>
+                      <Loader2 className="w-5 h-5 animate-spin" />
+                      Loading...
+                    </>
+                  ) : (
+                    <>
+                      Get Started - $500/mo
+                      <ArrowRight className="w-5 h-5" />
+                    </>
+                  )}
+                </button>
+                
+                <button
+                  onClick={() => window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' })}
+                  className="w-full py-3 bg-white border-2 border-purple-600 text-purple-600 rounded-xl font-bold hover:bg-purple-50 transition"
+                >
+                  Try Demo First ↓
                 </button>
               </div>
 
