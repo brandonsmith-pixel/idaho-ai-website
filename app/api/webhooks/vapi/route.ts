@@ -40,9 +40,19 @@ export async function POST(request: Request) {
     }
 
     // Try to find customer based on phone number or metadata
-    // For now, we'll need to link this later via assistant metadata
-    // You can add customer_id to the assistant metadata when creating it
-    const customerId = call.metadata?.customerId || null;
+    let customerId = call.metadata?.customerId || null;
+
+    // If no customer ID in metadata, try to match by phone number
+    if (!customerId && call.customer?.number) {
+      const { data: customer } = await supabaseAdmin
+        .from('customers')
+        .select('id')
+        .eq('phone_number', call.customer.number)
+        .eq('active', true)
+        .single();
+
+      customerId = customer?.id || null;
+    }
 
     // Handle different webhook types
     switch (type) {

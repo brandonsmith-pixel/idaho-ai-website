@@ -90,3 +90,13 @@ COMMENT ON TABLE customers IS 'Customer accounts linked to Stripe subscriptions'
 COMMENT ON TABLE calls IS 'Individual call records from Vapi';
 COMMENT ON COLUMN calls.duration_minutes IS 'Rounds up to nearest minute (billing basis)';
 COMMENT ON COLUMN calls.cost IS 'Calculated at $0.10 per minute (rounded up)';
+
+-- Add active column to customers (for subscription status)
+ALTER TABLE customers ADD COLUMN IF NOT EXISTS active BOOLEAN DEFAULT true;
+
+-- Add index for active customers
+CREATE INDEX IF NOT EXISTS idx_customers_active ON customers(active) WHERE active = true;
+
+-- Add phone_number to customers table
+ALTER TABLE customers ADD COLUMN IF NOT EXISTS phone_number TEXT;
+CREATE INDEX IF NOT EXISTS idx_customers_phone ON customers(phone_number);
