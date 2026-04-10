@@ -73,7 +73,7 @@ You are demonstrating what ${businessName}'s AI receptionist will sound like to 
 
 This is a DEMO CALL to show how the AI receptionist works. Be natural and conversational.`;
 
-    const firstMessage = `Hi! Thanks for trying out the AI receptionist demo for ${businessName}. I'm an AI assistant that can answer questions about the business. Go ahead and ask me anything you'd like to know!`;
+    const firstMessage = `Hi! Thanks for trying out the AI receptionist demo for ${businessName}. This is a free 3 to 5 minute demo to show you how the AI works. I'm ready to answer questions about the business - go ahead and ask me anything you'd like to know!`;
 
     // Make the Vapi call
     const callPayload = {
@@ -99,6 +99,7 @@ This is a DEMO CALL to show how the AI receptionist works. Be natural and conver
         firstMessage: firstMessage,
         endCallFunctionEnabled: false,
         serverUrl: 'https://tetongroup.ai/api/webhooks/vapi',
+        maxDurationSeconds: 300, // Hard 5-minute cutoff for free demos
       },
     };
 

@@ -821,10 +821,19 @@ Use all the information above to train the AI for the demo.
             {step === 5 && (
               <div className="max-w-3xl mx-auto">
                 <div className="bg-gradient-to-br from-purple-600 to-blue-600 text-white rounded-3xl shadow-2xl p-8">
-                  <h2 className="text-3xl font-black mb-4 text-center">Ready for Your Demo Call?</h2>
+                  <h2 className="text-3xl font-black mb-4 text-center">Ready for Your FREE Demo Call?</h2>
                   <p className="text-center text-lg mb-6 opacity-90">
                     We'll call you with an AI receptionist using the <strong>{selectedVoice?.name}</strong> voice
                   </p>
+                  
+                  {/* Free Demo Notice */}
+                  <div className="bg-white/10 border-2 border-white/30 rounded-xl p-4 mb-6">
+                    <p className="text-center font-semibold mb-2">🎁 <strong>FREE 5-Minute Demo Call</strong></p>
+                    <p className="text-sm text-center opacity-90">
+                      Try your AI receptionist risk-free! Demo calls are limited to 3 minutes (max 5 min) 
+                      so you can experience the system at no cost. Subscribe to get unlimited calling.
+                    </p>
+                  </div>
                   
                   <div className="max-w-md mx-auto mb-6">
                     <label className="block text-lg font-bold mb-3">
