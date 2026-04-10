@@ -1,11 +1,12 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Phone, CheckCircle, Loader2, ArrowRight, Sparkles, Building2, Globe, Clock, MessageSquare, Upload, Plus, X, FileText } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
 import VoiceSelector from '../components/VoiceSelector';
 import { Voice } from '../types/voice';
+import { trackPageView, trackFormProgress, trackDemoStart } from '@/lib/analytics';
 
 const INDUSTRIES = [
   { 
@@ -65,6 +66,24 @@ export default function AIReceptionistDemo() {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [checkoutLoading, setCheckoutLoading] = useState<string | null>(null);
+
+  // Track page view on mount
+  useEffect(() => {
+    trackPageView('/ai-receptionist');
+  }, []);
+
+  // Track form progress whenever step or key fields change
+  useEffect(() => {
+    if (step > 1) {
+      trackFormProgress(step, {
+        industry,
+        businessName,
+        phone,
+        website,
+        voiceSelected: selectedVoice?.name,
+      });
+    }
+  }, [step, industry, businessName, phone, website, selectedVoice]);
 
   const handleCheckout = async (plan: 'self-serve' | 'full-service') => {
     setCheckoutLoading(plan);
@@ -137,6 +156,9 @@ export default function AIReceptionistDemo() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!businessName || !phone || !testPhone || !industry) return;
+
+    // Track demo start
+    trackDemoStart(testPhone, businessName);
 
     setLoading(true);
     try {

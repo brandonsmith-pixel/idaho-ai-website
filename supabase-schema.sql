@@ -100,3 +100,85 @@ CREATE INDEX IF NOT EXISTS idx_customers_active ON customers(active) WHERE activ
 -- Add phone_number to customers table
 ALTER TABLE customers ADD COLUMN IF NOT EXISTS phone_number TEXT;
 CREATE INDEX IF NOT EXISTS idx_customers_phone ON customers(phone_number);
+
+-- Visitor tracking tables
+CREATE TABLE IF NOT EXISTS visitors (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  session_id TEXT UNIQUE NOT NULL,
+  first_seen_at TIMESTAMPTZ DEFAULT NOW(),
+  last_seen_at TIMESTAMPTZ DEFAULT NOW(),
+  referrer TEXT,
+  utm_source TEXT,
+  utm_medium TEXT,
+  utm_campaign TEXT,
+  device_type TEXT,
+  browser TEXT,
+  country TEXT,
+  total_pageviews INT DEFAULT 1,
+  total_time_seconds INT DEFAULT 0,
+  converted BOOLEAN DEFAULT false
+);
+
+CREATE TABLE IF NOT EXISTS pageviews (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  session_id TEXT NOT NULL,
+  path TEXT NOT NULL,
+  referrer TEXT,
+  time_on_page_seconds INT,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS events (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  session_id TEXT NOT NULL,
+  event_name TEXT NOT NULL,
+  properties JSONB DEFAULT '{}',
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS form_submissions (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  session_id TEXT NOT NULL,
+  step INT NOT NULL,
+  form_data JSONB DEFAULT '{}',
+  completed BOOLEAN DEFAULT false,
+  demo_called BOOLEAN DEFAULT false,
+  converted BOOLEAN DEFAULT false,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Indexes for performance
+CREATE INDEX IF NOT EXISTS idx_visitors_session ON visitors(session_id);
+CREATE INDEX IF NOT EXISTS idx_pageviews_session ON pageviews(session_id);
+CREATE INDEX IF NOT EXISTS idx_events_session ON events(session_id);
+CREATE INDEX IF NOT EXISTS idx_events_name ON events(event_name);
+CREATE INDEX IF NOT EXISTS idx_form_submissions_session ON form_submissions(session_id);
+CREATE INDEX IF NOT EXISTS idx_form_submissions_converted ON form_submissions(converted) WHERE converted = true;
+
+-- Views for analytics
+CREATE OR REPLACE VIEW conversion_funnel AS
+SELECT 
+  COUNT(DISTINCT v.session_id) as total_visitors,
+  COUNT(DISTINCT CASE WHEN fs.step >= 1 THEN fs.session_id END) as started_form,
+  COUNT(DISTINCT CASE WHEN fs.step >= 3 THEN fs.session_id END) as completed_business_info,
+  COUNT(DISTINCT CASE WHEN fs.demo_called THEN fs.session_id END) as demo_calls,
+  COUNT(DISTINCT CASE WHEN fs.converted THEN fs.session_id END) as conversions
+FROM visitors v
+LEFT JOIN form_submissions fs ON v.session_id = fs.session_id;
+
+CREATE OR REPLACE VIEW demo_dropoffs AS
+SELECT
+  fs.step,
+  COUNT(*) as dropoff_count,
+  jsonb_object_agg(
+    key, value
+  ) as last_data
+FROM form_submissions fs
+WHERE fs.completed = false
+GROUP BY fs.step, fs.form_data;
+
+COMMENT ON TABLE visitors IS 'Track unique visitors with session data';
+COMMENT ON TABLE pageviews IS 'Every page view with time on page';
+COMMENT ON TABLE events IS 'Custom events (clicks, form interactions, etc)';
+COMMENT ON TABLE form_submissions IS 'Incomplete and complete form submissions';
