@@ -59,6 +59,14 @@ export async function POST(request: Request) {
         const response = await fetch('https://r.jina.ai/' + website);
         if (response.ok) {
           websiteContent = await response.text();
+          
+          // Limit to 15,000 characters (~3,750 tokens) to avoid context overflow
+          // GPT-4 has 8k context, system prompt + conversation needs room
+          if (websiteContent.length > 15000) {
+            console.log('Website content truncated from', websiteContent.length, 'to 15000 chars');
+            websiteContent = websiteContent.substring(0, 15000) + '\n\n[Content truncated - website is very large]';
+          }
+          
           console.log('Website scraped successfully, length:', websiteContent.length);
         } else {
           console.error('Failed to scrape website:', response.status);
