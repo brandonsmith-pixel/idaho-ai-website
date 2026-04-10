@@ -98,6 +98,7 @@ This is a DEMO CALL to show how the AI receptionist works. Be natural and conver
         },
         firstMessage: firstMessage,
         endCallFunctionEnabled: false,
+        serverUrl: 'https://tetongroup.ai/api/webhooks/vapi',
       },
     };
 
