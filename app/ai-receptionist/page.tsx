@@ -224,6 +224,124 @@ Use all the information above to train the AI for the demo.
         </div>
       </nav>
 
+      {/* Pricing Section */}
+      <div className="bg-white border-b shadow-sm">
+        <div className="container mx-auto px-4 py-16">
+          <div className="max-w-6xl mx-auto">
+            <div className="text-center mb-12">
+              <h2 className="text-4xl font-black mb-4 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                Choose Your Plan
+              </h2>
+              <p className="text-xl text-gray-600">
+                Get started in minutes or let us handle everything for you
+              </p>
+            </div>
+
+            <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+              
+              {/* Self-Serve Plan */}
+              <div className="bg-gradient-to-br from-blue-50 to-purple-50 rounded-3xl p-8 border-2 border-blue-200 hover:border-blue-400 transition hover:shadow-xl">
+                <div className="text-center mb-6">
+                  <div className="inline-block bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-bold mb-4">
+                    SELF-SERVE
+                  </div>
+                  <div className="text-5xl font-black mb-2">$99<span className="text-2xl text-gray-600">/mo</span></div>
+                  <p className="text-gray-600 font-medium">Train it yourself</p>
+                </div>
+                
+                <div className="space-y-4 mb-8">
+                  <div className="flex items-start gap-3">
+                    <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-1" />
+                    <p className="text-gray-700"><strong>You train the AI</strong> - Full control over scripts & knowledge</p>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-1" />
+                    <p className="text-gray-700"><strong>Easy-to-use dashboard</strong> - Update anytime, no code needed</p>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-1" />
+                    <p className="text-gray-700"><strong>18 professional voices</strong> - Or clone your own</p>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-1" />
+                    <p className="text-gray-700"><strong>Unlimited calls</strong> - No per-call fees</p>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-1" />
+                    <p className="text-gray-700"><strong>Email & chat support</strong> - We're here to help</p>
+                  </div>
+                </div>
+
+                <p className="text-sm text-gray-600 italic mb-6">
+                  Perfect for businesses who want flexibility and enjoy learning new tools
+                </p>
+
+                <button className="w-full py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl font-bold text-lg hover:shadow-lg transition">
+                  Try Demo Below →
+                </button>
+              </div>
+
+              {/* Full-Service Plan */}
+              <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-3xl p-8 border-4 border-purple-400 hover:border-purple-600 transition hover:shadow-2xl relative">
+                <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-gradient-to-r from-purple-600 to-pink-600 text-white px-6 py-2 rounded-full text-sm font-bold shadow-lg">
+                  ⭐ MOST POPULAR
+                </div>
+                
+                <div className="text-center mb-6 mt-4">
+                  <div className="inline-block bg-purple-600 text-white px-4 py-2 rounded-full text-sm font-bold mb-4">
+                    FULL-SERVICE
+                  </div>
+                  <div className="text-5xl font-black mb-2">$500<span className="text-2xl text-gray-600">/mo</span></div>
+                  <p className="text-gray-600 font-medium">We do everything</p>
+                </div>
+                
+                <div className="space-y-4 mb-8">
+                  <div className="flex items-start gap-3">
+                    <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-1" />
+                    <p className="text-gray-700"><strong>We train your AI</strong> - Like hiring a new employee</p>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-1" />
+                    <p className="text-gray-700"><strong>Custom voice cloning</strong> - Sounds exactly like you want</p>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-1" />
+                    <p className="text-gray-700"><strong>Professional scripts</strong> - We write everything for you</p>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-1" />
+                    <p className="text-gray-700"><strong>White-glove onboarding</strong> - Weekly check-ins & updates</p>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-1" />
+                    <p className="text-gray-700"><strong>Priority support</strong> - Direct line to our team</p>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-1" />
+                    <p className="text-gray-700"><strong>Unlimited revisions</strong> - Perfect it until you love it</p>
+                  </div>
+                </div>
+
+                <p className="text-sm text-gray-600 italic mb-6">
+                  Perfect for busy business owners who want a done-for-you solution
+                </p>
+
+                <button className="w-full py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-xl font-bold text-lg hover:shadow-lg transition">
+                  Try Demo Below →
+                </button>
+              </div>
+
+            </div>
+
+            <div className="mt-12 text-center">
+              <p className="text-gray-600 text-lg">
+                🎁 <strong>Both plans include:</strong> 6 months FREE ($297-$1,782 value) when you book an AI Strategy Call
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* Hero */}
       <div className="container mx-auto px-4 py-12">
         <div className="max-w-6xl mx-auto">
