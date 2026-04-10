@@ -409,10 +409,39 @@ Use all the information above to train the AI for the demo.
 
             </div>
 
-            <div className="mt-12 text-center">
+            <div className="mt-12 text-center space-y-6">
               <p className="text-gray-600 text-lg">
                 🎁 <strong>Both plans include:</strong> 6 months FREE ($297-$1,782 value) when you book an AI Strategy Call
               </p>
+
+              {/* Call Cost Disclosure */}
+              <div className="max-w-3xl mx-auto bg-blue-50 border-2 border-blue-200 rounded-xl p-6">
+                <h3 className="font-bold text-lg mb-3 text-blue-900">📞 Per-Call Usage Costs</h3>
+                <div className="text-left space-y-2 text-gray-700">
+                  <p className="flex items-start gap-2">
+                    <span className="font-semibold min-w-[140px]">Cost per call:</span>
+                    <span>$0.05-0.10 per minute (rounds up to nearest minute)</span>
+                  </p>
+                  <p className="flex items-start gap-2">
+                    <span className="font-semibold min-w-[140px]">Example:</span>
+                    <span>A 3.5 minute call = 4 minutes × $0.10 = <strong>$0.40</strong></span>
+                  </p>
+                  <p className="flex items-start gap-2">
+                    <span className="font-semibold min-w-[140px]">Who pays:</span>
+                    <span><strong>These per-call costs are passed through to you</strong> at cost (no markup)</span>
+                  </p>
+                  <p className="flex items-start gap-2">
+                    <span className="font-semibold min-w-[140px]">Billing:</span>
+                    <span>Usage costs billed monthly based on actual call volume</span>
+                  </p>
+                </div>
+                <div className="mt-4 pt-4 border-t border-blue-300">
+                  <p className="text-sm text-gray-600 italic">
+                    <strong>Note:</strong> Your monthly subscription ($99 or $500) covers the AI platform, training, and support. 
+                    The per-minute costs above cover the actual phone service and voice AI processing infrastructure.
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
