@@ -246,6 +246,14 @@ Use all the information above to train the AI for the demo.
 `,
         }),
       });
+      
+      // Fire Google Ads lead form conversion
+      if (typeof window !== 'undefined' && (window as any).gtag) {
+        (window as any).gtag('event', 'conversion', {
+          'send_to': 'AW-17943114805/hlTbCMWDzZIcELXo-OtC'
+        });
+      }
+      
       setSuccess(true);
     } catch (error) {
       alert('Failed to send request. Please try again.');
