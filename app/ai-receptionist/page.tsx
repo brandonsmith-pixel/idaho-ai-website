@@ -19,6 +19,41 @@ export default function AIReceptionistLanding() {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [showFAQs, setShowFAQs] = useState(false);
+  const [checkoutLoading, setCheckoutLoading] = useState<string | null>(null);
+
+  const handleCheckout = async (plan: 'self-serve' | 'full-service') => {
+    setCheckoutLoading(plan);
+    
+    const priceId = plan === 'self-serve' 
+      ? process.env.NEXT_PUBLIC_STRIPE_PRICE_SELF_SERVE || 'price_1TKhlTLCkw1qIwMp5LHR6uDG'
+      : process.env.NEXT_PUBLIC_STRIPE_PRICE_FULL_SERVICE || 'price_1TKhlTLCkw1qIwMpIUHImoHB';
+
+    try {
+      const response = await fetch('/api/stripe-checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          priceId,
+          metadata: {
+            plan: plan === 'self-serve' ? 'Self-Serve ($99/mo)' : 'Full-Service ($500/mo)',
+            source: 'landing_page',
+          }
+        }),
+      });
+
+      const data = await response.json();
+      
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        throw new Error('No checkout URL returned');
+      }
+    } catch (error) {
+      console.error('Checkout error:', error);
+      alert('Failed to start checkout. Please try again.');
+      setCheckoutLoading(null);
+    }
+  };
 
   const handleDemoSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -271,9 +306,13 @@ export default function AIReceptionistLanding() {
                 <span className="text-gray-600">/month</span>
               </div>
               <p className="text-gray-600 mb-6">Perfect for small businesses who want full control.</p>
-              <a href="#demo" className="block w-full py-3 bg-gray-900 text-white text-center rounded-lg font-semibold hover:bg-gray-800 transition mb-6">
-                Get Started
-              </a>
+              <button 
+                onClick={() => handleCheckout('self-serve')}
+                disabled={checkoutLoading === 'self-serve'}
+                className="block w-full py-3 bg-gray-900 text-white text-center rounded-lg font-semibold hover:bg-gray-800 transition mb-6 disabled:opacity-50"
+              >
+                {checkoutLoading === 'self-serve' ? 'Loading...' : 'Get Started'}
+              </button>
               <ul className="space-y-3">
                 <li className="flex items-start gap-2">
                   <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
@@ -305,9 +344,13 @@ export default function AIReceptionistLanding() {
                 <span className="text-blue-100">/month</span>
               </div>
               <p className="text-blue-100 mb-6">We handle everything. You focus on your business.</p>
-              <a href="#demo" className="block w-full py-3 bg-white text-blue-600 text-center rounded-lg font-semibold hover:bg-blue-50 transition mb-6">
-                Get Started
-              </a>
+              <button
+                onClick={() => handleCheckout('full-service')}
+                disabled={checkoutLoading === 'full-service'}
+                className="block w-full py-3 bg-white text-blue-600 text-center rounded-lg font-semibold hover:bg-blue-50 transition mb-6 disabled:opacity-50"
+              >
+                {checkoutLoading === 'full-service' ? 'Loading...' : 'Get Started'}
+              </button>
               <ul className="space-y-3">
                 <li className="flex items-start gap-2">
                   <CheckCircle className="w-5 h-5 text-yellow-300 flex-shrink-0 mt-0.5" />
