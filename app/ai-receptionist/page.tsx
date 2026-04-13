@@ -1,36 +1,10 @@
 "use client";
 
 import { useState } from 'react';
-import { Phone, CheckCircle, Loader2, Play, Star, Users, Award, Shield, Clock } from 'lucide-react';
+import { Phone, CheckCircle, Loader2, Star, Users, Award, Shield, Clock } from 'lucide-react';
 import Link from 'next/link';
-
-// Sample call data for different industries
-const SAMPLE_CALLS = [
-  {
-    industry: "Law Firm",
-    duration: "1:00",
-    scenario: "New client inquiry about consultation",
-    audioUrl: "/audio/law-firm-consultation.mp3",
-  },
-  {
-    industry: "Medical Practice",
-    duration: "0:59",
-    scenario: "Patient scheduling appointment",
-    audioUrl: "/audio/medical-appointment.mp3",
-  },
-  {
-    industry: "Restaurant",
-    duration: "0:58",
-    scenario: "Reservation and menu questions",
-    audioUrl: "/audio/restaurant-reservation.mp3",
-  },
-  {
-    industry: "Home Services",
-    duration: "1:09",
-    scenario: "Service request and pricing inquiry",
-    audioUrl: "/audio/home-services-hvac.mp3",
-  },
-];
+import SampleCallPlayer from '../components/SampleCallPlayer';
+import { SAMPLE_CALLS } from '../data/sampleCallTranscripts';
 
 const INDUSTRIES = ['Legal', 'Medical', 'Real Estate', 'Home Services', 'Restaurants', 'Retail', 'Professional Services', 'Other'];
 
@@ -43,34 +17,6 @@ export default function AIReceptionistLanding() {
   });
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
-  const [playingAudio, setPlayingAudio] = useState<string | null>(null);
-  const [audioElements, setAudioElements] = useState<{ [key: string]: HTMLAudioElement }>({});
-  
-  const handleSampleCallClick = (audioUrl: string, industry: string) => {
-    // Stop any currently playing audio
-    if (playingAudio && audioElements[playingAudio]) {
-      audioElements[playingAudio].pause();
-      audioElements[playingAudio].currentTime = 0;
-    }
-    
-    // If clicking the same audio that's playing, just stop it
-    if (playingAudio === audioUrl) {
-      setPlayingAudio(null);
-      return;
-    }
-    
-    // Create or get the audio element
-    let audio = audioElements[audioUrl];
-    if (!audio) {
-      audio = new Audio(audioUrl);
-      audio.onended = () => setPlayingAudio(null);
-      setAudioElements(prev => ({ ...prev, [audioUrl]: audio }));
-    }
-    
-    // Play the audio
-    audio.play();
-    setPlayingAudio(audioUrl);
-  };
 
   const handleDemoSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -198,28 +144,14 @@ export default function AIReceptionistLanding() {
           
           <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
             {SAMPLE_CALLS.map((call, idx) => (
-              <div key={idx} className="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition">
-                <div className="flex items-start justify-between mb-4">
-                  <div>
-                    <h3 className="text-xl font-bold text-gray-900 mb-1">{call.industry}</h3>
-                    <p className="text-gray-600 text-sm">{call.scenario}</p>
-                  </div>
-                  <span className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm font-semibold">
-                    {call.duration}
-                  </span>
-                </div>
-                <button 
-                  onClick={() => handleSampleCallClick(call.audioUrl, call.industry)}
-                  className={`w-full py-3 rounded-lg font-semibold transition flex items-center justify-center gap-2 ${
-                    playingAudio === call.audioUrl 
-                      ? 'bg-green-600 text-white hover:bg-green-700' 
-                      : 'bg-blue-600 text-white hover:bg-blue-700'
-                  }`}
-                >
-                  <Play className="w-5 h-5 fill-current" />
-                  {playingAudio === call.audioUrl ? 'Playing...' : 'Play Sample Call'}
-                </button>
-              </div>
+              <SampleCallPlayer
+                key={idx}
+                industry={call.industry}
+                scenario={call.scenario}
+                duration={call.duration}
+                audioUrl={call.audioUrl}
+                transcript={call.transcript}
+              />
             ))}
           </div>
 
