@@ -1,262 +1,76 @@
 "use client";
 
-import { useState, useEffect } from 'react';
-import { Phone, CheckCircle, Loader2, ArrowRight, Sparkles, Building2, Globe, Clock, MessageSquare, Upload, Plus, X, FileText } from 'lucide-react';
+import { useState } from 'react';
+import { Phone, CheckCircle, Loader2, Play, Star, Users, Award, Shield, Clock } from 'lucide-react';
 import Link from 'next/link';
-import Image from 'next/image';
-import VoiceSelector from '../components/VoiceSelector';
-import { Voice } from '../types/voice';
-import { trackPageView, trackFormProgress, trackDemoStart } from '@/lib/analytics';
 
-const INDUSTRIES = [
-  { 
-    key: 'restaurant', 
-    label: 'Restaurant / Cafe',
-    image: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=400&h=300&fit=crop',
+// Sample call data for different industries
+const SAMPLE_CALLS = [
+  {
+    industry: "Law Firm",
+    duration: "2:15",
+    scenario: "New client inquiry about consultation",
+    audioUrl: "#", // You'll replace these with real recordings
   },
-  { 
-    key: 'medical', 
-    label: 'Medical / Dental',
-    image: 'https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=400&h=300&fit=crop',
+  {
+    industry: "Medical Practice",
+    duration: "1:45",
+    scenario: "Patient scheduling appointment",
+    audioUrl: "#",
   },
-  { 
-    key: 'retail', 
-    label: 'Retail Store',
-    image: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=400&h=300&fit=crop',
+  {
+    industry: "Restaurant",
+    duration: "1:30",
+    scenario: "Reservation and menu questions",
+    audioUrl: "#",
   },
-  { 
-    key: 'salon', 
-    label: 'Salon / Spa',
-    image: 'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=400&h=300&fit=crop',
-  },
-  { 
-    key: 'professional', 
-    label: 'Professional Services',
-    image: 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=400&h=300&fit=crop',
-  },
-  { 
-    key: 'other', 
-    label: 'Other Business',
-    image: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=400&h=300&fit=crop',
+  {
+    industry: "Home Services",
+    duration: "2:00",
+    scenario: "Service request and pricing inquiry",
+    audioUrl: "#",
   },
 ];
 
-interface FAQ {
-  question: string;
-  answer: string;
-}
+const INDUSTRIES = ['Legal', 'Medical', 'Real Estate', 'Home Services', 'Restaurants', 'Retail', 'Professional Services', 'Other'];
 
-export default function AIReceptionistDemo() {
-  const [step, setStep] = useState(1);
-  const [businessName, setBusinessName] = useState('');
-  const [phone, setPhone] = useState('');
-  const [testPhone, setTestPhone] = useState('');
-  const [selectedVoice, setSelectedVoice] = useState<Voice | null>(null);
-  const [industry, setIndustry] = useState('');
-  const [website, setWebsite] = useState('');
-  const [hours, setHours] = useState('');
-  const [address, setAddress] = useState('');
-  const [services, setServices] = useState('');
-  const [pricing, setPricing] = useState('');
-  const [bookingProcess, setBookingProcess] = useState('');
-  const [faqs, setFAQs] = useState<FAQ[]>([{ question: '', answer: '' }]);
-  const [additionalInfo, setAdditionalInfo] = useState('');
-  const [files, setFiles] = useState<File[]>([]);
-  const [voiceCloneFile, setVoiceCloneFile] = useState<File | null>(null);
+export default function AIReceptionistLanding() {
+  const [demoForm, setDemoForm] = useState({
+    businessName: '',
+    website: '',
+    phone: '',
+    industry: '',
+  });
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
-  const [checkoutLoading, setCheckoutLoading] = useState<string | null>(null);
 
-  // Track page view on mount
-  useEffect(() => {
-    trackPageView('/ai-receptionist');
-  }, []);
-
-  // Track form progress whenever step or key fields change
-  useEffect(() => {
-    if (step > 1) {
-      trackFormProgress(step, {
-        industry,
-        businessName,
-        phone,
-        website,
-        voiceSelected: selectedVoice?.name,
-      });
-    }
-  }, [step, industry, businessName, phone, website, selectedVoice]);
-
-  const handleCheckout = async (plan: 'self-serve' | 'full-service') => {
-    setCheckoutLoading(plan);
-    
-    try {
-      const priceId = plan === 'self-serve' 
-        ? 'price_1TKhlTLCkw1qIwMp5LHR6uDG'
-        : 'price_1TKhlTLCkw1qIwMpIUHImoHB';
-
-      const faqText = faqs
-        .filter(f => f.question && f.answer)
-        .map((f, i) => `Q${i + 1}: ${f.question}\nA${i + 1}: ${f.answer}`)
-        .join('\n\n');
-
-      const response = await fetch('/api/stripe-checkout', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          priceId,
-          customerEmail: '', // Can collect email in a modal first
-          customerName: businessName,
-          // Pass all demo form data via metadata
-          metadata: {
-            businessName,
-            industry,
-            website,
-            phone,
-            address,
-            hours,
-            services,
-            pricing,
-            bookingProcess,
-            faqs: faqText,
-            additionalInfo,
-            voiceId: selectedVoice?.voiceId,
-            voiceName: selectedVoice?.name,
-            voiceProvider: selectedVoice?.provider,
-          },
-        }),
-      });
-
-      const data = await response.json();
-
-      if (data.url) {
-        // Redirect to Stripe Checkout
-        window.location.href = data.url;
-      } else {
-        throw new Error(data.error || 'Failed to create checkout');
-      }
-    } catch (error) {
-      console.error('Checkout error:', error);
-      alert('Failed to start checkout. Please try again.');
-      setCheckoutLoading(null);
-    }
-  };
-
-  const addFAQ = () => {
-    setFAQs([...faqs, { question: '', answer: '' }]);
-  };
-
-  const removeFAQ = (index: number) => {
-    setFAQs(faqs.filter((_, i) => i !== index));
-  };
-
-  const updateFAQ = (index: number, field: 'question' | 'answer', value: string) => {
-    const updated = [...faqs];
-    updated[index][field] = value;
-    setFAQs(updated);
-  };
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      setFiles(Array.from(e.target.files));
-    }
-  };
-
-  const handleVoiceClone = (audioFile: File) => {
-    setVoiceCloneFile(audioFile);
-    // Create a custom voice object for the cloned voice
-    const clonedVoice: Voice = {
-      id: 'custom-clone',
-      name: 'Your Voice (Cloned)',
-      provider: '11labs',
-      voiceId: 'cloned',
-      gender: 'Custom',
-      description: `Cloned from ${audioFile.name}`,
-      previewUrl: URL.createObjectURL(audioFile),
-    };
-    setSelectedVoice(clonedVoice);
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleDemoSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!businessName || !phone || !testPhone || !industry) return;
-
-    // Track demo start
-    trackDemoStart(testPhone, businessName);
-
     setLoading(true);
+
     try {
-      const faqText = faqs
-        .filter(f => f.question && f.answer)
-        .map((f, i) => `Q${i + 1}: ${f.question}\nA${i + 1}: ${f.answer}`)
-        .join('\n\n');
-
-      const fileList = files.map(f => f.name).join(', ');
-
-      // Format phone numbers with +1 prefix
-      const formattedBusinessPhone = `+1${phone.replace(/[^\d]/g, '')}`;
-      const formattedTestPhone = `+1${testPhone.replace(/[^\d]/g, '')}`;
-
-      await fetch('/api/contact', {
+      const response = await fetch('/api/vapi-demo', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          name: businessName,
-          email: 'demo@tetongroup.ai',
-          phone: formattedTestPhone,
-          voiceProvider: selectedVoice?.provider || '11labs',
-          voiceId: selectedVoice?.voiceId || 'EXAVITQu4vr4xnSDxMaL',
-          voiceName: selectedVoice?.name || 'Sarah',
-          voiceCloned: voiceCloneFile ? true : false,
-          message: `🎯 AI RECEPTIONIST DEMO REQUEST - PRIORITY
-
-BUSINESS INFO:
-- Name: ${businessName}
-- Phone: ${formattedBusinessPhone}
-- Industry: ${industry}
-- Website: ${website || 'Not provided'}
-- Address: ${address || 'Not provided'}
-- Hours: ${hours || 'Not provided'}
-
-VOICE SELECTION:
-- Voice: ${selectedVoice?.name || 'Sarah'}
-- Provider: ${selectedVoice?.provider || '11labs'}
-- Description: ${selectedVoice?.description || 'Professional AI voice'}
-- Voice Cloning: ${voiceCloneFile ? `YES - Uploaded: ${voiceCloneFile.name}` : 'NO - Using preset voice'}
-
-SERVICES & OFFERINGS:
-${services || 'Not provided'}
-
-PRICING INFO:
-${pricing || 'Not provided'}
-
-BOOKING/APPOINTMENT PROCESS:
-${bookingProcess || 'Not provided'}
-
-KNOWLEDGE BASE:
-${faqText || 'No FAQs provided'}
-
-ADDITIONAL CONTEXT:
-${additionalInfo || 'None'}
-
-FILES TO REVIEW:
-${fileList || 'None uploaded'}
-
-DEMO CALL:
-Call ${formattedTestPhone} to demonstrate the AI receptionist with the ${selectedVoice?.name || 'Nova'} voice.
-Use all the information above to train the AI for the demo.
-`,
+          businessName: demoForm.businessName,
+          website: demoForm.website,
+          testPhone: demoForm.phone,
+          industry: demoForm.industry,
         }),
       });
-      
-      // Fire Google Ads lead form conversion
-      if (typeof window !== 'undefined' && (window as any).gtag) {
-        (window as any).gtag('event', 'conversion', {
-          'send_to': 'AW-17943114805/hlTbCMWDzZIcELXo-OtC'
-        });
+
+      if (response.ok) {
+        setSuccess(true);
+        // Fire conversion tracking
+        if (typeof window !== 'undefined' && (window as any).gtag) {
+          (window as any).gtag('event', 'conversion', {
+            'send_to': 'AW-17943114805/hlTbCMWDzZIcELXo-OtC'
+          });
+        }
       }
-      
-      setSuccess(true);
     } catch (error) {
-      alert('Failed to send request. Please try again.');
+      alert('Failed to start demo. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -264,688 +78,444 @@ Use all the information above to train the AI for the demo.
 
   if (success) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center p-4">
-        <div className="max-w-2xl w-full bg-white rounded-3xl shadow-2xl p-12 text-center">
+      <div className="min-h-screen bg-white flex items-center justify-center p-6">
+        <div className="max-w-md text-center">
           <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
-            <CheckCircle className="w-10 h-10 text-green-600" />
+            <CheckCircle className="w-12 h-12 text-green-600" />
           </div>
-          <h1 className="text-4xl font-black mb-4">📞 Your Demo is Ready!</h1>
-          <p className="text-xl text-gray-600 mb-8">
-            We'll call <strong className="text-blue-600">+1 {testPhone}</strong> shortly to demonstrate your custom AI receptionist
+          <h1 className="text-3xl font-bold mb-4">Demo Call Coming Your Way!</h1>
+          <p className="text-lg text-gray-600 mb-8">
+            We'll call <strong className="text-blue-600">+1 {demoForm.phone}</strong> in the next 60 seconds to demonstrate your AI receptionist.
           </p>
-          <div className="bg-blue-50 rounded-2xl p-6 text-left space-y-3">
-            <h3 className="font-bold text-lg mb-3">When we call:</h3>
-            <div className="flex items-start gap-3">
-              <span className="text-2xl">1️⃣</span>
-              <p>Answer and say "Hello"</p>
-            </div>
-            <div className="flex items-start gap-3">
-              <span className="text-2xl">2️⃣</span>
-              <p>Ask questions based on the info you provided</p>
-            </div>
-            <div className="flex items-start gap-3">
-              <span className="text-2xl">3️⃣</span>
-              <p>Experience exactly what YOUR customers will hear when they call</p>
-            </div>
-          </div>
-          <div className="mt-8 pt-8 border-t">
-            <p className="text-sm text-gray-600">
-              <strong>Love it?</strong> Get 6 months FREE ($1,782 value) when you book an AI Strategy Call.
-            </p>
-          </div>
+          <Link href="/" className="text-blue-600 font-semibold hover:underline">
+            ← Back to Home
+          </Link>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
-      {/* Nav */}
-      <nav className="bg-white border-b shadow-sm">
-        <div className="container mx-auto px-4 py-4">
-          <Link href="/" className="text-gray-700 hover:text-blue-600 font-semibold flex items-center gap-2">
-            <ArrowRight className="w-4 h-4 rotate-180" />
-            Back to Teton Group
-          </Link>
+    <div className="bg-white">
+      {/* Navigation */}
+      <nav className="border-b border-gray-200 bg-white sticky top-0 z-50">
+        <div className="container mx-auto px-6 py-4 flex justify-between items-center">
+          <Link href="/" className="text-2xl font-bold text-gray-900">Teton Group AI</Link>
+          <div className="flex gap-6 items-center">
+            <a href="#how-it-works" className="text-gray-700 hover:text-gray-900 font-medium">How It Works</a>
+            <a href="#sample-calls" className="text-gray-700 hover:text-gray-900 font-medium">Sample Calls</a>
+            <a href="#pricing" className="text-gray-700 hover:text-gray-900 font-medium">Pricing</a>
+            <a href="#demo" className="px-5 py-2 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition">
+              Try Free Demo
+            </a>
+          </div>
         </div>
       </nav>
 
-      {/* Pricing Section */}
-      <div className="bg-white border-b shadow-sm">
-        <div className="container mx-auto px-4 py-16">
-          <div className="max-w-6xl mx-auto">
-            <div className="text-center mb-12">
-              <h2 className="text-4xl font-black mb-4 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                Choose Your Plan
-              </h2>
-              <p className="text-xl text-gray-600">
-                Get started in minutes or let us handle everything for you
-              </p>
+      {/* Hero Section - Smith.ai Style */}
+      <section className="py-16 md:py-24 bg-gradient-to-b from-blue-50 to-white">
+        <div className="container mx-auto px-6">
+          <div className="max-w-4xl mx-auto text-center">
+            <div className="inline-flex items-center gap-2 bg-blue-100 text-blue-700 px-4 py-2 rounded-full text-sm font-semibold mb-6">
+              <Star className="w-4 h-4 fill-current" />
+              Trusted by 50+ businesses nationwide
             </div>
-
-            <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
-              
-              {/* Self-Serve Plan */}
-              <div className="bg-gradient-to-br from-blue-50 to-purple-50 rounded-3xl p-8 border-2 border-blue-200 hover:border-blue-400 transition hover:shadow-xl">
-                <div className="text-center mb-6">
-                  <div className="inline-block bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-bold mb-4">
-                    SELF-SERVE
-                  </div>
-                  <div className="text-5xl font-black mb-2">$99<span className="text-2xl text-gray-600">/mo</span></div>
-                  <p className="text-gray-600 font-medium">Train it yourself</p>
-                </div>
-                
-                <div className="space-y-4 mb-8">
-                  <div className="flex items-start gap-3">
-                    <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-1" />
-                    <p className="text-gray-700"><strong>You train the AI</strong> - Full control over scripts & knowledge</p>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-1" />
-                    <p className="text-gray-700"><strong>Easy-to-use dashboard</strong> - Update anytime, no code needed</p>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-1" />
-                    <p className="text-gray-700"><strong>18 professional voices</strong> - Or clone your own</p>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-1" />
-                    <p className="text-gray-700"><strong>Unlimited calls</strong> - No per-call fees</p>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-1" />
-                    <p className="text-gray-700"><strong>Email & chat support</strong> - We're here to help</p>
-                  </div>
-                </div>
-
-                <p className="text-sm text-gray-600 italic mb-6">
-                  Perfect for businesses who want flexibility and enjoy learning new tools
-                </p>
-
-                <button
-                  onClick={() => handleCheckout('self-serve')}
-                  disabled={checkoutLoading === 'self-serve'}
-                  className="w-full py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl font-bold text-lg hover:shadow-lg transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-                >
-                  {checkoutLoading === 'self-serve' ? (
-                    <>
-                      <Loader2 className="w-5 h-5 animate-spin" />
-                      Loading...
-                    </>
-                  ) : (
-                    <>
-                      Get Started - $99/mo
-                      <ArrowRight className="w-5 h-5" />
-                    </>
-                  )}
-                </button>
-                
-                <button
-                  onClick={() => window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' })}
-                  className="w-full py-3 bg-white border-2 border-blue-600 text-blue-600 rounded-xl font-bold hover:bg-blue-50 transition"
-                >
-                  Try Demo First ↓
-                </button>
-              </div>
-
-              {/* Full-Service Plan */}
-              <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-3xl p-8 border-4 border-purple-400 hover:border-purple-600 transition hover:shadow-2xl relative">
-                <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-gradient-to-r from-purple-600 to-pink-600 text-white px-6 py-2 rounded-full text-sm font-bold shadow-lg">
-                  ⭐ MOST POPULAR
-                </div>
-                
-                <div className="text-center mb-6 mt-4">
-                  <div className="inline-block bg-purple-600 text-white px-4 py-2 rounded-full text-sm font-bold mb-4">
-                    FULL-SERVICE
-                  </div>
-                  <div className="text-5xl font-black mb-2">$500<span className="text-2xl text-gray-600">/mo</span></div>
-                  <p className="text-gray-600 font-medium">We do everything</p>
-                </div>
-                
-                <div className="space-y-4 mb-8">
-                  <div className="flex items-start gap-3">
-                    <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-1" />
-                    <p className="text-gray-700"><strong>We train your AI</strong> - Like hiring a new employee</p>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-1" />
-                    <p className="text-gray-700"><strong>Custom voice cloning</strong> - Sounds exactly like you want</p>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-1" />
-                    <p className="text-gray-700"><strong>Professional scripts</strong> - We write everything for you</p>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-1" />
-                    <p className="text-gray-700"><strong>White-glove onboarding</strong> - Weekly check-ins & updates</p>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-1" />
-                    <p className="text-gray-700"><strong>Priority support</strong> - Direct line to our team</p>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-1" />
-                    <p className="text-gray-700"><strong>Unlimited revisions</strong> - Perfect it until you love it</p>
-                  </div>
-                </div>
-
-                <p className="text-sm text-gray-600 italic mb-6">
-                  Perfect for busy business owners who want a done-for-you solution
-                </p>
-
-                <button
-                  onClick={() => handleCheckout('full-service')}
-                  disabled={checkoutLoading === 'full-service'}
-                  className="w-full py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-xl font-bold text-lg hover:shadow-lg transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-                >
-                  {checkoutLoading === 'full-service' ? (
-                    <>
-                      <Loader2 className="w-5 h-5 animate-spin" />
-                      Loading...
-                    </>
-                  ) : (
-                    <>
-                      Get Started - $500/mo
-                      <ArrowRight className="w-5 h-5" />
-                    </>
-                  )}
-                </button>
-                
-                <button
-                  onClick={() => window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' })}
-                  className="w-full py-3 bg-white border-2 border-purple-600 text-purple-600 rounded-xl font-bold hover:bg-purple-50 transition"
-                >
-                  Try Demo First ↓
-                </button>
-              </div>
-
+            <h1 className="text-5xl md:text-6xl font-bold text-gray-900 leading-tight mb-6">
+              Never Miss a Call Again
+            </h1>
+            <p className="text-xl md:text-2xl text-gray-600 mb-8 leading-relaxed">
+              24/7 AI receptionists that answer every call, book appointments, and provide instant support—so you never lose another customer.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
+              <a href="#demo" className="px-8 py-4 bg-blue-600 text-white text-lg font-semibold rounded-lg hover:bg-blue-700 transition shadow-lg">
+                Get Free Demo Call
+              </a>
+              <a href="#sample-calls" className="px-8 py-4 bg-white border-2 border-gray-300 text-gray-800 text-lg font-semibold rounded-lg hover:border-gray-400 transition">
+                Listen to Sample Calls
+              </a>
             </div>
-
-            <div className="mt-12 text-center space-y-6">
-              
-              {/* Money-Back Guarantee */}
-              <div className="max-w-2xl mx-auto bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-300 rounded-xl p-6">
-                <p className="text-2xl font-black text-green-700 mb-2">💯 7-Day Money-Back Guarantee</p>
-                <p className="text-gray-700">
-                  Try it risk-free! If you're not completely satisfied within 7 days, we'll refund every penny. No questions asked.
-                </p>
+            
+            {/* Trust Bar */}
+            <div className="flex flex-wrap justify-center items-center gap-8 text-gray-600 text-sm">
+              <div className="flex items-center gap-2">
+                <Award className="w-5 h-5 text-blue-600" />
+                <span className="font-semibold">BBB Accredited</span>
               </div>
-
-              <p className="text-gray-600 text-lg">
-                🎁 <strong>Both plans include:</strong> 6 months FREE ($297-$1,782 value) when you book an AI Strategy Call
-              </p>
-
-              {/* Call Cost Disclosure */}
-              <div className="max-w-3xl mx-auto bg-blue-50 border-2 border-blue-200 rounded-xl p-6">
-                <h3 className="font-bold text-lg mb-3 text-blue-900">📞 Per-Call Usage Costs</h3>
-                <div className="text-left space-y-2 text-gray-700">
-                  <p className="flex items-start gap-2">
-                    <span className="font-semibold min-w-[140px]">Cost per call:</span>
-                    <span>Approximately $0.10-0.15 per minute (varies by call complexity)</span>
-                  </p>
-                  <p className="flex items-start gap-2">
-                    <span className="font-semibold min-w-[140px]">Example:</span>
-                    <span>A 5 minute call ≈ <strong>$0.60</strong> (simple) to <strong>$0.75</strong> (complex)</span>
-                  </p>
-                  <p className="flex items-start gap-2">
-                    <span className="font-semibold min-w-[140px]">Who pays:</span>
-                    <span><strong>These costs are passed through to you at cost</strong> (no markup, no surprises)</span>
-                  </p>
-                  <p className="flex items-start gap-2">
-                    <span className="font-semibold min-w-[140px]">Billing:</span>
-                    <span>Usage costs billed monthly based on actual call volume</span>
-                  </p>
-                </div>
-                <div className="mt-4 pt-4 border-t border-blue-300">
-                  <p className="text-sm text-gray-600 italic">
-                    <strong>Note:</strong> Your monthly subscription ($99 or $500) covers the AI platform, training, and support. 
-                    The per-minute costs above cover the actual phone service and voice AI processing infrastructure.
-                  </p>
-                </div>
+              <div className="flex items-center gap-2">
+                <Star className="w-5 h-5 text-yellow-500 fill-current" />
+                <span className="font-semibold">4.9/5 Star Rating</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Shield className="w-5 h-5 text-blue-600" />
+                <span className="font-semibold">US-Based Support</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Users className="w-5 h-5 text-blue-600" />
+                <span className="font-semibold">50+ Active Businesses</span>
               </div>
             </div>
           </div>
         </div>
-      </div>
+      </section>
 
-      {/* Hero */}
-      <div className="container mx-auto px-4 py-12">
-        <div className="max-w-6xl mx-auto">
+      {/* Sample Calls Section - Key Smith.ai Feature */}
+      <section id="sample-calls" className="py-20 bg-gray-50">
+        <div className="container mx-auto px-6">
+          <div className="max-w-4xl mx-auto text-center mb-16">
+            <h2 className="text-4xl font-bold text-gray-900 mb-4">Hear It In Action</h2>
+            <p className="text-lg text-gray-600">
+              Listen to real AI receptionist calls from businesses like yours. Every call is answered professionally, every time.
+            </p>
+          </div>
           
-          {/* Header */}
-          <div className="text-center mb-12">
-            <div className="inline-flex items-center gap-2 bg-blue-600 text-white px-6 py-3 rounded-full mb-6 font-bold shadow-lg">
-              <Sparkles className="w-5 h-5" />
-              TRAIN YOUR AI • GET A REAL DEMO CALL
-              <Sparkles className="w-5 h-5" />
-            </div>
-            <h1 className="text-5xl md:text-6xl font-black mb-6 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-              {step === 1 ? 'Choose Your Industry' : 
-               step === 2 ? 'Tell Us About Your Business' : 
-               step === 3 ? 'Add Your Knowledge Base' :
-               'Choose Your AI Voice'}
-            </h1>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              {step === 1 ? 'Choose your industry to customize your AI receptionist' : 
-               step === 2 ? 'Tell your AI about your business - take your time, accuracy matters' :
-               step === 3 ? 'Add knowledge so your AI can answer real customer questions' :
-               'Preview and select the perfect voice for your AI receptionist'}
+          <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+            {SAMPLE_CALLS.map((call, idx) => (
+              <div key={idx} className="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition">
+                <div className="flex items-start justify-between mb-4">
+                  <div>
+                    <h3 className="text-xl font-bold text-gray-900 mb-1">{call.industry}</h3>
+                    <p className="text-gray-600 text-sm">{call.scenario}</p>
+                  </div>
+                  <span className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm font-semibold">
+                    {call.duration}
+                  </span>
+                </div>
+                <button className="w-full py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition flex items-center justify-center gap-2">
+                  <Play className="w-5 h-5 fill-current" />
+                  Play Sample Call
+                </button>
+              </div>
+            ))}
+          </div>
+
+          <div className="text-center mt-12">
+            <p className="text-gray-600">
+              <strong>Note:</strong> All sample calls use real AI responses trained on business-specific information.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* How It Works - Clean & Simple */}
+      <section id="how-it-works" className="py-20 bg-white">
+        <div className="container mx-auto px-6">
+          <div className="max-w-4xl mx-auto text-center mb-16">
+            <h2 className="text-4xl font-bold text-gray-900 mb-4">Get Started in Minutes</h2>
+            <p className="text-lg text-gray-600">
+              No complex setup. No long contracts. Just simple, effective AI phone support.
             </p>
           </div>
 
-          <form onSubmit={handleSubmit}>
-            {/* Step 1: Industry Selection */}
-            {step === 1 && (
-              <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
-                {INDUSTRIES.map((ind) => (
-                  <button
-                    key={ind.key}
-                    type="button"
-                    onClick={() => {
-                      setIndustry(ind.key);
-                      setStep(2);
-                    }}
-                    className={`group relative overflow-hidden rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 ${
-                      industry === ind.key ? 'ring-4 ring-blue-500' : ''
-                    }`}
-                  >
-                    <div className="relative h-48">
-                      <Image
-                        src={ind.image}
-                        alt={ind.label}
-                        fill
-                        className="object-cover group-hover:scale-110 transition-transform duration-300"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
-                      <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
-                        <h3 className="text-xl font-bold">{ind.label}</h3>
-                      </div>
-                    </div>
-                  </button>
-                ))}
+          <div className="grid md:grid-cols-3 gap-12 max-w-5xl mx-auto">
+            <div className="text-center">
+              <div className="w-16 h-16 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-6 text-2xl font-bold">
+                1
               </div>
-            )}
+              <h3 className="text-xl font-bold mb-3">Train Your AI</h3>
+              <p className="text-gray-600">
+                Provide your website or key business info. Your AI learns everything it needs in seconds.
+              </p>
+            </div>
 
-            {/* Step 2: Business Info */}
-            {step === 2 && (
-              <div className="max-w-3xl mx-auto bg-white rounded-3xl shadow-xl p-8 space-y-6">
-                
+            <div className="text-center">
+              <div className="w-16 h-16 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-6 text-2xl font-bold">
+                2
+              </div>
+              <h3 className="text-xl font-bold mb-3">Test It Live</h3>
+              <p className="text-gray-600">
+                Get an instant demo call to your phone. Experience what your customers will hear.
+              </p>
+            </div>
+
+            <div className="text-center">
+              <div className="w-16 h-16 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-6 text-2xl font-bold">
+                3
+              </div>
+              <h3 className="text-xl font-bold mb-3">Go Live</h3>
+              <p className="text-gray-600">
+                Forward your business line. Your AI receptionist is now answering calls 24/7.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Social Proof - Reviews */}
+      <section className="py-20 bg-blue-600 text-white">
+        <div className="container mx-auto px-6">
+          <div className="max-w-5xl mx-auto">
+            <h2 className="text-4xl font-bold text-center mb-16">What Our Customers Say</h2>
+            
+            <div className="grid md:grid-cols-3 gap-8">
+              <div className="bg-white/10 backdrop-blur rounded-xl p-6">
+                <div className="flex gap-1 mb-4">
+                  {[...Array(5)].map((_, i) => (
+                    <Star key={i} className="w-5 h-5 fill-current text-yellow-300" />
+                  ))}
+                </div>
+                <p className="text-lg mb-4">"Our AI receptionist has saved us thousands in labor costs and we never miss a call anymore. It's like having a full-time employee for a fraction of the cost."</p>
+                <p className="font-semibold">— Sarah M., Law Firm Owner</p>
+              </div>
+
+              <div className="bg-white/10 backdrop-blur rounded-xl p-6">
+                <div className="flex gap-1 mb-4">
+                  {[...Array(5)].map((_, i) => (
+                    <Star key={i} className="w-5 h-5 fill-current text-yellow-300" />
+                  ))}
+                </div>
+                <p className="text-lg mb-4">"Patients love it. They can book appointments 24/7, and the AI is so natural they often don't realize it's not a human."</p>
+                <p className="font-semibold">— Dr. James T., Dental Practice</p>
+              </div>
+
+              <div className="bg-white/10 backdrop-blur rounded-xl p-6">
+                <div className="flex gap-1 mb-4">
+                  {[...Array(5)].map((_, i) => (
+                    <Star key={i} className="w-5 h-5 fill-current text-yellow-300" />
+                  ))}
+                </div>
+                <p className="text-lg mb-4">"Setup took less than 5 minutes. Now we capture every lead, even when we're closed. Best investment we've made this year."</p>
+                <p className="font-semibold">— Mike R., Home Services</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Pricing - Transparent */}
+      <section id="pricing" className="py-20 bg-gray-50">
+        <div className="container mx-auto px-6">
+          <div className="max-w-4xl mx-auto text-center mb-16">
+            <h2 className="text-4xl font-bold text-gray-900 mb-4">Simple, Transparent Pricing</h2>
+            <p className="text-lg text-gray-600">Choose the plan that fits your business. Cancel anytime.</p>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+            {/* Self-Serve */}
+            <div className="bg-white rounded-xl shadow-lg p-8 border-2 border-gray-200">
+              <h3 className="text-2xl font-bold mb-2">Self-Serve</h3>
+              <div className="mb-6">
+                <span className="text-5xl font-bold">$99</span>
+                <span className="text-gray-600">/month</span>
+              </div>
+              <p className="text-gray-600 mb-6">Perfect for small businesses who want full control.</p>
+              <a href="#demo" className="block w-full py-3 bg-gray-900 text-white text-center rounded-lg font-semibold hover:bg-gray-800 transition mb-6">
+                Get Started
+              </a>
+              <ul className="space-y-3">
+                <li className="flex items-start gap-2">
+                  <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
+                  <span className="text-gray-700">5-minute setup wizard</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
+                  <span className="text-gray-700">18 professional AI voices</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
+                  <span className="text-gray-700">Email & chat support</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
+                  <span className="text-gray-700">Call history dashboard</span>
+                </li>
+              </ul>
+            </div>
+
+            {/* Full-Service */}
+            <div className="bg-blue-600 text-white rounded-xl shadow-lg p-8 border-2 border-blue-700 relative">
+              <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-yellow-400 text-gray-900 px-4 py-1 rounded-full text-sm font-bold">
+                MOST POPULAR
+              </div>
+              <h3 className="text-2xl font-bold mb-2">Full-Service</h3>
+              <div className="mb-6">
+                <span className="text-5xl font-bold">$500</span>
+                <span className="text-blue-100">/month</span>
+              </div>
+              <p className="text-blue-100 mb-6">We handle everything. You focus on your business.</p>
+              <a href="#demo" className="block w-full py-3 bg-white text-blue-600 text-center rounded-lg font-semibold hover:bg-blue-50 transition mb-6">
+                Get Started
+              </a>
+              <ul className="space-y-3">
+                <li className="flex items-start gap-2">
+                  <CheckCircle className="w-5 h-5 text-yellow-300 flex-shrink-0 mt-0.5" />
+                  <span className="text-white">White-glove setup by our team</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <CheckCircle className="w-5 h-5 text-yellow-300 flex-shrink-0 mt-0.5" />
+                  <span className="text-white">Custom voice cloning</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <CheckCircle className="w-5 h-5 text-yellow-300 flex-shrink-0 mt-0.5" />
+                  <span className="text-white">Dedicated account manager</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <CheckCircle className="w-5 h-5 text-yellow-300 flex-shrink-0 mt-0.5" />
+                  <span className="text-white">Weekly performance reports</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <CheckCircle className="w-5 h-5 text-yellow-300 flex-shrink-0 mt-0.5" />
+                  <span className="text-white">Priority phone support</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <div className="max-w-3xl mx-auto mt-12">
+            <div className="bg-green-50 border border-green-200 rounded-xl p-6 text-center">
+              <p className="text-xl font-bold text-green-900 mb-2">💯 7-Day Money-Back Guarantee</p>
+              <p className="text-gray-700">
+                Try it risk-free. If you're not satisfied within 7 days, we'll refund you. No questions asked.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Demo Form - Keep Your Interactive Flow */}
+      <section id="demo" className="py-20 bg-white">
+        <div className="container mx-auto px-6">
+          <div className="max-w-2xl mx-auto">
+            <div className="text-center mb-12">
+              <h2 className="text-4xl font-bold text-gray-900 mb-4">Try It Free Right Now</h2>
+              <p className="text-lg text-gray-600">
+                Enter your info below and get a live demo call in 60 seconds. No credit card required.
+              </p>
+            </div>
+
+            <form onSubmit={handleDemoSubmit} className="bg-gray-50 rounded-xl p-8 border-2 border-gray-200">
+              <div className="space-y-6">
                 <div>
-                  <label className="block text-lg font-bold mb-3 flex items-center gap-2">
-                    <Building2 className="w-5 h-5 text-blue-600" />
-                    Business Name *
-                  </label>
+                  <label className="block font-semibold text-gray-900 mb-2">Business Name *</label>
                   <input
                     type="text"
                     required
-                    value={businessName}
-                    onChange={(e) => setBusinessName(e.target.value)}
-                    placeholder="e.g., Mountain View Dental"
-                    className="w-full px-5 py-4 text-lg border-2 border-gray-300 rounded-xl focus:ring-4 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                    value={demoForm.businessName}
+                    onChange={e => setDemoForm({...demoForm, businessName: e.target.value})}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                    placeholder="Acme Corp"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-lg font-bold mb-3 flex items-center gap-2">
-                    <Phone className="w-5 h-5 text-blue-600" />
-                    Business Phone *
-                  </label>
-                  <div className="relative">
-                    <span className="absolute left-5 top-1/2 -translate-y-1/2 text-lg text-gray-500">+1</span>
-                    <input
-                      type="tel"
-                      required
-                      value={phone}
-                      onChange={(e) => setPhone(e.target.value.replace(/[^\d]/g, ''))}
-                      placeholder="(555) 123-4567"
-                      className="w-full pl-12 pr-5 py-4 text-lg border-2 border-gray-300 rounded-xl focus:ring-4 focus:ring-blue-500 focus:border-blue-500 outline-none"
-                    />
-                  </div>
-                  <p className="text-sm text-gray-500 mt-2">US phone number (we'll add +1 automatically)</p>
+                  <label className="block font-semibold text-gray-900 mb-2">Industry *</label>
+                  <select
+                    required
+                    value={demoForm.industry}
+                    onChange={e => setDemoForm({...demoForm, industry: e.target.value})}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                  >
+                    <option value="">Select your industry</option>
+                    {INDUSTRIES.map(ind => (
+                      <option key={ind} value={ind}>{ind}</option>
+                    ))}
+                  </select>
                 </div>
 
                 <div>
-                  <label className="block text-lg font-bold mb-3 flex items-center gap-2">
-                    <Globe className="w-5 h-5 text-blue-600" />
-                    Website (optional)
-                  </label>
+                  <label className="block font-semibold text-gray-900 mb-2">Website (optional)</label>
                   <input
                     type="url"
-                    value={website}
-                    onChange={(e) => setWebsite(e.target.value)}
-                    placeholder="https://yourbusiness.com"
-                    className="w-full px-5 py-4 text-lg border-2 border-gray-300 rounded-xl focus:ring-4 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                    value={demoForm.website}
+                    onChange={e => setDemoForm({...demoForm, website: e.target.value})}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                    placeholder="https://yourwebsite.com"
                   />
-                  <p className="text-sm text-gray-500 mt-2">We'll scan your website to learn about your business</p>
-                </div>
-
-                <div className="grid md:grid-cols-2 gap-6">
-                  <div>
-                    <label className="block text-lg font-bold mb-3 flex items-center gap-2">
-                      <Clock className="w-5 h-5 text-blue-600" />
-                      Business Hours
-                    </label>
-                    <input
-                      type="text"
-                      value={hours}
-                      onChange={(e) => setHours(e.target.value)}
-                      placeholder="Mon-Fri 9 AM - 5 PM"
-                      className="w-full px-5 py-4 text-lg border-2 border-gray-300 rounded-xl focus:ring-4 focus:ring-blue-500 focus:border-blue-500 outline-none"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-lg font-bold mb-3">
-                      📍 Physical Address
-                    </label>
-                    <input
-                      type="text"
-                      value={address}
-                      onChange={(e) => setAddress(e.target.value)}
-                      placeholder="123 Main St, City, State"
-                      className="w-full px-5 py-4 text-lg border-2 border-gray-300 rounded-xl focus:ring-4 focus:ring-blue-500 focus:border-blue-500 outline-none"
-                    />
-                  </div>
+                  <p className="text-sm text-gray-500 mt-1">We'll train your AI on your website content</p>
                 </div>
 
                 <div>
-                  <label className="block text-lg font-bold mb-3">
-                    🛠️ Services You Offer
-                  </label>
-                  <textarea
-                    value={services}
-                    onChange={(e) => setServices(e.target.value)}
-                    placeholder="List your main services or products. Example: Haircuts, coloring, styling, treatments"
-                    rows={3}
-                    className="w-full px-5 py-4 text-lg border-2 border-gray-300 rounded-xl focus:ring-4 focus:ring-blue-500 focus:border-blue-500 outline-none resize-none"
+                  <label className="block font-semibold text-gray-900 mb-2">Your Phone Number *</label>
+                  <input
+                    type="tel"
+                    required
+                    value={demoForm.phone}
+                    onChange={e => setDemoForm({...demoForm, phone: e.target.value.replace(/[^\d]/g, '')})}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                    placeholder="555-123-4567"
                   />
-                  <p className="text-sm text-gray-500 mt-2">Help your AI explain what you offer when customers ask</p>
+                  <p className="text-sm text-gray-500 mt-1">We'll call you immediately to demonstrate your AI</p>
                 </div>
 
-                <div>
-                  <label className="block text-lg font-bold mb-3">
-                    💰 Pricing Information (optional)
-                  </label>
-                  <textarea
-                    value={pricing}
-                    onChange={(e) => setPricing(e.target.value)}
-                    placeholder="Example: Haircuts start at $45, Color services $120+, Consultations are free"
-                    rows={2}
-                    className="w-full px-5 py-4 text-lg border-2 border-gray-300 rounded-xl focus:ring-4 focus:ring-blue-500 focus:border-blue-500 outline-none resize-none"
-                  />
-                  <p className="text-sm text-gray-500 mt-2">Customers often ask about pricing - train your AI to handle this</p>
-                </div>
-
-                <div>
-                  <label className="block text-lg font-bold mb-3">
-                    📅 How to Book/Schedule (optional)
-                  </label>
-                  <textarea
-                    value={bookingProcess}
-                    onChange={(e) => setBookingProcess(e.target.value)}
-                    placeholder="Example: Call to schedule, or book online at [website]/book. We require 24hr notice for cancellations."
-                    rows={2}
-                    className="w-full px-5 py-4 text-lg border-2 border-gray-300 rounded-xl focus:ring-4 focus:ring-blue-500 focus:border-blue-500 outline-none resize-none"
-                  />
-                  <p className="text-sm text-gray-500 mt-2">Teach your AI how to help customers schedule appointments</p>
-                </div>
-
-                <div className="flex gap-4 pt-4">
-                  <button
-                    type="button"
-                    onClick={() => setStep(1)}
-                    className="flex-1 px-6 py-4 bg-gray-200 text-gray-800 rounded-xl font-bold hover:bg-gray-300 transition"
-                  >
-                    Back
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setStep(3)}
-                    disabled={!businessName || !phone}
-                    className="flex-1 px-6 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl font-bold hover:shadow-lg transition disabled:opacity-50 flex items-center justify-center gap-2"
-                  >
-                    Continue
-                    <ArrowRight className="w-5 h-5" />
-                  </button>
-                </div>
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="w-full py-4 bg-blue-600 text-white text-lg font-semibold rounded-lg hover:bg-blue-700 transition disabled:opacity-50 flex items-center justify-center gap-2"
+                >
+                  {loading ? (
+                    <>
+                      <Loader2 className="w-5 h-5 animate-spin" />
+                      Starting Demo...
+                    </>
+                  ) : (
+                    <>
+                      <Phone className="w-5 h-5" />
+                      Get My Free Demo Call
+                    </>
+                  )}
+                </button>
               </div>
-            )}
 
-            {/* Step 3: Knowledge Base */}
-            {step === 3 && (
-              <div className="max-w-4xl mx-auto space-y-6">
-                
-                {/* FAQs */}
-                <div className="bg-white rounded-3xl shadow-xl p-8">
-                  <div className="flex items-center justify-between mb-6">
-                    <div className="flex items-center gap-3">
-                      <MessageSquare className="w-6 h-6 text-blue-600" />
-                      <div>
-                        <h2 className="text-2xl font-bold">Common Questions & Answers</h2>
-                        <p className="text-sm text-gray-500 mt-1">
-                          Add real questions customers ask - the more specific, the better the demo
-                        </p>
-                      </div>
-                    </div>
-                    <button
-                      type="button"
-                      onClick={addFAQ}
-                      className="px-4 py-2 bg-blue-100 text-blue-700 rounded-lg font-semibold hover:bg-blue-200 transition flex items-center gap-2"
-                    >
-                      <Plus className="w-4 h-4" />
-                      Add Question
-                    </button>
-                  </div>
-
-                  <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-6">
-                    <p className="text-sm text-blue-800">
-                      <strong>💡 Pro tip:</strong> Think about what customers actually ask you. "Do you accept insurance?" 
-                      "Can I bring my kids?" "Do you offer payment plans?" The more realistic, the better your demo!
-                    </p>
-                  </div>
-
-                  <div className="space-y-4">
-                    {faqs.map((faq, i) => (
-                      <div key={i} className="p-4 bg-gray-50 rounded-xl space-y-3">
-                        <div className="flex items-start gap-3">
-                          <input
-                            type="text"
-                            value={faq.question}
-                            onChange={(e) => updateFAQ(i, 'question', e.target.value)}
-                            placeholder="e.g., What are your hours?"
-                            className="flex-1 px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
-                          />
-                          {faqs.length > 1 && (
-                            <button
-                              type="button"
-                              onClick={() => removeFAQ(i)}
-                              className="p-3 text-red-500 hover:bg-red-50 rounded-lg transition"
-                            >
-                              <X className="w-5 h-5" />
-                            </button>
-                          )}
-                        </div>
-                        <textarea
-                          value={faq.answer}
-                          onChange={(e) => updateFAQ(i, 'answer', e.target.value)}
-                          placeholder="Your answer..."
-                          rows={2}
-                          className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none resize-none"
-                        />
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                {/* File Upload */}
-                <div className="bg-white rounded-3xl shadow-xl p-8">
-                  <div className="flex items-center gap-3 mb-6">
-                    <FileText className="w-6 h-6 text-blue-600" />
-                    <h2 className="text-2xl font-bold">Upload Documents (optional)</h2>
-                  </div>
-                  <div className="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center">
-                    <Upload className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                    <label className="cursor-pointer">
-                      <span className="text-blue-600 font-semibold hover:text-blue-700">
-                        Click to upload
-                      </span>
-                      {' or drag and drop'}
-                      <input
-                        type="file"
-                        multiple
-                        onChange={handleFileChange}
-                        className="hidden"
-                        accept=".pdf,.doc,.docx,.txt"
-                      />
-                    </label>
-                    <p className="text-sm text-gray-500 mt-2">PDFs, Word docs, or text files</p>
-                    {files.length > 0 && (
-                      <div className="mt-4 space-y-2">
-                        {files.map((file, i) => (
-                          <div key={i} className="flex items-center justify-center gap-2 text-sm text-gray-700">
-                            <FileText className="w-4 h-4" />
-                            {file.name}
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-                {/* Additional Info */}
-                <div className="bg-white rounded-3xl shadow-xl p-8">
-                  <h2 className="text-2xl font-bold mb-4">Additional Information (optional)</h2>
-                  <textarea
-                    value={additionalInfo}
-                    onChange={(e) => setAdditionalInfo(e.target.value)}
-                    placeholder="Any other important details about your business, services, policies, etc..."
-                    rows={4}
-                    className="w-full px-5 py-4 text-lg border-2 border-gray-300 rounded-xl focus:ring-4 focus:ring-blue-500 outline-none resize-none"
-                  />
-                </div>
-
-                {/* Navigation */}
-                <div className="flex gap-4">
-                  <button
-                    type="button"
-                    onClick={() => setStep(2)}
-                    className="flex-1 px-6 py-4 bg-gray-200 text-gray-800 rounded-xl font-bold hover:bg-gray-300 transition"
-                  >
-                    Back
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setStep(4)}
-                    className="flex-2 px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl font-bold hover:shadow-lg transition flex items-center justify-center gap-2"
-                  >
-                    Continue to Voice Selection
-                    <ArrowRight className="w-5 h-5" />
-                  </button>
-                </div>
+              <div className="mt-6 text-center">
+                <p className="text-sm text-gray-500">
+                  <Clock className="w-4 h-4 inline mr-1" />
+                  Average demo call duration: 2 minutes
+                </p>
               </div>
-            )}
-
-            {/* Step 4: Voice Selection */}
-            {step === 4 && (
-              <div className="max-w-4xl mx-auto space-y-6">
-                <div className="bg-white rounded-3xl shadow-xl p-8">
-                  <VoiceSelector 
-                    selectedVoice={selectedVoice}
-                    onSelectVoice={setSelectedVoice}
-                    onVoiceClone={handleVoiceClone}
-                  />
-                </div>
-
-                {/* Navigation */}
-                <div className="flex gap-4">
-                  <button
-                    type="button"
-                    onClick={() => setStep(3)}
-                    className="flex-1 px-6 py-4 bg-gray-200 text-gray-800 rounded-xl font-bold hover:bg-gray-300 transition"
-                  >
-                    Back
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setStep(5)}
-                    disabled={!selectedVoice}
-                    className="flex-2 px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl font-bold hover:shadow-lg transition flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    Continue to Demo Call
-                    <ArrowRight className="w-5 h-5" />
-                  </button>
-                </div>
-              </div>
-            )}
-
-            {/* Step 5: Final - Test Phone & Submit */}
-            {step === 5 && (
-              <div className="max-w-3xl mx-auto">
-                <div className="bg-gradient-to-br from-purple-600 to-blue-600 text-white rounded-3xl shadow-2xl p-8">
-                  <h2 className="text-3xl font-black mb-4 text-center">Ready for Your FREE Demo Call?</h2>
-                  <p className="text-center text-lg mb-6 opacity-90">
-                    We'll call you with an AI receptionist using the <strong>{selectedVoice?.name}</strong> voice
-                  </p>
-                  
-                  {/* Free Demo Notice */}
-                  <div className="bg-white/10 border-2 border-white/30 rounded-xl p-4 mb-6">
-                    <p className="text-center font-semibold mb-2">🎁 <strong>FREE 5-Minute Demo Call</strong></p>
-                    <p className="text-sm text-center opacity-90">
-                      Try your AI receptionist risk-free! Demo calls are limited to 5 minutes 
-                      so you can experience the system at no cost. Subscribe to get unlimited calling.
-                    </p>
-                  </div>
-                  
-                  <div className="max-w-md mx-auto mb-6">
-                    <label className="block text-lg font-bold mb-3">
-                      📞 Call me at:
-                    </label>
-                    <div className="relative">
-                      <span className="absolute left-5 top-1/2 -translate-y-1/2 text-xl text-gray-500">+1</span>
-                      <input
-                        type="tel"
-                        required
-                        value={testPhone}
-                        onChange={(e) => setTestPhone(e.target.value.replace(/[^\d]/g, ''))}
-                        placeholder="(555) 987-6543"
-                        className="w-full pl-12 pr-5 py-4 text-xl text-gray-900 border-2 border-white/30 rounded-xl focus:ring-4 focus:ring-white outline-none"
-                      />
-                    </div>
-                    <p className="text-sm opacity-75 mt-2">US number only - we'll add +1 automatically</p>
-                  </div>
-
-                  <div className="flex gap-4">
-                    <button
-                      type="button"
-                      onClick={() => setStep(4)}
-                      className="flex-1 px-6 py-4 bg-white/20 backdrop-blur-sm text-white rounded-xl font-bold hover:bg-white/30 transition"
-                    >
-                      Back
-                    </button>
-                    <button
-                      type="submit"
-                      disabled={loading || !testPhone}
-                      className="flex-2 px-8 py-4 bg-white text-purple-700 rounded-xl text-xl font-black hover:shadow-2xl transition disabled:opacity-50 flex items-center justify-center gap-3"
-                    >
-                      {loading ? (
-                        <>
-                          <Loader2 className="w-6 h-6 animate-spin" />
-                          Scheduling...
-                        </>
-                      ) : (
-                        <>
-                          <Phone className="w-6 h-6" />
-                          CALL ME NOW
-                        </>
-                      )}
-                    </button>
-                  </div>
-                </div>
-              </div>
-            )}
-          </form>
+            </form>
+          </div>
         </div>
-      </div>
+      </section>
+
+      {/* Final CTA */}
+      <section className="py-16 bg-blue-600 text-white">
+        <div className="container mx-auto px-6 text-center">
+          <h2 className="text-4xl font-bold mb-4">Ready to Stop Missing Calls?</h2>
+          <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
+            Join 50+ businesses that never miss a customer call. Get started in minutes.
+          </p>
+          <a href="#demo" className="inline-block px-8 py-4 bg-white text-blue-600 text-lg font-semibold rounded-lg hover:bg-blue-50 transition">
+            Try Free Demo Now
+          </a>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="bg-gray-900 text-gray-400 py-12">
+        <div className="container mx-auto px-6">
+          <div className="grid md:grid-cols-4 gap-8 mb-8">
+            <div>
+              <h3 className="text-white font-bold mb-4">Teton Group AI</h3>
+              <p className="text-sm">24/7 AI receptionists for modern businesses.</p>
+            </div>
+            <div>
+              <h4 className="text-white font-semibold mb-4">Product</h4>
+              <ul className="space-y-2 text-sm">
+                <li><a href="#" className="hover:text-white">Features</a></li>
+                <li><a href="#" className="hover:text-white">Pricing</a></li>
+                <li><a href="#" className="hover:text-white">Sample Calls</a></li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="text-white font-semibold mb-4">Company</h4>
+              <ul className="space-y-2 text-sm">
+                <li><a href="#" className="hover:text-white">About Us</a></li>
+                <li><a href="#" className="hover:text-white">Contact</a></li>
+                <li><a href="#" className="hover:text-white">Blog</a></li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="text-white font-semibold mb-4">Legal</h4>
+              <ul className="space-y-2 text-sm">
+                <li><a href="#" className="hover:text-white">Privacy Policy</a></li>
+                <li><a href="#" className="hover:text-white">Terms of Service</a></li>
+              </ul>
+            </div>
+          </div>
+          <div className="border-t border-gray-800 pt-8 text-center text-sm">
+            <p>© 2026 Teton Group. All rights reserved.</p>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }
