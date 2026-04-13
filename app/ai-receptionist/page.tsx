@@ -8,27 +8,27 @@ import Link from 'next/link';
 const SAMPLE_CALLS = [
   {
     industry: "Law Firm",
-    duration: "2:15",
+    duration: "1:00",
     scenario: "New client inquiry about consultation",
-    audioUrl: "#", // You'll replace these with real recordings
+    audioUrl: "/audio/law-firm-consultation.mp3",
   },
   {
     industry: "Medical Practice",
-    duration: "1:45",
+    duration: "0:59",
     scenario: "Patient scheduling appointment",
-    audioUrl: "#",
+    audioUrl: "/audio/medical-appointment.mp3",
   },
   {
     industry: "Restaurant",
-    duration: "1:30",
+    duration: "0:58",
     scenario: "Reservation and menu questions",
-    audioUrl: "#",
+    audioUrl: "/audio/restaurant-reservation.mp3",
   },
   {
     industry: "Home Services",
-    duration: "2:00",
+    duration: "1:09",
     scenario: "Service request and pricing inquiry",
-    audioUrl: "#",
+    audioUrl: "/audio/home-services-hvac.mp3",
   },
 ];
 
@@ -43,15 +43,33 @@ export default function AIReceptionistLanding() {
   });
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [playingAudio, setPlayingAudio] = useState<string | null>(null);
+  const [audioElements, setAudioElements] = useState<{ [key: string]: HTMLAudioElement }>({});
   
-  const handleSampleCallClick = (industry: string) => {
-    // For now, scroll to demo form and pre-fill industry
-    const demoSection = document.getElementById('demo');
-    if (demoSection) {
-      demoSection.scrollIntoView({ behavior: 'smooth' });
+  const handleSampleCallClick = (audioUrl: string, industry: string) => {
+    // Stop any currently playing audio
+    if (playingAudio && audioElements[playingAudio]) {
+      audioElements[playingAudio].pause();
+      audioElements[playingAudio].currentTime = 0;
     }
-    // Show a message
-    alert(`Sample calls coming soon! In the meantime, try a live demo with your own business information for ${industry}.`);
+    
+    // If clicking the same audio that's playing, just stop it
+    if (playingAudio === audioUrl) {
+      setPlayingAudio(null);
+      return;
+    }
+    
+    // Create or get the audio element
+    let audio = audioElements[audioUrl];
+    if (!audio) {
+      audio = new Audio(audioUrl);
+      audio.onended = () => setPlayingAudio(null);
+      setAudioElements(prev => ({ ...prev, [audioUrl]: audio }));
+    }
+    
+    // Play the audio
+    audio.play();
+    setPlayingAudio(audioUrl);
   };
 
   const handleDemoSubmit = async (e: React.FormEvent) => {
@@ -191,11 +209,15 @@ export default function AIReceptionistLanding() {
                   </span>
                 </div>
                 <button 
-                  onClick={() => handleSampleCallClick(call.industry)}
-                  className="w-full py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition flex items-center justify-center gap-2"
+                  onClick={() => handleSampleCallClick(call.audioUrl, call.industry)}
+                  className={`w-full py-3 rounded-lg font-semibold transition flex items-center justify-center gap-2 ${
+                    playingAudio === call.audioUrl 
+                      ? 'bg-green-600 text-white hover:bg-green-700' 
+                      : 'bg-blue-600 text-white hover:bg-blue-700'
+                  }`}
                 >
                   <Play className="w-5 h-5 fill-current" />
-                  Play Sample Call
+                  {playingAudio === call.audioUrl ? 'Playing...' : 'Play Sample Call'}
                 </button>
               </div>
             ))}
