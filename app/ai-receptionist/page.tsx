@@ -14,9 +14,11 @@ export default function AIReceptionistLanding() {
     website: '',
     phone: '',
     industry: '',
+    faqs: '',
   });
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [showFAQs, setShowFAQs] = useState(false);
 
   const handleDemoSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -31,6 +33,7 @@ export default function AIReceptionistLanding() {
           website: demoForm.website,
           testPhone: demoForm.phone,
           industry: demoForm.industry,
+          faqs: demoForm.faqs,
         }),
       });
 
@@ -388,6 +391,31 @@ export default function AIReceptionistLanding() {
                     placeholder="https://yourwebsite.com"
                   />
                   <p className="text-sm text-gray-500 mt-1">We'll train your AI on your website content</p>
+                </div>
+
+                {/* FAQ Section - Collapsible */}
+                <div>
+                  <button
+                    type="button"
+                    onClick={() => setShowFAQs(!showFAQs)}
+                    className="flex items-center gap-2 text-blue-600 font-semibold hover:text-blue-700 transition"
+                  >
+                    {showFAQs ? '−' : '+'} Add Common Questions (Optional)
+                  </button>
+                  {showFAQs && (
+                    <div className="mt-3">
+                      <textarea
+                        value={demoForm.faqs}
+                        onChange={e => setDemoForm({...demoForm, faqs: e.target.value})}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                        rows={6}
+                        placeholder="Example:&#10;Q: What are your hours?&#10;A: We're open Mon-Fri 9am-5pm&#10;&#10;Q: Do you take insurance?&#10;A: Yes, we accept most major plans"
+                      />
+                      <p className="text-sm text-gray-500 mt-1">
+                        Add common questions your customers ask. The AI will use these to give accurate answers during the demo.
+                      </p>
+                    </div>
+                  )}
                 </div>
 
                 <div>
