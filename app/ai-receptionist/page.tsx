@@ -24,9 +24,10 @@ export default function AIReceptionistLanding() {
   const handleCheckout = async (plan: 'self-serve' | 'full-service') => {
     setCheckoutLoading(plan);
     
+    // Stripe Price IDs (public - safe to expose in client code)
     const priceId = plan === 'self-serve' 
-      ? process.env.NEXT_PUBLIC_STRIPE_PRICE_SELF_SERVE || 'price_1TKhlTLCkw1qIwMp5LHR6uDG'
-      : process.env.NEXT_PUBLIC_STRIPE_PRICE_FULL_SERVICE || 'price_1TKhlTLCkw1qIwMpIUHImoHB';
+      ? 'price_1TKhlTLCkw1qIwMp5LHR6uDG'  // Self-Serve $99/mo
+      : 'price_1TKhlTLCkw1qIwMpIUHImoHB'; // Full-Service $500/mo
 
     try {
       const response = await fetch('/api/stripe-checkout', {
@@ -41,6 +42,11 @@ export default function AIReceptionistLanding() {
         }),
       });
 
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Checkout failed');
+      }
+
       const data = await response.json();
       
       if (data.url) {
@@ -48,9 +54,9 @@ export default function AIReceptionistLanding() {
       } else {
         throw new Error('No checkout URL returned');
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Checkout error:', error);
-      alert('Failed to start checkout. Please try again.');
+      alert(`Failed to start checkout: ${error.message}. Please try again.`);
       setCheckoutLoading(null);
     }
   };
