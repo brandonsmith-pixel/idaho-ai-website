@@ -60,9 +60,12 @@ export default function AIReceptionistLanding() {
           <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
             <CheckCircle className="w-12 h-12 text-green-600" />
           </div>
-          <h1 className="text-3xl font-bold mb-4">Demo Call Coming Your Way!</h1>
-          <p className="text-lg text-gray-600 mb-8">
-            We'll call <strong className="text-blue-600">+1 {demoForm.phone}</strong> in the next 60 seconds to demonstrate your AI receptionist.
+          <h1 className="text-3xl font-bold mb-4">Your AI is Calling You Now!</h1>
+          <p className="text-lg text-gray-600 mb-4">
+            The <strong className="text-blue-600">AI receptionist</strong> is calling <strong className="text-blue-600">+1 {demoForm.phone}</strong> right now.
+          </p>
+          <p className="text-base text-gray-500 mb-8">
+            Answer the phone and talk to the AI just like a customer would. Ask it questions about your business!
           </p>
           <Link href="/" className="text-blue-600 font-semibold hover:underline">
             ← Back to Home
@@ -347,8 +350,11 @@ export default function AIReceptionistLanding() {
           <div className="max-w-2xl mx-auto">
             <div className="text-center mb-12">
               <h2 className="text-4xl font-bold text-gray-900 mb-4">Try It Free Right Now</h2>
-              <p className="text-lg text-gray-600">
-                Enter your info below and get a live demo call in 60 seconds. No credit card required.
+              <p className="text-lg text-gray-600 mb-3">
+                Your <strong className="text-blue-600">AI receptionist</strong> will call you in 60 seconds to demonstrate how it works.
+              </p>
+              <p className="text-base text-gray-500">
+                Experience what your customers will hear. No credit card. No sales pitch. Just the AI.
               </p>
             </div>
 
@@ -428,7 +434,7 @@ export default function AIReceptionistLanding() {
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
                     placeholder="555-123-4567"
                   />
-                  <p className="text-sm text-gray-500 mt-1">We'll call you immediately to demonstrate your AI</p>
+                  <p className="text-sm text-gray-500 mt-1">The AI receptionist will call this number to demo itself to you</p>
                 </div>
 
                 <button
@@ -439,12 +445,12 @@ export default function AIReceptionistLanding() {
                   {loading ? (
                     <>
                       <Loader2 className="w-5 h-5 animate-spin" />
-                      Starting Demo...
+                      Calling You Now...
                     </>
                   ) : (
                     <>
                       <Phone className="w-5 h-5" />
-                      Get My Free Demo Call
+                      Have the AI Call Me Now
                     </>
                   )}
                 </button>
