@@ -1,0 +1,10 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="512" height="512" fill="#1e3a8a"/>
+  
+  <!-- Mountain Icon - Centered -->
+  <g transform="translate(156, 180)">
+    <path d="M0 150L50 30L100 150H0Z" fill="white" opacity="0.9"/>
+    <path d="M35 150L85 30L135 150H35Z" fill="#93c5fd"/>
+    <path d="M70 150L120 30L170 150H70Z" fill="#60a5fa" opacity="0.8"/>
+  </g>
+</svg>

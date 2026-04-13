@@ -1,0 +1,18 @@
+<svg width="1200" height="300" viewBox="0 0 1200 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="300" fill="white"/>
+  
+  <!-- Mountain Icon -->
+  <g transform="translate(60, 90)">
+    <path d="M0 120L45 30L90 120H0Z" fill="#1e3a8a" opacity="0.9"/>
+    <path d="M30 120L75 30L120 120H30Z" fill="#2563eb"/>
+    <path d="M60 120L105 30L150 120H60Z" fill="#3b82f6" opacity="0.8"/>
+  </g>
+  
+  <!-- Company Name -->
+  <text x="260" y="170" 
+        font-family="system-ui, -apple-system, 'Segoe UI', Arial, sans-serif" 
+        font-size="56" 
+        font-weight="700" 
+        fill="#1e3a8a" 
+        letter-spacing="-0.5">TETON GROUP</text>
+</svg>

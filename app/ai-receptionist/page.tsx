@@ -43,6 +43,16 @@ export default function AIReceptionistLanding() {
   });
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  
+  const handleSampleCallClick = (industry: string) => {
+    // For now, scroll to demo form and pre-fill industry
+    const demoSection = document.getElementById('demo');
+    if (demoSection) {
+      demoSection.scrollIntoView({ behavior: 'smooth' });
+    }
+    // Show a message
+    alert(`Sample calls coming soon! In the meantime, try a live demo with your own business information for ${industry}.`);
+  };
 
   const handleDemoSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -180,7 +190,10 @@ export default function AIReceptionistLanding() {
                     {call.duration}
                   </span>
                 </div>
-                <button className="w-full py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition flex items-center justify-center gap-2">
+                <button 
+                  onClick={() => handleSampleCallClick(call.industry)}
+                  className="w-full py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition flex items-center justify-center gap-2"
+                >
                   <Play className="w-5 h-5 fill-current" />
                   Play Sample Call
                 </button>

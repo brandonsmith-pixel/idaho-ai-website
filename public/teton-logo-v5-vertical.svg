@@ -1,0 +1,36 @@
+<svg width="600" height="800" viewBox="0 0 600 800" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="600" height="800" fill="white"/>
+  
+  <!-- Mountain Icon - Centered -->
+  <g transform="translate(200, 100)">
+    <path d="M0 180L50 20L100 180H0Z" fill="#1e3a8a" opacity="0.9"/>
+    <path d="M35 180L85 20L135 180H35Z" fill="#2563eb"/>
+    <path d="M70 180L120 20L170 180H70Z" fill="#3b82f6" opacity="0.8"/>
+  </g>
+  
+  <!-- Company Name - Centered -->
+  <text x="300" y="480" 
+        text-anchor="middle"
+        font-family="system-ui, -apple-system, 'Segoe UI', Arial, sans-serif" 
+        font-size="64" 
+        font-weight="700" 
+        fill="#1e3a8a" 
+        letter-spacing="-0.5">TETON</text>
+  
+  <text x="300" y="560" 
+        text-anchor="middle"
+        font-family="system-ui, -apple-system, 'Segoe UI', Arial, sans-serif" 
+        font-size="64" 
+        font-weight="700" 
+        fill="#1e3a8a" 
+        letter-spacing="-0.5">GROUP</text>
+  
+  <!-- Tagline -->
+  <text x="300" y="620" 
+        text-anchor="middle"
+        font-family="system-ui, -apple-system, 'Segoe UI', Arial, sans-serif" 
+        font-size="24" 
+        font-weight="400" 
+        fill="#6b7280" 
+        letter-spacing="1">AI SOLUTIONS</text>
+</svg>
