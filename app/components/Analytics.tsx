@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect } from 'react';
+import { useEffect, Suspense } from 'react';
 import { usePathname, useSearchParams } from 'next/navigation';
 
-export default function Analytics() {
+function AnalyticsInner() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
@@ -12,13 +12,21 @@ export default function Analytics() {
     trackEvent('pageview', {
       path: pathname,
       referrer: document.referrer,
-      utm_source: searchParams.get('utm_source'),
-      utm_medium: searchParams.get('utm_medium'),
-      utm_campaign: searchParams.get('utm_campaign'),
+      utm_source: searchParams?.get('utm_source'),
+      utm_medium: searchParams?.get('utm_medium'),
+      utm_campaign: searchParams?.get('utm_campaign'),
     });
   }, [pathname, searchParams]);
 
   return null;
+}
+
+export default function Analytics() {
+  return (
+    <Suspense fallback={null}>
+      <AnalyticsInner />
+    </Suspense>
+  );
 }
 
 // Helper function to track events
