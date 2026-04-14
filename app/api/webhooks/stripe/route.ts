@@ -28,20 +28,33 @@ export async function POST(request: Request) {
     if (event.type === 'checkout.session.completed') {
       const session = event.data.object as Stripe.Checkout.Session;
 
-      // Create customer record
-      const { error } = await supabaseAdmin
-        .from('customers')
-        .insert({
-          stripe_customer_id: session.customer as string,
-          email: session.customer_details?.email || '',
-          business_name: session.metadata?.businessName || 'New Customer',
-          plan: session.metadata?.plan || 'self-serve',
+      // Determine plan from price ID
+      const lineItems = await stripe.checkout.sessions.listLineItems(session.id);
+      const priceId = lineItems.data[0]?.price?.id;
+      const plan = priceId === 'price_1TKhlTLCkw1qIwMpIUHImoHB' ? 'full-service' : 'self-serve';
+
+      // Call internal provisioning endpoint
+      try {
+        const provisionResponse = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/webhooks/stripe/provision-account`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            customerEmail: session.customer_details?.email || session.customer_email,
+            stripeCustomerId: session.customer as string,
+            businessName: session.metadata?.businessName || 'New Customer',
+            plan,
+            sessionId: session.id,
+          }),
         });
 
-      if (error) {
-        console.error('Failed to create customer:', error);
-      } else {
-        console.log('✅ Customer created:', session.customer);
+        if (provisionResponse.ok) {
+          const result = await provisionResponse.json();
+          console.log('✅ Account provisioned:', result);
+        } else {
+          console.error('Provisioning failed:', await provisionResponse.text());
+        }
+      } catch (error) {
+        console.error('Failed to call provisioning endpoint:', error);
       }
     }
 
