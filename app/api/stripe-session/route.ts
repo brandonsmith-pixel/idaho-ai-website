@@ -32,13 +32,25 @@ export async function GET(request: Request) {
     // Determine plan based on price ID
     const priceId = session.line_items?.data[0]?.price?.id;
     
-    let plan: 'self-serve' | 'full-service' = 'self-serve';
+    let plan: 'self-serve' | 'full-service' | null = null;
     
-    if (priceId === process.env.STRIPE_PRICE_FULL_SERVICE) {
+    // Hardcoded price IDs (these are public and safe to expose)
+    const SELF_SERVE_PRICE = 'price_1TKhlTLCkw1qIwMp5LHR6uDG';
+    const FULL_SERVICE_PRICE = 'price_1TKhlTLCkw1qIwMpIUHImoHB';
+    
+    if (priceId === FULL_SERVICE_PRICE) {
       plan = 'full-service';
-    } else if (priceId === process.env.STRIPE_PRICE_SELF_SERVE) {
+    } else if (priceId === SELF_SERVE_PRICE) {
       plan = 'self-serve';
     }
+    
+    console.log('Session data:', {
+      priceId,
+      detectedPlan: plan,
+      customerEmail: session.customer_email,
+      subscriptionId: session.subscription,
+      metadata: session.metadata,
+    });
 
     return NextResponse.json({
       success: true,
