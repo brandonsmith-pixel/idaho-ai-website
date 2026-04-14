@@ -4,7 +4,7 @@ import { Suspense, useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { CheckCircle, ArrowRight, Calendar, Loader2 } from 'lucide-react';
+import { CheckCircle, ArrowRight, Calendar, Loader2, Phone } from 'lucide-react';
 
 function SuccessContent() {
   const searchParams = useSearchParams();
