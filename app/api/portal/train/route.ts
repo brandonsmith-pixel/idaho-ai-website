@@ -7,7 +7,7 @@ export async function POST(request: Request) {
     const { businessHours, services, faqs, bookingUrl, specialInstructions } = await request.json();
 
     // Get authenticated user
-    const cookieStore = cookies();
+    const cookieStore = await cookies();
     const authToken = cookieStore.get('sb-access-token');
 
     if (!authToken) {

@@ -5,7 +5,7 @@ import { cookies } from 'next/headers';
 export async function GET(request: Request) {
   try {
     // Get session from cookies (Supabase Auth)
-    const cookieStore = cookies();
+    const cookieStore = await cookies();
     const authToken = cookieStore.get('sb-access-token');
 
     if (!authToken) {
