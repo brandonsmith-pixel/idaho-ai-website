@@ -20,7 +20,7 @@ export async function POST(request: Request) {
       );
     }
 
-    // Create Checkout Session with demo form data in metadata
+    // Create Checkout Session with 3-day free trial
     const session = await stripe.checkout.sessions.create({
       mode: 'subscription',
       payment_method_types: ['card'],
@@ -30,6 +30,13 @@ export async function POST(request: Request) {
           quantity: 1,
         },
       ],
+      subscription_data: {
+        trial_period_days: 3,
+        metadata: {
+          customerName: customerName || '',
+          ...metadata,
+        },
+      },
       customer_email: customerEmail,
       metadata: {
         customerName: customerName || '',

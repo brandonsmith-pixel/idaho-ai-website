@@ -319,17 +319,19 @@ export default function AIReceptionistLanding() {
         <div className="container mx-auto px-6">
           <div className="max-w-4xl mx-auto text-center mb-16">
             <h2 className="text-4xl font-bold text-gray-900 mb-4">Simple, Transparent Pricing</h2>
-            <p className="text-lg text-gray-600">Choose the plan that fits your business. Cancel anytime.</p>
+            <p className="text-lg text-gray-600 mb-2">Choose the plan that fits your business. Cancel anytime.</p>
+            <p className="text-xl font-bold text-blue-600">🎉 Start with a 3-Day Free Trial</p>
           </div>
 
           <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
             {/* Self-Serve */}
             <div className="bg-white rounded-xl shadow-lg p-8 border-2 border-gray-200">
               <h3 className="text-2xl font-bold mb-2">Self-Serve</h3>
-              <div className="mb-6">
+              <div className="mb-2">
                 <span className="text-5xl font-bold">$99</span>
                 <span className="text-gray-600">/month</span>
               </div>
+              <p className="text-sm text-blue-600 font-semibold mb-4">3-day free trial • No credit card charged until trial ends</p>
               <p className="text-gray-600 mb-6">Perfect for small businesses who want full control.</p>
               <button 
                 onClick={() => handleCheckout('self-serve')}
@@ -364,10 +366,11 @@ export default function AIReceptionistLanding() {
                 MOST POPULAR
               </div>
               <h3 className="text-2xl font-bold mb-2">Full-Service</h3>
-              <div className="mb-6">
+              <div className="mb-2">
                 <span className="text-5xl font-bold">$500</span>
                 <span className="text-blue-100">/month</span>
               </div>
+              <p className="text-sm text-yellow-300 font-semibold mb-4">3-day free trial • No credit card charged until trial ends</p>
               <p className="text-blue-100 mb-6">We handle everything. You focus on your business.</p>
               <button
                 onClick={() => handleCheckout('full-service')}
