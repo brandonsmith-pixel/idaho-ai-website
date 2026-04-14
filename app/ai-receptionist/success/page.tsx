@@ -12,6 +12,9 @@ function SuccessContent() {
   const sessionId = searchParams.get('session_id');
   const [loading, setLoading] = useState(true);
   const [plan, setPlan] = useState<'self-serve' | 'full-service' | null>(null);
+  const [showAreaCodeSelect, setShowAreaCodeSelect] = useState(false);
+  const [areaCode, setAreaCode] = useState('');
+  const [provisioningPhone, setProvisioningPhone] = useState(false);
 
   useEffect(() => {
     // Fetch customer plan from Stripe session
@@ -21,6 +24,9 @@ function SuccessContent() {
           const response = await fetch(`/api/stripe-session?session_id=${sessionId}`);
           const data = await response.json();
           setPlan(data.plan);
+          
+          // Store session ID for later use
+          sessionStorage.setItem('checkout_session_id', sessionId);
           
           // Store demo form data in session storage for setup wizard
           if (data.metadata) {
@@ -36,6 +42,11 @@ function SuccessContent() {
               'transaction_id': sessionId
             });
           }
+          
+          // Show area code selection for self-serve
+          if (data.plan === 'self-serve') {
+            setShowAreaCodeSelect(true);
+          }
         } catch (error) {
           console.error('Failed to fetch plan:', error);
         }
@@ -45,6 +56,41 @@ function SuccessContent() {
 
     fetchPlan();
   }, [sessionId]);
+
+  const handleProvisionPhone = async () => {
+    if (!areaCode || areaCode.length !== 3) {
+      alert('Please enter a valid 3-digit area code');
+      return;
+    }
+
+    setProvisioningPhone(true);
+
+    try {
+      const response = await fetch('/api/portal/provision-phone', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          sessionId,
+          areaCode,
+        }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log('Phone provisioned:', data.phoneNumber);
+        setShowAreaCodeSelect(false);
+        // Refresh to show phone number
+        window.location.reload();
+      } else {
+        alert('Failed to provision phone number. Please try again.');
+      }
+    } catch (error) {
+      console.error('Provisioning error:', error);
+      alert('Network error. Please try again.');
+    } finally {
+      setProvisioningPhone(false);
+    }
+  };
 
   if (loading) {
     return (
@@ -59,6 +105,76 @@ function SuccessContent() {
 
   // SELF-SERVE FLOW
   if (plan === 'self-serve') {
+    // Show area code selection first
+    if (showAreaCodeSelect) {
+      return (
+        <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50">
+          <div className="container mx-auto px-4 py-16">
+            <div className="max-w-2xl mx-auto">
+              
+              <div className="bg-white rounded-3xl shadow-2xl p-12 text-center">
+                <div className="inline-flex items-center justify-center w-24 h-24 bg-blue-100 rounded-full mb-6">
+                  <Phone className="w-16 h-16 text-blue-600" />
+                </div>
+
+                <h1 className="text-4xl font-black mb-4">
+                  Choose Your Area Code 📞
+                </h1>
+
+                <p className="text-xl text-gray-700 mb-8">
+                  We'll provision a local phone number for your AI receptionist.<br/>
+                  Which area code would you prefer?
+                </p>
+
+                <div className="mb-8">
+                  <label className="block text-left font-semibold text-gray-900 mb-3">
+                    Area Code (3 digits)
+                  </label>
+                  <input
+                    type="text"
+                    value={areaCode}
+                    onChange={(e) => setAreaCode(e.target.value.replace(/\D/g, '').slice(0, 3))}
+                    placeholder="208"
+                    maxLength={3}
+                    className="w-full px-6 py-4 text-3xl text-center border-2 border-gray-300 rounded-xl focus:border-blue-500 focus:outline-none font-bold"
+                  />
+                  <p className="text-sm text-gray-600 mt-2 text-left">
+                    Example: 208 (Boise), 212 (NYC), 415 (San Francisco)
+                  </p>
+                </div>
+
+                <button
+                  onClick={handleProvisionPhone}
+                  disabled={provisioningPhone || areaCode.length !== 3}
+                  className="w-full py-5 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl font-bold text-xl hover:shadow-lg transition flex items-center justify-center gap-3 mb-6 disabled:opacity-50"
+                >
+                  {provisioningPhone ? (
+                    <>
+                      <Loader2 className="w-6 h-6 animate-spin" />
+                      Provisioning Your Number...
+                    </>
+                  ) : (
+                    <>
+                      Get My Phone Number
+                      <ArrowRight className="w-6 h-6" />
+                    </>
+                  )}
+                </button>
+
+                <div className="bg-blue-50 border-2 border-blue-300 rounded-xl p-4">
+                  <p className="text-sm font-semibold text-blue-900">
+                    ⚡ Your number will be ready in seconds!
+                  </p>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    // After phone is provisioned
     return (
       <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50">
         <div className="container mx-auto px-4 py-16">
