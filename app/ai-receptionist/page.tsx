@@ -5,6 +5,7 @@ import { Phone, CheckCircle, Loader2, Star, Users, Award, Shield, Clock } from '
 import Link from 'next/link';
 import SampleCallPlayer from '../components/SampleCallPlayer';
 import { SAMPLE_CALLS } from '../data/sampleCallTranscripts';
+import { trackEvent } from '../components/Analytics';
 
 const INDUSTRIES = ['Legal', 'Medical', 'Real Estate', 'Home Services', 'Restaurants', 'Retail', 'Professional Services', 'Other'];
 
@@ -23,6 +24,9 @@ export default function AIReceptionistLanding() {
 
   const handleCheckout = async (plan: 'self-serve' | 'full-service') => {
     setCheckoutLoading(plan);
+    
+    // Track checkout click
+    trackEvent('checkout_clicked', { plan });
     
     // Stripe Price IDs (public - safe to expose in client code)
     const priceId = plan === 'self-serve' 
@@ -65,6 +69,14 @@ export default function AIReceptionistLanding() {
     e.preventDefault();
     setLoading(true);
 
+    // Track demo form submission
+    trackEvent('demo_form_submitted', {
+      businessName: demoForm.businessName,
+      industry: demoForm.industry,
+      hasWebsite: !!demoForm.website,
+      hasFAQs: !!demoForm.faqs,
+    });
+
     try {
       const response = await fetch('/api/vapi-demo', {
         method: 'POST',
@@ -80,7 +92,14 @@ export default function AIReceptionistLanding() {
 
       if (response.ok) {
         setSuccess(true);
-        // Fire conversion tracking
+        
+        // Track demo call started
+        trackEvent('demo_call_started', {
+          businessName: demoForm.businessName,
+          industry: demoForm.industry,
+        });
+        
+        // Fire Google Ads conversion tracking
         if (typeof window !== 'undefined' && (window as any).gtag) {
           (window as any).gtag('event', 'conversion', {
             'send_to': 'AW-17943114805/hlTbCMWDzZIcELXo-OtC'
