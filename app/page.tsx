@@ -43,28 +43,28 @@ export default function Home() {
   const projects = [
     {
       title: "Agricultural Analytics",
-      client: "Regional Agricultural Co-op",
+      client: "Agricultural Client",
       description: "AI-powered crop yield predictions with 92% accuracy",
       result: "Saved $2.3M in waste reduction",
       icon: <BarChart3 className="w-6 h-6" />
     },
     {
       title: "Customer Service Bot",
-      client: "Regional Medical Group",
+      client: "Medical Practice",
       description: "24/7 appointment scheduling and patient triage",
       result: "Reduced wait times by 85%",
       icon: <MessageSquare className="w-6 h-6" />
     },
     {
       title: "Inventory Automation",
-      client: "Sun Valley Ski Resort",
+      client: "Ski Resort",
       description: "Predictive inventory management for equipment rentals",
       result: "Cut overstock costs by 60%",
       icon: <TrendingUp className="w-6 h-6" />
     },
     {
       title: "Lead Qualification",
-      client: "Coeur d'Alene Real Estate",
+      client: "Real Estate Agency",
       description: "AI that qualifies and routes leads instantly",
       result: "40% more closed deals",
       icon: <Target className="w-6 h-6" />
