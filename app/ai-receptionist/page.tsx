@@ -145,6 +145,9 @@ export default function AIReceptionistLanding() {
             <a href="#how-it-works" className="text-gray-700 hover:text-gray-900 font-medium">How It Works</a>
             <a href="#sample-calls" className="text-gray-700 hover:text-gray-900 font-medium">Sample Calls</a>
             <a href="#pricing" className="text-gray-700 hover:text-gray-900 font-medium">Pricing</a>
+            <Link href="/login" className="text-gray-700 hover:text-gray-900 font-medium">
+              Sign In
+            </Link>
             <a href="#demo" className="px-5 py-2 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition">
               Try Free Demo
             </a>
