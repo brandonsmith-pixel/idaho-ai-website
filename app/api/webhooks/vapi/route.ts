@@ -55,6 +55,66 @@ export async function POST(request: Request) {
       customerId = customer?.id || null;
     }
 
+    // Handle function calls (booking appointments, transferring calls)
+    if (type === 'function-call') {
+      const { functionCall } = body;
+      
+      if (functionCall?.name === 'bookAppointment') {
+        const params = functionCall.parameters;
+        
+        // TODO: Integrate with Google Calendar API
+        // For now, just log and save to database
+        console.log('📅 Booking appointment:', params);
+        
+        const { error: apptError } = await supabaseAdmin
+          .from('appointments')
+          .insert({
+            customer_id: customerId,
+            customer_name: params.name,
+            customer_phone: params.phone,
+            customer_email: params.email,
+            appointment_date: params.date,
+            appointment_time: params.time,
+            service: params.service,
+            status: 'confirmed',
+            created_at: new Date().toISOString(),
+          });
+
+        if (apptError) {
+          console.error('Failed to save appointment:', apptError);
+          return NextResponse.json({
+            result: 'I apologize, but I encountered an error booking your appointment. Let me transfer you to someone who can help.',
+          });
+        }
+
+        return NextResponse.json({
+          result: `Perfect! I've booked your appointment for ${params.date} at ${params.time}. You'll receive a confirmation email shortly at ${params.email || 'the number you called from'}.`,
+        });
+      }
+      
+      if (functionCall?.name === 'transferCall') {
+        console.log('📞 Transferring call:', functionCall.parameters.reason);
+        
+        // Get customer's forward number
+        const { data: settings } = await supabaseAdmin
+          .from('receptionist_settings')
+          .select('forward_to_number')
+          .eq('customer_id', customerId)
+          .single();
+
+        if (settings?.forward_to_number) {
+          return NextResponse.json({
+            result: 'One moment please, I\'m transferring you now.',
+            forward: settings.forward_to_number,
+          });
+        }
+
+        return NextResponse.json({
+          result: 'I apologize, but I\'m having trouble transferring your call. Could you please call back and ask for a manager?',
+        });
+      }
+    }
+
     // Handle different webhook types
     switch (type) {
       case 'call-started':

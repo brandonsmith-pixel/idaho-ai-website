@@ -179,14 +179,24 @@ export default function SetupWizard() {
     try {
       const response = await fetch('/api/portal/setup/complete', {
         method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          customerId: 'demo-customer', // TODO: Get from auth
+          phoneNumberId: phoneNumberId,
+          voiceId: selectedVoice?.voiceId || 'EXAVITQu4vr4xnSDxMaL',
+          voiceProvider: selectedVoice?.provider || '11labs',
+        }),
       });
 
       if (response.ok) {
         window.location.href = '/portal/setup/success';
+      } else {
+        const error = await response.json();
+        throw new Error(error.error || 'Setup failed');
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Complete setup error:', error);
-      alert('Error completing setup. Please contact support.');
+      alert('Error completing setup: ' + error.message);
     } finally {
       setLoading(false);
     }
