@@ -177,7 +177,7 @@ export default function AIReceptionistLanding() {
                 Demo Our AI With Your Business Info →
               </a>
               <a href="#sample-calls" className="px-10 py-5 bg-white/10 backdrop-blur-sm border-2 border-white/30 text-white text-lg font-bold rounded-xl hover:bg-white/20 transition">
-                Hear Real Calls
+                Hear Sample Calls
               </a>
             </div>
             
