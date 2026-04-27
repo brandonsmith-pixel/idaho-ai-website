@@ -174,7 +174,7 @@ export default function AIReceptionistLanding() {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
               <a href="#demo" className="px-10 py-5 bg-white text-blue-700 text-lg font-bold rounded-xl hover:bg-blue-50 transition shadow-2xl">
-                Experience Your AI in Action →
+                Demo Our AI With Your Business Info →
               </a>
               <a href="#sample-calls" className="px-10 py-5 bg-white/10 backdrop-blur-sm border-2 border-white/30 text-white text-lg font-bold rounded-xl hover:bg-white/20 transition">
                 Hear Real Calls
