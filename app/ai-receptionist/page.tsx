@@ -282,6 +282,140 @@ export default function AIReceptionistLanding() {
         </div>
       </section>
 
+      {/* Comparison Table - AI vs Hiring */}
+      <section className="py-20 bg-gradient-to-br from-gray-900 to-blue-900 text-white">
+        <div className="container mx-auto px-6">
+          <div className="max-w-5xl mx-auto">
+            
+            <div className="text-center mb-16">
+              <h2 className="text-4xl md:text-5xl font-bold mb-4">
+                AI Receptionist vs Hiring a Person
+              </h2>
+              <p className="text-xl text-blue-200">
+                See why smart businesses are switching to AI
+              </p>
+            </div>
+
+            <div className="bg-white rounded-2xl overflow-hidden shadow-2xl">
+              <div className="grid md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-gray-200">
+                
+                {/* Feature Column */}
+                <div className="p-6 bg-gray-50">
+                  <div className="h-16 flex items-center justify-center">
+                    <span className="text-gray-900 font-bold text-lg">Feature</span>
+                  </div>
+                  <ul className="space-y-6 mt-6">
+                    <li className="py-3 text-gray-900 font-semibold">Monthly Cost</li>
+                    <li className="py-3 text-gray-900 font-semibold">Availability</li>
+                    <li className="py-3 text-gray-900 font-semibold">Setup Time</li>
+                    <li className="py-3 text-gray-900 font-semibold">Sick Days / PTO</li>
+                    <li className="py-3 text-gray-900 font-semibold">Handles Multiple Calls</li>
+                    <li className="py-3 text-gray-900 font-semibold">Calendar Integration</li>
+                    <li className="py-3 text-gray-900 font-semibold">Call Forwarding</li>
+                    <li className="py-3 text-gray-900 font-semibold">Scales Instantly</li>
+                  </ul>
+                </div>
+
+                {/* AI Receptionist Column */}
+                <div className="p-6 bg-blue-50 md:order-3">
+                  <div className="h-16 flex flex-col items-center justify-center">
+                    <span className="text-blue-700 font-black text-xl">AI Receptionist</span>
+                    <span className="text-sm text-blue-600 font-semibold mt-1">✨ Recommended</span>
+                  </div>
+                  <ul className="space-y-6 mt-6">
+                    <li className="py-3 text-gray-900 flex items-center gap-2">
+                      <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />
+                      <span className="font-bold text-green-600">$99/month</span>
+                    </li>
+                    <li className="py-3 text-gray-900 flex items-center gap-2">
+                      <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />
+                      24/7/365
+                    </li>
+                    <li className="py-3 text-gray-900 flex items-center gap-2">
+                      <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />
+                      5 minutes
+                    </li>
+                    <li className="py-3 text-gray-900 flex items-center gap-2">
+                      <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />
+                      Never
+                    </li>
+                    <li className="py-3 text-gray-900 flex items-center gap-2">
+                      <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />
+                      Unlimited
+                    </li>
+                    <li className="py-3 text-gray-900 flex items-center gap-2">
+                      <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />
+                      Automatic
+                    </li>
+                    <li className="py-3 text-gray-900 flex items-center gap-2">
+                      <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />
+                      Included
+                    </li>
+                    <li className="py-3 text-gray-900 flex items-center gap-2">
+                      <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />
+                      Yes
+                    </li>
+                  </ul>
+                </div>
+
+                {/* Human Receptionist Column */}
+                <div className="p-6">
+                  <div className="h-16 flex items-center justify-center">
+                    <span className="text-gray-900 font-bold text-xl">Human Receptionist</span>
+                  </div>
+                  <ul className="space-y-6 mt-6 text-gray-600">
+                    <li className="py-3 flex items-center gap-2">
+                      <span className="text-red-500 font-bold">✕</span>
+                      <span className="font-bold text-red-600">$3,000+/month</span>
+                    </li>
+                    <li className="py-3 flex items-center gap-2">
+                      <span className="text-red-500">✕</span>
+                      Mon-Fri only
+                    </li>
+                    <li className="py-3 flex items-center gap-2">
+                      <span className="text-red-500">✕</span>
+                      2-4 weeks
+                    </li>
+                    <li className="py-3 flex items-center gap-2">
+                      <span className="text-red-500">✕</span>
+                      Frequent
+                    </li>
+                    <li className="py-3 flex items-center gap-2">
+                      <span className="text-red-500">✕</span>
+                      One at a time
+                    </li>
+                    <li className="py-3 flex items-center gap-2">
+                      <span className="text-red-500">✕</span>
+                      Manual entry
+                    </li>
+                    <li className="py-3 flex items-center gap-2">
+                      <span className="text-red-500">✕</span>
+                      Optional
+                    </li>
+                    <li className="py-3 flex items-center gap-2">
+                      <span className="text-red-500">✕</span>
+                      Requires hiring
+                    </li>
+                  </ul>
+                </div>
+
+              </div>
+
+              {/* Bottom CTA */}
+              <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-8 text-center">
+                <p className="text-white text-xl font-bold mb-4">
+                  Save $35,000+ per year. Get started in 5 minutes.
+                </p>
+                <a href="#demo" className="inline-block px-10 py-4 bg-white text-blue-700 text-lg font-bold rounded-xl hover:bg-blue-50 transition shadow-lg">
+                  Try It Free Now →
+                </a>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
       {/* How It Works - Clean & Simple */}
       <section id="how-it-works" className="py-20 bg-white">
         <div className="container mx-auto px-6">
@@ -368,6 +502,49 @@ export default function AIReceptionistLanding() {
       </section>
 
       {/* Pricing - Transparent */}
+      {/* Integrations Section */}
+      <section className="py-16 bg-white border-y border-gray-200">
+        <div className="container mx-auto px-6">
+          <div className="max-w-5xl mx-auto text-center">
+            <p className="text-sm font-semibold text-gray-500 mb-6">INTEGRATES WITH YOUR FAVORITE TOOLS</p>
+            <div className="flex flex-wrap justify-center items-center gap-8 md:gap-12">
+              {/* Google Calendar */}
+              <div className="flex items-center gap-2 text-gray-700 font-semibold">
+                <svg className="w-8 h-8" viewBox="0 0 24 24">
+                  <path fill="#4285F4" d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11z"/>
+                  <path fill="#EA4335" d="M7 10h5v5H7z"/>
+                </svg>
+                <span>Google Calendar</span>
+              </div>
+              
+              {/* Zapier */}
+              <div className="flex items-center gap-2 text-gray-700 font-semibold">
+                <svg className="w-8 h-8" viewBox="0 0 24 24">
+                  <path fill="#FF4A00" d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                </svg>
+                <span>Zapier</span>
+              </div>
+              
+              {/* Stripe */}
+              <div className="flex items-center gap-2 text-gray-700 font-semibold">
+                <svg className="w-8 h-8" viewBox="0 0 24 24">
+                  <path fill="#635BFF" d="M13.976 9.15c-2.172-.806-3.356-1.426-3.356-2.409 0-.831.683-1.305 1.901-1.305 2.227 0 4.515.858 6.09 1.631l.89-5.494C18.252.975 15.697 0 12.165 0 9.667 0 7.589.654 6.104 1.872 4.56 3.147 3.757 4.992 3.757 7.218c0 4.039 2.467 5.76 6.476 7.219 2.585.92 3.445 1.574 3.445 2.583 0 .98-.84 1.545-2.354 1.545-1.875 0-4.965-.921-6.99-2.109l-.9 5.555C5.175 22.99 8.385 24 11.714 24c2.641 0 4.843-.624 6.328-1.813 1.664-1.305 2.525-3.236 2.525-5.732 0-4.128-2.524-5.851-6.591-7.305z"/>
+                </svg>
+                <span>Stripe</span>
+              </div>
+              
+              {/* More */}
+              <div className="flex items-center gap-2 text-gray-700 font-semibold">
+                <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center">
+                  <span className="text-sm">+20</span>
+                </div>
+                <span>More</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <section id="pricing" className="py-20 bg-gray-50">
         <div className="container mx-auto px-6">
           <div className="max-w-4xl mx-auto text-center mb-16">
@@ -457,11 +634,25 @@ export default function AIReceptionistLanding() {
             </div>
           </div>
 
-          <div className="max-w-3xl mx-auto mt-12">
-            <div className="bg-green-50 border border-green-200 rounded-xl p-6 text-center">
-              <p className="text-xl font-bold text-green-900 mb-2">💯 7-Day Money-Back Guarantee</p>
-              <p className="text-gray-700">
-                Try it risk-free. If you're not satisfied within 7 days, we'll refund you. No questions asked.
+          <div className="max-w-4xl mx-auto mt-12">
+            <div className="bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-400 rounded-2xl p-8 text-center shadow-lg relative overflow-hidden">
+              {/* Badge */}
+              <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-green-500 text-white px-6 py-2 rounded-full font-bold text-sm shadow-md">
+                RISK-FREE GUARANTEE
+              </div>
+              
+              <div className="flex items-center justify-center gap-4 mb-4 mt-4">
+                <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center">
+                  <Shield className="w-10 h-10 text-white" />
+                </div>
+                <div className="text-left">
+                  <p className="text-3xl font-black text-green-900">30-Day Money-Back Guarantee</p>
+                  <p className="text-green-700 font-semibold">Plus 3-Day Free Trial</p>
+                </div>
+              </div>
+              
+              <p className="text-lg text-gray-700 max-w-2xl mx-auto">
+                Try it completely risk-free. Not happy? Get a full refund within 30 days. No questions. No hassle. No risk.
               </p>
             </div>
           </div>
