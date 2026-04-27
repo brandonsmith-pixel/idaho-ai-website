@@ -156,47 +156,97 @@ export default function AIReceptionistLanding() {
       </nav>
 
       {/* Hero Section - Smith.ai Style */}
-      <section className="py-16 md:py-24 bg-gradient-to-b from-blue-50 to-white">
-        <div className="container mx-auto px-6">
-          <div className="max-w-4xl mx-auto text-center">
-            <div className="inline-flex items-center gap-2 bg-blue-100 text-blue-700 px-4 py-2 rounded-full text-sm font-semibold mb-6">
+      <section className="relative py-20 md:py-32 bg-gradient-to-br from-blue-600 via-blue-700 to-purple-800 overflow-hidden">
+        {/* Background Pattern */}
+        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAxMCAwIEwgMCAwIDAgMTAiIGZpbGw9Im5vbmUiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS1vcGFjaXR5PSIwLjA1IiBzdHJva2Utd2lkdGg9IjEiLz48L3BhdHRlcm4+PC9kZWZzPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JpZCkiLz48L3N2Zz4=')] opacity-40"></div>
+        
+        <div className="container mx-auto px-6 relative z-10">
+          <div className="max-w-4xl mx-auto text-center text-white">
+            <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm text-white px-4 py-2 rounded-full text-sm font-semibold mb-6">
               <Star className="w-4 h-4 fill-current" />
               Trusted by 50+ businesses nationwide
             </div>
-            <h1 className="text-5xl md:text-6xl font-bold text-gray-900 leading-tight mb-6">
-              Never Miss a Call Again
+            <h1 className="text-5xl md:text-7xl font-black leading-tight mb-6 drop-shadow-lg">
+              Never Miss a Call.<br/>Never Lose a Customer.
             </h1>
-            <p className="text-xl md:text-2xl text-gray-600 mb-8 leading-relaxed">
-              24/7 AI receptionists that answer every call, book appointments, and provide instant support—so you never lose another customer.
+            <p className="text-xl md:text-2xl text-blue-100 mb-10 leading-relaxed max-w-3xl mx-auto">
+              Your AI receptionist answers every call 24/7, books appointments directly to your calendar, and forwards important calls—just like a real receptionist.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
-              <a href="#demo" className="px-8 py-4 bg-blue-600 text-white text-lg font-semibold rounded-lg hover:bg-blue-700 transition shadow-lg">
-                Get Free Demo Call
+              <a href="#demo" className="px-10 py-5 bg-white text-blue-700 text-lg font-bold rounded-xl hover:bg-blue-50 transition shadow-2xl">
+                Experience Your AI in Action →
               </a>
-              <a href="#sample-calls" className="px-8 py-4 bg-white border-2 border-gray-300 text-gray-800 text-lg font-semibold rounded-lg hover:border-gray-400 transition">
-                Listen to Sample Calls
+              <a href="#sample-calls" className="px-10 py-5 bg-white/10 backdrop-blur-sm border-2 border-white/30 text-white text-lg font-bold rounded-xl hover:bg-white/20 transition">
+                Hear Real Calls
               </a>
             </div>
             
             {/* Trust Bar */}
-            <div className="flex flex-wrap justify-center items-center gap-8 text-gray-600 text-sm">
+            <div className="flex flex-wrap justify-center items-center gap-6 md:gap-10 text-white/90 text-sm">
               <div className="flex items-center gap-2">
-                <Award className="w-5 h-5 text-blue-600" />
-                <span className="font-semibold">BBB Accredited</span>
+                <CheckCircle className="w-5 h-5" />
+                <span className="font-semibold">Setup in 5 Minutes</span>
               </div>
               <div className="flex items-center gap-2">
-                <Star className="w-5 h-5 text-yellow-500 fill-current" />
-                <span className="font-semibold">4.9/5 Star Rating</span>
+                <Star className="w-5 h-5 fill-current" />
+                <span className="font-semibold">4.9/5 Stars</span>
               </div>
               <div className="flex items-center gap-2">
-                <Shield className="w-5 h-5 text-blue-600" />
-                <span className="font-semibold">US-Based Support</span>
+                <Phone className="w-5 h-5" />
+                <span className="font-semibold">Call Forwarding Included</span>
               </div>
               <div className="flex items-center gap-2">
-                <Users className="w-5 h-5 text-blue-600" />
-                <span className="font-semibold">50+ Active Businesses</span>
+                <Clock className="w-5 h-5" />
+                <span className="font-semibold">Auto Calendar Booking</span>
               </div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Key Features Bar */}
+      <section className="py-16 bg-white border-b border-gray-200">
+        <div className="container mx-auto px-6">
+          <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+            
+            <div className="flex items-start gap-4">
+              <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                <Phone className="w-6 h-6 text-blue-600" />
+              </div>
+              <div>
+                <h3 className="font-bold text-lg mb-2">Forward Any Call</h3>
+                <p className="text-gray-600 text-sm">
+                  Your AI handles screening, then transfers important calls directly to you or your team.
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-start gap-4">
+              <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                <svg className="w-6 h-6 text-green-600" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/>
+                </svg>
+              </div>
+              <div>
+                <h3 className="font-bold text-lg mb-2">Google Calendar Sync</h3>
+                <p className="text-gray-600 text-sm">
+                  Appointments booked by AI appear instantly on your calendar—no manual entry needed.
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-start gap-4">
+              <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                <Clock className="w-6 h-6 text-purple-600" />
+              </div>
+              <div>
+                <h3 className="font-bold text-lg mb-2">24/7 Availability</h3>
+                <p className="text-gray-600 text-sm">
+                  After hours? Weekends? Your AI never sleeps—customers always get a real response.
+                </p>
+              </div>
+            </div>
+
           </div>
         </div>
       </section>
@@ -419,20 +469,34 @@ export default function AIReceptionistLanding() {
       </section>
 
       {/* Demo Form - Keep Your Interactive Flow */}
-      <section id="demo" className="py-20 bg-white">
+      <section id="demo" className="py-20 bg-gradient-to-br from-gray-50 to-blue-50">
         <div className="container mx-auto px-6">
           <div className="max-w-2xl mx-auto">
             <div className="text-center mb-12">
-              <h2 className="text-4xl font-bold text-gray-900 mb-4">Try It Free Right Now</h2>
-              <p className="text-lg text-gray-600 mb-3">
-                Your <strong className="text-blue-600">AI receptionist</strong> will call you in 60 seconds to demonstrate how it works.
+              <div className="inline-block bg-blue-100 text-blue-700 px-4 py-2 rounded-full text-sm font-semibold mb-4">
+                🎭 Live Demo in 60 Seconds
+              </div>
+              <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+                Experience Your AI Receptionist
+              </h2>
+              <p className="text-xl text-gray-600 mb-4 leading-relaxed">
+                We'll call you right now as if you're a customer calling <strong className="text-blue-600">your business</strong>. Ask questions, request an appointment—see how your AI handles it.
               </p>
-              <p className="text-base text-gray-500">
-                Experience what your customers will hear. No credit card. No sales pitch. Just the AI.
-              </p>
+              <div className="bg-white border-2 border-blue-200 rounded-xl p-4 max-w-xl mx-auto">
+                <p className="text-sm text-gray-700">
+                  <CheckCircle className="w-4 h-4 inline text-green-500 mr-1" />
+                  No credit card required
+                  <span className="mx-2">•</span>
+                  <CheckCircle className="w-4 h-4 inline text-green-500 mr-1" />
+                  No sales pitch
+                  <span className="mx-2">•</span>
+                  <CheckCircle className="w-4 h-4 inline text-green-500 mr-1" />
+                  Just pure AI demo
+                </p>
+              </div>
             </div>
 
-            <form onSubmit={handleDemoSubmit} className="bg-gray-50 rounded-xl p-8 border-2 border-gray-200">
+            <form onSubmit={handleDemoSubmit} className="bg-white rounded-2xl p-8 md:p-10 shadow-2xl border border-gray-200">
               <div className="space-y-6">
                 <div>
                   <label className="block font-semibold text-gray-900 mb-2">Business Name *</label>
@@ -508,23 +572,23 @@ export default function AIReceptionistLanding() {
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
                     placeholder="555-123-4567"
                   />
-                  <p className="text-sm text-gray-500 mt-1">The AI receptionist will call this number to demo itself to you</p>
+                  <p className="text-sm text-gray-500 mt-1">We'll call this number so you can act as a customer calling your business.</p>
                 </div>
 
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full py-4 bg-blue-600 text-white text-lg font-semibold rounded-lg hover:bg-blue-700 transition disabled:opacity-50 flex items-center justify-center gap-2"
+                  className="w-full py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white text-xl font-bold rounded-xl hover:shadow-lg transition disabled:opacity-50 flex items-center justify-center gap-3"
                 >
                   {loading ? (
                     <>
-                      <Loader2 className="w-5 h-5 animate-spin" />
-                      Calling You Now...
+                      <Loader2 className="w-6 h-6 animate-spin" />
+                      Initializing Your AI...
                     </>
                   ) : (
                     <>
-                      <Phone className="w-5 h-5" />
-                      Have the AI Call Me Now
+                      <Phone className="w-6 h-6" />
+                      Have My Custom AI Call Me Now
                     </>
                   )}
                 </button>
@@ -533,7 +597,7 @@ export default function AIReceptionistLanding() {
               <div className="mt-6 text-center">
                 <p className="text-sm text-gray-500">
                   <Clock className="w-4 h-4 inline mr-1" />
-                  Average demo call duration: 2 minutes
+                  Takes &lt; 60 seconds to train and call
                 </p>
               </div>
             </form>
