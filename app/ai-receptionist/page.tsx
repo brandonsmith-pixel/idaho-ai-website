@@ -99,10 +99,10 @@ export default function AIReceptionistLanding() {
           industry: demoForm.industry,
         });
         
-        // Fire Google Ads conversion tracking
+        // Fire Google Ads conversion tracking for demo form submission
         if (typeof window !== 'undefined' && (window as any).gtag) {
           (window as any).gtag('event', 'conversion', {
-            'send_to': 'AW-17943114805/hlTbCMWDzZIcELXo-OtC'
+            'send_to': 'AW-18099790158/XcdjCJfJ9aMcEM7C07ZD'
           });
         }
       }

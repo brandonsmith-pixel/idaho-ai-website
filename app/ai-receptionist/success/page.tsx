@@ -301,7 +301,17 @@ function SuccessContent() {
                 </Link>
 
                 <p className="text-sm text-gray-500">
-                  Questions? Call us: <a href="tel:+18664978716" className="text-purple-600 hover:underline font-semibold">+1 (866) 497-8716</a>
+                  Questions? Call us: <a 
+                    href="tel:+18664978716" 
+                    className="text-purple-600 hover:underline font-semibold"
+                    onClick={() => {
+                      if (typeof window !== 'undefined' && (window as any).gtag) {
+                        (window as any).gtag('event', 'conversion', {
+                          'send_to': 'AW-18099790158/phone_click'
+                        });
+                      }
+                    }}
+                  >+1 (866) 497-8716</a>
                 </p>
               </div>
 
