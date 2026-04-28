@@ -33,13 +33,27 @@ function SuccessContent() {
             sessionStorage.setItem('demo_data', JSON.stringify(data.metadata));
           }
 
-          // Fire Google Ads conversion event
+          // Fire Google Ads conversion events for purchase
           if (typeof window !== 'undefined' && (window as any).gtag) {
+            // Main purchase conversion
             (window as any).gtag('event', 'conversion', {
-              'send_to': 'AW-17943114805/Conversion',
+              'send_to': 'AW-18099790158/purchase_completed',
               'value': data.plan === 'self-serve' ? 99 : 500,
               'currency': 'USD',
               'transaction_id': sessionId
+            });
+            
+            // E-commerce purchase event for better tracking
+            (window as any).gtag('event', 'purchase', {
+              'transaction_id': sessionId,
+              'value': data.plan === 'self-serve' ? 99 : 500,
+              'currency': 'USD',
+              'items': [{
+                'item_name': data.plan === 'self-serve' ? 'Self-Serve AI Receptionist' : 'Full-Service AI Receptionist',
+                'item_category': 'AI Receptionist',
+                'price': data.plan === 'self-serve' ? 99 : 500,
+                'quantity': 1
+              }]
             });
           }
           
@@ -307,7 +321,11 @@ function SuccessContent() {
                     onClick={() => {
                       if (typeof window !== 'undefined' && (window as any).gtag) {
                         (window as any).gtag('event', 'conversion', {
-                          'send_to': 'AW-18099790158/phone_click'
+                          'send_to': 'AW-18099790158/phone_call_lead'
+                        });
+                        (window as any).gtag('event', 'phone_call_clicked', {
+                          'event_category': 'engagement',
+                          'event_label': 'success_page_phone_click'
                         });
                       }
                     }}

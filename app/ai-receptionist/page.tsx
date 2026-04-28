@@ -101,8 +101,15 @@ export default function AIReceptionistLanding() {
         
         // Fire Google Ads conversion tracking for demo form submission
         if (typeof window !== 'undefined' && (window as any).gtag) {
+          // Lead form submission conversion
           (window as any).gtag('event', 'conversion', {
             'send_to': 'AW-18099790158/XcdjCJfJ9aMcEM7C07ZD'
+          });
+          
+          // Additional event for better tracking
+          (window as any).gtag('event', 'generate_lead', {
+            'event_category': 'engagement',
+            'event_label': 'demo_form_submitted'
           });
         }
       }
@@ -114,6 +121,13 @@ export default function AIReceptionistLanding() {
   };
 
   if (success) {
+    // Fire conversion for demo call actually starting
+    if (typeof window !== 'undefined' && (window as any).gtag) {
+      (window as any).gtag('event', 'conversion', {
+        'send_to': 'AW-18099790158/demo_call_started'
+      });
+    }
+
     return (
       <div className="min-h-screen bg-white flex items-center justify-center p-6">
         <div className="max-w-md text-center">
@@ -154,7 +168,12 @@ export default function AIReceptionistLanding() {
               onClick={() => {
                 if (typeof window !== 'undefined' && (window as any).gtag) {
                   (window as any).gtag('event', 'conversion', {
-                    'send_to': 'AW-18099790158/phone_click'
+                    'send_to': 'AW-18099790158/phone_call_lead'
+                  });
+                  (window as any).gtag('event', 'phone_call_clicked', {
+                    'event_category': 'engagement',
+                    'event_label': 'header_phone_click',
+                    'value': 1
                   });
                 }
               }}

@@ -138,7 +138,11 @@ export default function IdahoLanding() {
               onClick={() => {
                 if (typeof window !== 'undefined' && (window as any).gtag) {
                   (window as any).gtag('event', 'conversion', {
-                    'send_to': 'AW-18099790158/phone_click'
+                    'send_to': 'AW-18099790158/phone_call_lead'
+                  });
+                  (window as any).gtag('event', 'phone_call_clicked', {
+                    'event_category': 'engagement',
+                    'event_label': 'idaho_header_phone_click'
                   });
                 }
               }}
@@ -464,7 +468,11 @@ export default function IdahoLanding() {
                     onClick={() => {
                       if (typeof window !== 'undefined' && (window as any).gtag) {
                         (window as any).gtag('event', 'conversion', {
-                          'send_to': 'AW-18099790158/phone_click'
+                          'send_to': 'AW-18099790158/phone_call_lead'
+                        });
+                        (window as any).gtag('event', 'phone_call_clicked', {
+                          'event_category': 'engagement',
+                          'event_label': 'idaho_success_phone_click'
                         });
                       }
                     }}
