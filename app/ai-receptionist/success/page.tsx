@@ -302,7 +302,7 @@ function SuccessContent() {
 
                 <p className="text-sm text-gray-500">
                   Questions? Call us: <a 
-                    href="tel:+18664978716" 
+                    href="tel:+12087897053" 
                     className="text-purple-600 hover:underline font-semibold"
                     onClick={() => {
                       if (typeof window !== 'undefined' && (window as any).gtag) {
@@ -311,7 +311,7 @@ function SuccessContent() {
                         });
                       }
                     }}
-                  >+1 (866) 497-8716</a>
+                  >(208) 789-7053</a>
                 </p>
               </div>
 

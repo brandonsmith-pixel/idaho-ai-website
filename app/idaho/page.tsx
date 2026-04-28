@@ -444,7 +444,17 @@ export default function IdahoLanding() {
                   We'll review your info and reach out within 24 hours to schedule your free consultation.
                 </p>
                 <p className="text-gray-600">
-                  Questions? Call us: <a href="tel:+12085551234" className="text-blue-600 hover:underline font-semibold">(208) 555-1234</a>
+                  Questions? Call us: <a 
+                    href="tel:+12087897053" 
+                    className="text-blue-600 hover:underline font-semibold"
+                    onClick={() => {
+                      if (typeof window !== 'undefined' && (window as any).gtag) {
+                        (window as any).gtag('event', 'conversion', {
+                          'send_to': 'AW-18099790158/phone_click'
+                        });
+                      }
+                    }}
+                  >(208) 789-7053</a>
                 </p>
               </div>
             )}
