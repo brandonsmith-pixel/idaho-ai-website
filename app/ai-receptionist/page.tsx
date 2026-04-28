@@ -18,7 +18,6 @@ export default function AIReceptionistLanding() {
     faqs: '',
   });
   const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState(false);
   const [showFAQs, setShowFAQs] = useState(false);
   const [checkoutLoading, setCheckoutLoading] = useState<string | null>(null);
 
@@ -91,27 +90,9 @@ export default function AIReceptionistLanding() {
       });
 
       if (response.ok) {
-        setSuccess(true);
-        
-        // Track demo call started
-        trackEvent('demo_call_started', {
-          businessName: demoForm.businessName,
-          industry: demoForm.industry,
-        });
-        
-        // Fire Google Ads conversion tracking for demo form submission
-        if (typeof window !== 'undefined' && (window as any).gtag) {
-          // Lead form submission conversion
-          (window as any).gtag('event', 'conversion', {
-            'send_to': 'AW-18099790158/XcdjCJfJ9aMcEM7C07ZD'
-          });
-          
-          // Additional event for better tracking
-          (window as any).gtag('event', 'generate_lead', {
-            'event_category': 'engagement',
-            'event_label': 'demo_form_submitted'
-          });
-        }
+        // Redirect to thank-you page for proper conversion tracking
+        const thankYouUrl = `/ai-receptionist/demo-thank-you?business=${encodeURIComponent(demoForm.businessName)}&phone=${encodeURIComponent(demoForm.phone)}`;
+        window.location.href = thankYouUrl;
       }
     } catch (error) {
       alert('Failed to start demo. Please try again.');
@@ -120,34 +101,7 @@ export default function AIReceptionistLanding() {
     }
   };
 
-  if (success) {
-    // Fire conversion for demo call actually starting
-    if (typeof window !== 'undefined' && (window as any).gtag) {
-      (window as any).gtag('event', 'conversion', {
-        'send_to': 'AW-18099790158/demo_call_started'
-      });
-    }
 
-    return (
-      <div className="min-h-screen bg-white flex items-center justify-center p-6">
-        <div className="max-w-md text-center">
-          <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
-            <CheckCircle className="w-12 h-12 text-green-600" />
-          </div>
-          <h1 className="text-3xl font-bold mb-4">Your AI is Calling You Now!</h1>
-          <p className="text-lg text-gray-600 mb-4">
-            The <strong className="text-blue-600">AI receptionist</strong> is calling <strong className="text-blue-600">+1 {demoForm.phone}</strong> right now.
-          </p>
-          <p className="text-base text-gray-500 mb-8">
-            Answer the phone and talk to the AI just like a customer would. Ask it questions about your business!
-          </p>
-          <Link href="/" className="text-blue-600 font-semibold hover:underline">
-            ← Back to Home
-          </Link>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="bg-white">
