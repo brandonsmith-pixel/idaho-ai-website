@@ -132,6 +132,20 @@ export default function IdahoLanding() {
           <div className="flex gap-6 items-center">
             <a href="#projects" className="text-gray-700 hover:text-gray-900 font-medium hidden md:inline">Projects</a>
             <a href="#industries" className="text-gray-700 hover:text-gray-900 font-medium hidden md:inline">Industries</a>
+            <a 
+              href="tel:+12087897053"
+              className="flex items-center gap-2 text-blue-600 font-bold hover:text-blue-700 transition"
+              onClick={() => {
+                if (typeof window !== 'undefined' && (window as any).gtag) {
+                  (window as any).gtag('event', 'conversion', {
+                    'send_to': 'AW-18099790158/phone_click'
+                  });
+                }
+              }}
+            >
+              <Phone className="w-5 h-5" />
+              (208) 789-7053
+            </a>
             <a href="#contact" className="px-5 py-2 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition">
               Get Started
             </a>
