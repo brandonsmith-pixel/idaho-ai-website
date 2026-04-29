@@ -25,12 +25,11 @@ import {
 export default function IdahoLanding() {
   const [formData, setFormData] = useState({
     name: '',
-    business: '',
+    company: '',
     phone: '',
     email: '',
     challenge: '',
   });
-  const [submitted, setSubmitted] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -46,7 +45,6 @@ export default function IdahoLanding() {
       });
 
       if (response.ok) {
-        // Redirect to thank-you page
         const thankYouUrl = `/idaho/consultation-thank-you?name=${encodeURIComponent(formData.name)}&company=${encodeURIComponent(formData.company)}`;
         window.location.href = thankYouUrl;
       }
@@ -164,7 +162,6 @@ export default function IdahoLanding() {
         <div className="container mx-auto px-6">
           <div className="max-w-4xl mx-auto text-center">
             
-            {/* Idaho Badge */}
             <div className="inline-flex items-center gap-2 bg-blue-100 text-blue-700 px-4 py-2 rounded-full text-sm font-semibold mb-6">
               <MapPin className="w-4 h-4" />
               Proudly Serving Idaho Businesses
@@ -188,7 +185,6 @@ export default function IdahoLanding() {
               </a>
             </div>
 
-            {/* Trust Signals */}
             <div className="flex flex-wrap justify-center items-center gap-8 text-sm text-gray-600">
               <div className="flex items-center gap-2">
                 <CheckCircle className="w-5 h-5 text-green-500" />
@@ -225,7 +221,6 @@ export default function IdahoLanding() {
             {idahoProjects.map((project, idx) => (
               <div key={idx} className="bg-white rounded-2xl shadow-xl border-2 border-gray-100 overflow-hidden hover:shadow-2xl transition">
                 
-                {/* Header */}
                 <div className={`bg-gradient-to-r ${project.color} p-6 text-white`}>
                   <div className="flex items-start justify-between mb-3">
                     <div className="w-14 h-14 bg-white/20 backdrop-blur rounded-xl flex items-center justify-center">
@@ -241,7 +236,6 @@ export default function IdahoLanding() {
                   <h3 className="text-2xl font-bold mb-2">{project.title}</h3>
                 </div>
 
-                {/* Body */}
                 <div className="p-6">
                   <div className="mb-6">
                     <p className="text-sm font-semibold text-gray-500 mb-2">THE CHALLENGE</p>
@@ -352,137 +346,102 @@ export default function IdahoLanding() {
         <div className="container mx-auto px-6">
           
           <div className="max-w-3xl mx-auto">
-            
-            {!submitted ? (
-              <>
-                <div className="text-center mb-12">
-                  <h2 className="text-4xl font-bold mb-4">
-                    Ready to Transform Your Business?
-                  </h2>
-                  <p className="text-xl text-blue-100">
-                    Schedule a free 30-minute consultation. No sales pitch — just an honest conversation about what AI can do for your business.
-                  </p>
+            <div className="text-center mb-12">
+              <h2 className="text-4xl font-bold mb-4">
+                Ready to Transform Your Business?
+              </h2>
+              <p className="text-xl text-blue-100">
+                Schedule a free 30-minute consultation. No sales pitch — just an honest conversation about what AI can do for your business.
+              </p>
+            </div>
+
+            <form onSubmit={handleSubmit} className="bg-white rounded-2xl p-8 shadow-2xl">
+              <div className="grid md:grid-cols-2 gap-6 mb-6">
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Your Name *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={formData.name}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none text-gray-900"
+                    placeholder="John Smith"
+                  />
                 </div>
 
-                <form onSubmit={handleSubmit} className="bg-white rounded-2xl p-8 shadow-2xl">
-                  <div className="grid md:grid-cols-2 gap-6 mb-6">
-                    <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">
-                        Your Name *
-                      </label>
-                      <input
-                        type="text"
-                        required
-                        value={formData.name}
-                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                        className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none text-gray-900"
-                        placeholder="John Smith"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">
-                        Business Name *
-                      </label>
-                      <input
-                        type="text"
-                        required
-                        value={formData.business}
-                        onChange={(e) => setFormData({ ...formData, business: e.target.value })}
-                        className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none text-gray-900"
-                        placeholder="Acme Corp"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="grid md:grid-cols-2 gap-6 mb-6">
-                    <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">
-                        Phone *
-                      </label>
-                      <input
-                        type="tel"
-                        required
-                        value={formData.phone}
-                        onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                        className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none text-gray-900"
-                        placeholder="(208) 555-1234"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">
-                        Email *
-                      </label>
-                      <input
-                        type="email"
-                        required
-                        value={formData.email}
-                        onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                        className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none text-gray-900"
-                        placeholder="john@acmecorp.com"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="mb-6">
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">
-                      What's your biggest challenge? *
-                    </label>
-                    <textarea
-                      required
-                      value={formData.challenge}
-                      onChange={(e) => setFormData({ ...formData, challenge: e.target.value })}
-                      className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none text-gray-900"
-                      rows={4}
-                      placeholder="e.g., We're spending too much time on manual data entry..."
-                    />
-                  </div>
-
-                  <button
-                    type="submit"
-                    className="w-full py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg font-bold text-lg hover:shadow-lg transition flex items-center justify-center gap-2"
-                  >
-                    Schedule Free Consultation
-                    <ArrowRight className="w-5 h-5" />
-                  </button>
-
-                  <p className="text-center text-sm text-gray-500 mt-4">
-                    We'll respond within 24 hours. Usually faster.
-                  </p>
-                </form>
-              </>
-            ) : (
-              <div className="bg-white rounded-2xl p-12 text-center">
-                <div className="inline-flex items-center justify-center w-20 h-20 bg-green-100 rounded-full mb-6">
-                  <CheckCircle className="w-12 h-12 text-green-600" />
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Company Name *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={formData.company}
+                    onChange={(e) => setFormData({ ...formData, company: e.target.value })}
+                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none text-gray-900"
+                    placeholder="Acme Corp"
+                  />
                 </div>
-                <h2 className="text-3xl font-bold text-gray-900 mb-4">
-                  Thanks! We'll Be In Touch Soon.
-                </h2>
-                <p className="text-lg text-gray-600 mb-6">
-                  We'll review your info and reach out within 24 hours to schedule your free consultation.
-                </p>
-                <p className="text-gray-600">
-                  Questions? Call us: <a 
-                    href="tel:+12087897053" 
-                    className="text-blue-600 hover:underline font-semibold"
-                    onClick={() => {
-                      if (typeof window !== 'undefined' && (window as any).gtag) {
-                        (window as any).gtag('event', 'conversion', {
-                          'send_to': 'AW-18099790158/phone_call_lead'
-                        });
-                        (window as any).gtag('event', 'phone_call_clicked', {
-                          'event_category': 'engagement',
-                          'event_label': 'idaho_success_phone_click'
-                        });
-                      }
-                    }}
-                  >(208) 789-7053</a>
-                </p>
               </div>
-            )}
 
+              <div className="grid md:grid-cols-2 gap-6 mb-6">
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Phone *
+                  </label>
+                  <input
+                    type="tel"
+                    required
+                    value={formData.phone}
+                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none text-gray-900"
+                    placeholder="(208) 555-1234"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Email *
+                  </label>
+                  <input
+                    type="email"
+                    required
+                    value={formData.email}
+                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none text-gray-900"
+                    placeholder="john@acmecorp.com"
+                  />
+                </div>
+              </div>
+
+              <div className="mb-6">
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  What's your biggest challenge? *
+                </label>
+                <textarea
+                  required
+                  value={formData.challenge}
+                  onChange={(e) => setFormData({ ...formData, challenge: e.target.value })}
+                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none text-gray-900"
+                  rows={4}
+                  placeholder="e.g., We're spending too much time on manual data entry..."
+                />
+              </div>
+
+              <button
+                type="submit"
+                className="w-full py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg font-bold text-lg hover:shadow-lg transition flex items-center justify-center gap-2"
+              >
+                Schedule Free Consultation
+                <ArrowRight className="w-5 h-5" />
+              </button>
+
+              <p className="text-center text-sm text-gray-500 mt-4">
+                We'll respond within 24 hours. Usually faster.
+              </p>
+            </form>
           </div>
 
         </div>
