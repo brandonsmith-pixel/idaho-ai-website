@@ -136,6 +136,24 @@ export default function Home() {
               <a href="/ai-receptionist" className="text-gray-700 hover:text-blue-700 transition font-medium">AI Receptionist</a>
               <a href="/blog" className="text-gray-700 hover:text-blue-700 transition font-medium">Blog</a>
               <a href="/login" className="text-gray-700 hover:text-blue-700 transition font-medium">Sign In</a>
+              <a 
+                href="tel:+12087897053"
+                className="flex items-center gap-2 text-blue-600 font-bold hover:text-blue-700 transition"
+                onClick={() => {
+                  if (typeof window !== 'undefined' && (window as any).gtag) {
+                    (window as any).gtag('event', 'conversion', {
+                      'send_to': 'AW-18099790158/phone_call_lead'
+                    });
+                    (window as any).gtag('event', 'phone_call_clicked', {
+                      'event_category': 'engagement',
+                      'event_label': 'homepage_header_phone_click'
+                    });
+                  }
+                }}
+              >
+                <Phone className="w-5 h-5" />
+                (208) 789-7053
+              </a>
               <a href="#contact" className="bg-blue-700 text-white px-6 py-2 rounded-full hover:bg-blue-800 transition font-semibold">
                 Start Your AI Project
               </a>

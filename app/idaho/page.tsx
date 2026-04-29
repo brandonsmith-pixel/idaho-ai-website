@@ -46,7 +46,9 @@ export default function IdahoLanding() {
       });
 
       if (response.ok) {
-        setSubmitted(true);
+        // Redirect to thank-you page
+        const thankYouUrl = `/idaho/consultation-thank-you?name=${encodeURIComponent(formData.name)}&company=${encodeURIComponent(formData.company)}`;
+        window.location.href = thankYouUrl;
       }
     } catch (error) {
       console.error('Form submission error:', error);
