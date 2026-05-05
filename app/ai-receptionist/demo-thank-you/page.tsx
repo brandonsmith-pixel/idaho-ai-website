@@ -11,24 +11,36 @@ function ThankYouContent() {
   const phone = searchParams.get('phone') || '';
 
   useEffect(() => {
-    // Fire Google Ads conversion for demo form submission on page load
-    if (typeof window !== 'undefined' && (window as any).gtag) {
-      // Lead form submission conversion
-      (window as any).gtag('event', 'conversion', {
-        'send_to': 'AW-18099790158/XcdjCJfJ9aMcEM7C07ZD'
-      });
-      
-      // Additional event for better tracking
-      (window as any).gtag('event', 'generate_lead', {
-        'event_category': 'engagement',
-        'event_label': 'demo_form_submitted'
-      });
+    // Small delay to ensure gtag is loaded
+    const timer = setTimeout(() => {
+      // Fire Google Ads conversion for demo form submission on page load
+      if (typeof window !== 'undefined' && (window as any).gtag) {
+        console.log('Firing demo conversion events...');
+        
+        // Lead form submission conversion
+        (window as any).gtag('event', 'conversion', {
+          'send_to': 'AW-18099790158/XcdjCJfJ9aMcEM7C07ZD'
+        });
+        console.log('✓ Lead form conversion fired');
+        
+        // Additional event for better tracking
+        (window as any).gtag('event', 'generate_lead', {
+          'event_category': 'engagement',
+          'event_label': 'demo_form_submitted'
+        });
+        console.log('✓ Generate lead event fired');
 
-      // Track demo call started
-      (window as any).gtag('event', 'conversion', {
-        'send_to': 'AW-18099790158/demo_call_started'
-      });
-    }
+        // Track demo call started
+        (window as any).gtag('event', 'conversion', {
+          'send_to': 'AW-18099790158/demo_call_started'
+        });
+        console.log('✓ Demo call started conversion fired');
+      } else {
+        console.error('gtag not available on window');
+      }
+    }, 100);
+
+    return () => clearTimeout(timer);
   }, []);
 
   return (
