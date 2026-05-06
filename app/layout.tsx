@@ -36,6 +36,9 @@ export default function RootLayout({
               gtag('js', new Date());
               gtag('config', 'AW-17943114805');
               gtag('config', 'AW-18099790158');
+              gtag('config', 'AW-18099790158/9tUKCPqDpqQcEM7C07ZD', {
+                'phone_conversion_number': '(208) 789-7053'
+              });
             `,
           }}
         />
