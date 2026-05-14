@@ -51,62 +51,27 @@ export async function POST(request: Request) {
 
     console.log('Formatted phone:', formattedPhone);
 
-    // Skip website scraping for instant demo calls
-    // Website content slows down the call by 2-3 minutes
-    let websiteContent = '';
-    if (website) {
-      websiteContent = `Website: ${website} (Visit their website for full details)`;
-    }
+    // Build custom context for the assistant
+    const customPrompt = `You are the AI receptionist for ${businessName}, a ${industry} business.${website ? ` Website: ${website}.` : ''}${faqs ? `\n\nCOMMON QUESTIONS:\n${faqs}` : ''}\n\nBe brief, professional, and helpful. If asked something you don't know, say you'll have someone follow up.`;
 
-    // Build system prompt
-    const systemPrompt = `You are the AI receptionist for ${businessName}.
+    const firstMessage = `Hi! This is the AI receptionist demo for ${businessName}. Ask me anything!`;
 
-BUSINESS DETAILS:
-- Business Name: ${businessName}
-${businessPhone ? `- Phone: ${businessPhone}` : ''}
-- Industry: ${industry}
-${website ? `- Website: ${website}` : ''}
-${address ? `- Address: ${address}` : ''}
-${hours ? `- Hours: ${hours}` : ''}
-
-${websiteContent ? `WEBSITE CONTENT:\n${websiteContent}\n` : ''}
-
-${services ? `SERVICES WE OFFER:\n${services}\n` : ''}
-${pricing ? `PRICING:\n${pricing}\n` : ''}
-${bookingProcess ? `BOOKING/SCHEDULING:\n${bookingProcess}\n` : ''}
-${faqs ? `COMMON QUESTIONS:\n${faqs}\n` : ''}
-${additionalInfo ? `ADDITIONAL INFO:\n${additionalInfo}\n` : ''}
-
-YOUR ROLE:
-You are demonstrating what ${businessName}'s AI receptionist will sound like to their customers. Be professional, friendly, and helpful. Answer questions based on the information provided above. If asked something you don't know, politely say you'll have someone follow up with more details.
-
-This is a DEMO CALL to show how the AI receptionist works. Be natural and conversational.`;
-
-    const firstMessage = `Hi! This is the AI receptionist demo for ${businessName}. Go ahead and ask me questions like you're a customer calling the business!`;
-
-    // Make the Vapi call
+    // Use pre-existing assistant for INSTANT calls
     const callPayload = {
       phoneNumberId: phoneNumberId,
       customer: {
         number: formattedPhone,
       },
-      assistant: {
-        name: `Demo: ${businessName}`,
+      assistantId: 'fb6a783d-3cbc-4763-b71a-d22d3a18d49f', // Pre-created fast template
+      assistantOverrides: {
+        firstMessage: firstMessage,
         model: {
-          provider: 'openai',
-          model: 'gpt-4o-mini', // Faster and cheaper than GPT-4
-          temperature: 0.7,
-          maxTokens: 150, // Keep responses short
-          systemPrompt: systemPrompt,
+          systemPrompt: customPrompt,
         },
         voice: {
           provider: voiceProvider,
           voiceId: voiceId,
         },
-        firstMessage: firstMessage,
-        endCallFunctionEnabled: false,
-        serverUrl: 'https://tetongroup.ai/api/webhooks/vapi',
-        maxDurationSeconds: 300, // Hard 5-minute cutoff for free demos
       },
     };
 
