@@ -51,29 +51,11 @@ export async function POST(request: Request) {
 
     console.log('Formatted phone:', formattedPhone);
 
-    // Scrape website content if provided
+    // Skip website scraping for instant demo calls
+    // Website content slows down the call by 2-3 minutes
     let websiteContent = '';
     if (website) {
-      try {
-        console.log('Scraping website:', website);
-        const response = await fetch('https://r.jina.ai/' + website);
-        if (response.ok) {
-          websiteContent = await response.text();
-          
-          // Limit to 15,000 characters (~3,750 tokens) to avoid context overflow
-          // GPT-4 has 8k context, system prompt + conversation needs room
-          if (websiteContent.length > 15000) {
-            console.log('Website content truncated from', websiteContent.length, 'to 15000 chars');
-            websiteContent = websiteContent.substring(0, 15000) + '\n\n[Content truncated - website is very large]';
-          }
-          
-          console.log('Website scraped successfully, length:', websiteContent.length);
-        } else {
-          console.error('Failed to scrape website:', response.status);
-        }
-      } catch (error) {
-        console.error('Error scraping website:', error);
-      }
+      websiteContent = `Website: ${website} (Visit their website for full details)`;
     }
 
     // Build system prompt
@@ -100,7 +82,7 @@ You are demonstrating what ${businessName}'s AI receptionist will sound like to 
 
 This is a DEMO CALL to show how the AI receptionist works. Be natural and conversational.`;
 
-    const firstMessage = `Hi! Thanks for trying out the AI receptionist demo for ${businessName}. This is a free 5-minute demo to show you how the AI works. I'm ready to answer questions about the business - go ahead and ask me anything you'd like to know!`;
+    const firstMessage = `Hi! This is the AI receptionist demo for ${businessName}. Go ahead and ask me questions like you're a customer calling the business!`;
 
     // Make the Vapi call
     const callPayload = {
@@ -112,12 +94,10 @@ This is a DEMO CALL to show how the AI receptionist works. Be natural and conver
         name: `Demo: ${businessName}`,
         model: {
           provider: 'openai',
-          model: 'gpt-4',
+          model: 'gpt-4o-mini', // Faster and cheaper than GPT-4
           temperature: 0.7,
-          messages: [{
-            role: 'system',
-            content: systemPrompt,
-          }],
+          maxTokens: 150, // Keep responses short
+          systemPrompt: systemPrompt,
         },
         voice: {
           provider: voiceProvider,
