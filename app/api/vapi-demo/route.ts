@@ -66,6 +66,8 @@ export async function POST(request: Request) {
       assistantOverrides: {
         firstMessage: firstMessage,
         model: {
+          provider: 'openai',
+          model: 'gpt-4o',
           systemPrompt: customPrompt,
         },
         voice: {
